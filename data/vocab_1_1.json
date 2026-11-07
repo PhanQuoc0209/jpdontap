@@ -1,0 +1,372 @@
+[
+  {
+    "id": "vocab-1",
+    "word": "私",
+    "kana": "わたし",
+    "romaji": "watashi",
+    "meaning": "Tôi",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-2",
+    "word": "なまえ",
+    "kana": "なまえ",
+    "romaji": "namae",
+    "meaning": "Tên",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-3",
+    "word": "おなまえ",
+    "kana": "おなまえ",
+    "romaji": "onamae",
+    "meaning": "Tên (lịch sự)",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-4",
+    "word": "くに",
+    "kana": "くに",
+    "romaji": "kuni",
+    "meaning": "Đất nước",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-5",
+    "word": "おくに",
+    "kana": "おくに",
+    "romaji": "okuni",
+    "meaning": "Đất nước (lịch sự)",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-6",
+    "word": "日本",
+    "kana": "にほん",
+    "romaji": "nihon",
+    "meaning": "Nhật Bản",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-7",
+    "word": "かんこく",
+    "kana": "かんこく",
+    "romaji": "kankoku",
+    "meaning": "Hàn Quốc",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-8",
+    "word": "ちゅうごく",
+    "kana": "ちゅうごく",
+    "romaji": "chuugoku",
+    "meaning": "Trung Quốc",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-9",
+    "word": "アメリカ",
+    "kana": "アメリカ",
+    "romaji": "amerika",
+    "meaning": "Mỹ",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-10",
+    "word": "イタリア",
+    "kana": "イタリア",
+    "romaji": "itaria",
+    "meaning": "Ý",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-11",
+    "word": "オーストラリア",
+    "kana": "オーストラリア",
+    "romaji": "oosutoraria",
+    "meaning": "Úc",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-12",
+    "word": "タイ",
+    "kana": "タイ",
+    "romaji": "tai",
+    "meaning": "Thái Lan",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-13",
+    "word": "ベトナム",
+    "kana": "ベトナム",
+    "romaji": "betonamu",
+    "meaning": "Việt Nam",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-14",
+    "word": "ロシア",
+    "kana": "ロシア",
+    "romaji": "roshia",
+    "meaning": "Nga",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-15",
+    "word": "こうこう",
+    "kana": "こうこう",
+    "romaji": "koukou",
+    "meaning": "Trường cấp 3",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-16",
+    "word": "大学",
+    "kana": "だいがく",
+    "romaji": "daigaku",
+    "meaning": "Đại học",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-17",
+    "word": "日本語",
+    "kana": "にほんご",
+    "romaji": "nihongo",
+    "meaning": "Tiếng Nhật",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-18",
+    "word": "日本語学校",
+    "kana": "にほんごがっこう",
+    "romaji": "nihongogakkou",
+    "meaning": "Trường tiếng Nhật",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-19",
+    "word": "しごと",
+    "kana": "しごと",
+    "romaji": "shigoto",
+    "meaning": "Công việc",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-20",
+    "word": "おしごと",
+    "kana": "おしごと",
+    "romaji": "oshigoto",
+    "meaning": "Công việc (lịch sự)",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-21",
+    "word": "学生",
+    "kana": "がくせい",
+    "romaji": "gakusei",
+    "meaning": "Học sinh / sinh viên",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-22",
+    "word": "せんせい",
+    "kana": "せんせい",
+    "romaji": "sensei",
+    "meaning": "Giáo viên",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-23",
+    "word": "きょうし",
+    "kana": "きょうし",
+    "romaji": "kyoushi",
+    "meaning": "Giáo viên",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-24",
+    "word": "かいしゃいん",
+    "kana": "かいしゃいん",
+    "romaji": "kaishain",
+    "meaning": "Nhân viên công ty",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-25",
+    "word": "しゃいん",
+    "kana": "しゃいん",
+    "romaji": "shain",
+    "meaning": "Nhân viên",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-26",
+    "word": "～さん",
+    "kana": "～さん",
+    "romaji": "san",
+    "meaning": "Anh / chị ~",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-27",
+    "word": "～人",
+    "kana": "～じん",
+    "romaji": "jin",
+    "meaning": "Người nước ~",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-28",
+    "word": "どちら",
+    "kana": "どちら",
+    "romaji": "dochira",
+    "meaning": "Ở đâu / phía nào",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-29",
+    "word": "はじめまして",
+    "kana": "はじめまして",
+    "romaji": "hajimemashite",
+    "meaning": "Rất vui được gặp",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-30",
+    "word": "どうぞよろしくおねがいします",
+    "kana": "どうぞよろしくおねがいします",
+    "romaji": "douzoyoroshikuonegaishimasu",
+    "meaning": "Rất mong được giúp đỡ",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-31",
+    "word": "こちらこそ",
+    "kana": "こちらこそ",
+    "romaji": "kochirakoso",
+    "meaning": "Chính tôi mới vậy",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-32",
+    "word": "あのう",
+    "kana": "あのう",
+    "romaji": "anou",
+    "meaning": "À...",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-33",
+    "word": "すみません",
+    "kana": "すみません",
+    "romaji": "sumimasen",
+    "meaning": "Xin lỗi",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-34",
+    "word": "そうですか",
+    "kana": "そうですか",
+    "romaji": "soudesuka",
+    "meaning": "Vậy à",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-35",
+    "word": "はい",
+    "kana": "はい",
+    "romaji": "hai",
+    "meaning": "Vâng",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-36",
+    "word": "いいえ",
+    "kana": "いいえ",
+    "romaji": "iie",
+    "meaning": "Không",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  },
+  {
+    "id": "vocab-37",
+    "word": "学校",
+    "kana": "がっこう",
+    "romaji": "gakkou",
+    "meaning": "Trường học",
+    "course": "jpd113",
+    "unit": "jpd113-v1-1",
+    "unitTitle": "Giới thiệu bản thân"
+  }
+]

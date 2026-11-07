@@ -1,0 +1,36 @@
+[
+  {
+    "id": "38",
+    "href": "/ngu-phap/jpd113/jpd113-g1-1/38",
+    "pattern": "N1 は N2 です。",
+    "meaning": "Câu khẳng định N1 là N2",
+    "course": "jpd113",
+    "lesson": "jpd113-g1-1",
+    "lessonTitle": "Bài 1 – Phần 1",
+    "explanation": "- N1: Chủ ngữ - N2: Vị ngữ (tên nghề nghiệp tuổi …)",
+    "examples": [
+      {
+        "japanese": "Aさんは がくせいです。",
+        "vietnamese": "Bạn A là sinh viên.\\\nThầy giáo Tanaka là người Nhật."
+      }
+    ]
+  },
+  {
+    "id": "39",
+    "href": "/ngu-phap/jpd113/jpd113-g1-1/39",
+    "pattern": "N1 は ～ の N2 です。",
+    "meaning": "Câu khẳng định mở rộng N1 là N2 của / thuộc về ~",
+    "course": "jpd113",
+    "lesson": "jpd113-g1-1",
+    "lessonTitle": "Bài 1 – Phần 1"
+  },
+  {
+    "id": "40",
+    "href": "/ngu-phap/jpd113/jpd113-g1-1/40",
+    "pattern": "N1 は N2 じゃありません。 N1 は N2 ではありません。",
+    "meaning": "Câu phủ định",
+    "course": "jpd113",
+    "lesson": "jpd113-g1-1",
+    "lessonTitle": "Bài 1 – Phần 1"
+  }
+]

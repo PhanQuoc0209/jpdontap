@@ -1,0 +1,95 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+:root {
+  --bg-bamboo: #eef6eb;
+  --bg-bamboo-subtle: #f4f9f2;
+  --text-dark: #143521;
+  --text-muted: #597361;
+  --primary-green: #22c55e;
+  --primary-green-dark: #15803d;
+  --card-cream: #fbfdf9;
+  --card-parchment: #fdfbf7;
+  --border-subtle: #dbe8d7;
+  --accent-gold: #f59e0b;
+  --accent-red: #ef4444;
+}
+
+body {
+  background-color: var(--bg-bamboo);
+  color: var(--text-dark);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.06) 0px, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* Japanese typography */
+.jp-font {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP", sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #eef6eb;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #22c55e;
+}
+
+/* 3D Button Shadows (Matching Pandarin buttons) */
+.btn-3d-green {
+  background: linear-gradient(180deg, #34d399 0%, #10b981 40%, #059669 100%);
+  box-shadow: 0 4px 0 #047857, 0 8px 16px rgba(16, 185, 129, 0.35);
+  transition: all 0.15s ease-in-out;
+}
+.btn-3d-green:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #047857, 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-3d-red {
+  background: linear-gradient(180deg, #f87171 0%, #ef4444 50%, #dc2626 100%);
+  box-shadow: 0 3px 0 #b91c1c, 0 6px 12px rgba(239, 68, 68, 0.3);
+  transition: all 0.15s ease-in-out;
+}
+.btn-3d-red:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #b91c1c;
+}
+
+/* Tianzige Grid */
+.tianzige-grid {
+  background-image: 
+    linear-gradient(to right, rgba(200, 215, 195, 0.8) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(200, 215, 195, 0.8) 1px, transparent 1px),
+    linear-gradient(45deg, rgba(200, 215, 195, 0.5) 1px, transparent 1px),
+    linear-gradient(-45deg, rgba(200, 215, 195, 0.5) 1px, transparent 1px);
+  background-size: 50% 50%, 50% 50%, 100% 100%, 100% 100%;
+  background-position: center;
+}
+
+/* Floating animation */
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-float {
+  animation: floatGentle 3s ease-in-out infinite;
+}

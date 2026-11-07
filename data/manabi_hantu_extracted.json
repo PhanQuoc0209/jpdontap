@@ -1,0 +1,4044 @@
+{
+  "kanjiChars": [
+    {
+      "kanji": "私",
+      "hanViet": "TƯ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "raw": "私 TƯ Tôi, riêng tư シ わたし わたくし"
+    },
+    {
+      "kanji": "日",
+      "hanViet": "NHẬT",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "raw": "日 NHẬT Mặt trời, ngày ニチ ジツ ひ か"
+    },
+    {
+      "kanji": "本",
+      "hanViet": "BẢN",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "raw": "本 BẢN Gốc, sách, căn bản ホン もと"
+    },
+    {
+      "kanji": "大",
+      "hanViet": "ĐẠI",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "raw": "大 ĐẠI To, lớn ダイ タイ おおきい"
+    },
+    {
+      "kanji": "学",
+      "hanViet": "HỌC",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "raw": "学 HỌC Học tập ガク まなぶ"
+    },
+    {
+      "kanji": "語",
+      "hanViet": "NGỮ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "raw": "語 NGỮ Ngôn ngữ, tiếng nói ゴ かたる"
+    },
+    {
+      "kanji": "校",
+      "hanViet": "HIỆU",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "raw": "校 HIỆU Trường học コウ "
+    },
+    {
+      "kanji": "生",
+      "hanViet": "SINH",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "raw": "生 SINH Sinh sống, sinh ra セイ ショウ いきる うまれる なま"
+    },
+    {
+      "kanji": "人",
+      "hanViet": "NHÂN",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "raw": "人 NHÂN Người ジン ニン ひと"
+    },
+    {
+      "kanji": "才",
+      "hanViet": "TÀI",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "raw": "才 TÀI Tuổi, tài năng サイ "
+    },
+    {
+      "kanji": "一",
+      "hanViet": "NHẤT",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "一 NHẤT Số một イチ イツ ひと.つ"
+    },
+    {
+      "kanji": "二",
+      "hanViet": "NHỊ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "二 NHỊ Số hai ニ ふた.つ"
+    },
+    {
+      "kanji": "三",
+      "hanViet": "TAM",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "三 TAM Số ba サン みっ.つ"
+    },
+    {
+      "kanji": "四",
+      "hanViet": "TỨ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "四 TỨ Số bốn シ よん よっ.つ"
+    },
+    {
+      "kanji": "五",
+      "hanViet": "NGŨ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "五 NGŨ Số năm ゴ いつ.つ"
+    },
+    {
+      "kanji": "六",
+      "hanViet": "LỤC",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "六 LỤC Số sáu ロク むっ.つ"
+    },
+    {
+      "kanji": "七",
+      "hanViet": "THẤT",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "七 THẤT Số bảy シチ なな なな.つ"
+    },
+    {
+      "kanji": "八",
+      "hanViet": "BÁT",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "八 BÁT Số tám ハチ やっ.つ"
+    },
+    {
+      "kanji": "九",
+      "hanViet": "CỬU",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "九 CỬU Số chín キュウ ク ここの.つ"
+    },
+    {
+      "kanji": "十",
+      "hanViet": "THẬP",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "十 THẬP Số mười ジュウ とお"
+    },
+    {
+      "kanji": "百",
+      "hanViet": "BÁCH",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "百 BÁCH Một trăm ヒャク "
+    },
+    {
+      "kanji": "千",
+      "hanViet": "THIÊN",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "千 THIÊN Một nghìn セン ち"
+    },
+    {
+      "kanji": "万",
+      "hanViet": "VẠN",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "万 VẠN Mười nghìn マン バン "
+    },
+    {
+      "kanji": "円",
+      "hanViet": "VIÊN",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "raw": "円 VIÊN Hình tròn, đồng Yên エン まる.い"
+    },
+    {
+      "kanji": "月",
+      "hanViet": "NGUYỆT",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "月 NGUYỆT Mặt trăng, tháng, thứ Hai ゲツ ガツ つき"
+    },
+    {
+      "kanji": "火",
+      "hanViet": "HỎA",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "火 HỎA Lửa, thứ Ba カ ひ び ほ"
+    },
+    {
+      "kanji": "水",
+      "hanViet": "THỦY",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "水 THỦY Nước, thứ Tư スイ みず"
+    },
+    {
+      "kanji": "木",
+      "hanViet": "MỘC",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "木 MỘC Cây, thứ Năm モク ボク き こ"
+    },
+    {
+      "kanji": "金",
+      "hanViet": "KIM",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "金 KIM Tiền, vàng, thứ Sáu キン コン かね かな"
+    },
+    {
+      "kanji": "土",
+      "hanViet": "THỔ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "土 THỔ Đất, thứ Bảy ド ト つち"
+    },
+    {
+      "kanji": "何",
+      "hanViet": "HÀ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "何 HÀ Cái gì カ なに なん"
+    },
+    {
+      "kanji": "年",
+      "hanViet": "NIÊN",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "年 NIÊN Năm ネン とし"
+    },
+    {
+      "kanji": "時",
+      "hanViet": "THỜI",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "時 THỜI Thời gian, giờ ジ とき"
+    },
+    {
+      "kanji": "間",
+      "hanViet": "GIAN",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "間 GIAN Khoảng trống, ở giữa, trong~, gian phòng カン ケン あいだ ま"
+    },
+    {
+      "kanji": "分",
+      "hanViet": "PHÂN",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "raw": "分 PHÂN Phân chia, hiểu, phút ブン フン ブ わ.ける わ.かる"
+    },
+    {
+      "kanji": "東",
+      "hanViet": "ĐÔNG",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "raw": "東 ĐÔNG Phía Đông トウ ひがし"
+    },
+    {
+      "kanji": "京",
+      "hanViet": "KINH",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "raw": "京 KINH Kinh đô, thủ đô キョウ ケイ みやこ"
+    },
+    {
+      "kanji": "名",
+      "hanViet": "DANH",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "raw": "名 DANH Tên gọi メイ ミョウ な"
+    },
+    {
+      "kanji": "前",
+      "hanViet": "TIỀN",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "raw": "前 TIỀN Phía trước ゼン まえ"
+    },
+    {
+      "kanji": "国",
+      "hanViet": "QUỐC",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "raw": "国 QUỐC Quốc gia コク くに"
+    },
+    {
+      "kanji": "南",
+      "hanViet": "NAM",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "raw": "南 NAM Phía Nam ナン みなみ"
+    },
+    {
+      "kanji": "女",
+      "hanViet": "NỮ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "raw": "女 NỮ Phụ nữ ジョ ニョ おんな"
+    },
+    {
+      "kanji": "男",
+      "hanViet": "NAM",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "raw": "男 NAM Nam giới ダン ナン おとこ"
+    },
+    {
+      "kanji": "区",
+      "hanViet": "KHU",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "raw": "区 KHU Khu vực ク "
+    },
+    {
+      "kanji": "市",
+      "hanViet": "THỊ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "raw": "市 THỊ Thành phố / chợ シ いち"
+    },
+    {
+      "kanji": "先",
+      "hanViet": "TIÊN",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "先 TIÊN Trước, đầu tiên セン さき"
+    },
+    {
+      "kanji": "週",
+      "hanViet": "CHU",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "週 CHU Tuần lễ シュウ "
+    },
+    {
+      "kanji": "毎",
+      "hanViet": "MỖI",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "毎 MỖI Mỗi, mọi マイ ごと"
+    },
+    {
+      "kanji": "午",
+      "hanViet": "NGỌ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "午 NGỌ Buổi trưa, giờ Ngọ ゴ "
+    },
+    {
+      "kanji": "後",
+      "hanViet": "HẬU",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "後 HẬU Phía sau, sau này ゴ コウ あと うしろ のち"
+    },
+    {
+      "kanji": "見",
+      "hanViet": "KIẾN",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "見 KIẾN Nhìn, thấy ケン みる みえる"
+    },
+    {
+      "kanji": "食",
+      "hanViet": "THỰC",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "食 THỰC Ăn, thức ăn ショク ジキ たべる"
+    },
+    {
+      "kanji": "飲",
+      "hanViet": "ẨM",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "飲 ẨM Uống イン のむ"
+    },
+    {
+      "kanji": "買",
+      "hanViet": "MÃI",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "買 MÃI Mua バイ かう"
+    },
+    {
+      "kanji": "物",
+      "hanViet": "VẬT",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "物 VẬT Đồ vật ブツ モツ もの"
+    },
+    {
+      "kanji": "行",
+      "hanViet": "HÀNH",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "行 HÀNH Đi, thực hiện コウ ギョウ いく ゆく おこなう"
+    },
+    {
+      "kanji": "休",
+      "hanViet": "HƯU",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "raw": "休 HƯU Nghỉ ngơi キュウ やすむ"
+    },
+    {
+      "kanji": "今",
+      "hanViet": "KIM",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "raw": "今 KIM Bây giờ, hiện tại コン キン いま"
+    },
+    {
+      "kanji": "来",
+      "hanViet": "LAI",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "raw": "来 LAI Đến ライ く.る き.たる"
+    },
+    {
+      "kanji": "帰",
+      "hanViet": "QUY",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "raw": "帰 QUY Trở về キ かえ.る"
+    },
+    {
+      "kanji": "会",
+      "hanViet": "HỘI",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "raw": "会 HỘI Gặp gỡ, hội họp カイ エ あ.う"
+    },
+    {
+      "kanji": "社",
+      "hanViet": "XÃ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "raw": "社 XÃ Xã hội, công ty, đền thờ シャ やしろ"
+    },
+    {
+      "kanji": "聞",
+      "hanViet": "VĂN",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "raw": "聞 VĂN Nghe, hỏi ブン モン き.く き.こえる"
+    },
+    {
+      "kanji": "読",
+      "hanViet": "ĐỘC",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "raw": "読 ĐỘC Đọc ドク トク よ.む"
+    },
+    {
+      "kanji": "書",
+      "hanViet": "THƯ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "raw": "書 THƯ Viết, sách ショ か.く"
+    },
+    {
+      "kanji": "話",
+      "hanViet": "THOẠI",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "raw": "話 THOẠI Trò chuyện, câu chuyện ワ はな.す はなし"
+    },
+    {
+      "kanji": "寺",
+      "hanViet": "TỰ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "寺 TỰ Chùa ジ てら"
+    },
+    {
+      "kanji": "言",
+      "hanViet": "NGÔN",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "言 NGÔN Nói, ngôn từ ゴン ゲン い.う こと"
+    },
+    {
+      "kanji": "貝",
+      "hanViet": "BỐI",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "貝 BỐI Vỏ sò, tiền tệ バイ かい"
+    },
+    {
+      "kanji": "田",
+      "hanViet": "ĐIỀN",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "田 ĐIỀN Ruộng デン た"
+    },
+    {
+      "kanji": "力",
+      "hanViet": "LỰC",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "力 LỰC Sức lực リョク リキ ちから"
+    },
+    {
+      "kanji": "門",
+      "hanViet": "MÔN",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "門 MÔN Cửa, cổng モン かど"
+    },
+    {
+      "kanji": "肉",
+      "hanViet": "NHỤC",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "肉 NHỤC Thịt ニク "
+    },
+    {
+      "kanji": "料",
+      "hanViet": "LIỄU",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "料 LIỄU Nguyên liệu, tài liệu, phí リョウ "
+    },
+    {
+      "kanji": "理",
+      "hanViet": "LÝ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "理 LÝ Lý lẽ, logic, địa lý リ "
+    },
+    {
+      "kanji": "野",
+      "hanViet": "DÃ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "野 DÃ Cánh đồng, hoang dã ヤ の"
+    },
+    {
+      "kanji": "半",
+      "hanViet": "BÁN",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "raw": "半 BÁN Một nửa ハン なか.ば"
+    },
+    {
+      "kanji": "家",
+      "hanViet": "GIA",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "家 GIA Nhà, nhà cửa カ いえ うち"
+    },
+    {
+      "kanji": "族",
+      "hanViet": "TỘC",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "族 TỘC Gia đình, dòng họ ゾク "
+    },
+    {
+      "kanji": "父",
+      "hanViet": "PHỤ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "父 PHỤ Bố フ ちち"
+    },
+    {
+      "kanji": "母",
+      "hanViet": "MẪU",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "母 MẪU Mẹ ボ はは"
+    },
+    {
+      "kanji": "兄",
+      "hanViet": "HUYNH",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "兄 HUYNH Anh trai ケイ キョウ あに"
+    },
+    {
+      "kanji": "弟",
+      "hanViet": "ĐỆ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "弟 ĐỆ Em trai テイ ダイ おとうと"
+    },
+    {
+      "kanji": "姉",
+      "hanViet": "TỶ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "姉 TỶ Chị gái シ あね"
+    },
+    {
+      "kanji": "妹",
+      "hanViet": "MUỘI",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "妹 MUỘI Em gái マイ いもうと"
+    },
+    {
+      "kanji": "犬",
+      "hanViet": "KHUYỂN",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "犬 KHUYỂN Con chó ケン いぬ"
+    },
+    {
+      "kanji": "高",
+      "hanViet": "CAO",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "高 CAO Cao, đắt コウ たかい"
+    },
+    {
+      "kanji": "長",
+      "hanViet": "TRƯỜNG",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "長 TRƯỜNG Dài チョウ ながい"
+    },
+    {
+      "kanji": "短",
+      "hanViet": "ĐOẢN",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "raw": "短 ĐOẢN Ngắn タン みじかい"
+    },
+    {
+      "kanji": "好",
+      "hanViet": "HẢO",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "raw": "好 HẢO Thích, tốt コウ すき このむ"
+    },
+    {
+      "kanji": "歌",
+      "hanViet": "CA",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "raw": "歌 CA Bài hát, hát カ うた うたう"
+    },
+    {
+      "kanji": "音",
+      "hanViet": "ÂM",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "raw": "音 ÂM Âm thanh オン イン おと ね"
+    },
+    {
+      "kanji": "車",
+      "hanViet": "XA",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "raw": "車 XA Xe シャ くるま"
+    },
+    {
+      "kanji": "映",
+      "hanViet": "ÁNH",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "raw": "映 ÁNH Chiếu, phản chiếu エイ うつる うつす"
+    },
+    {
+      "kanji": "画",
+      "hanViet": "HỌA",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "raw": "画 HỌA Hình, tranh ガ カク "
+    },
+    {
+      "kanji": "旅",
+      "hanViet": "LỮ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "raw": "旅 LỮ Chuyến đi リョ たび"
+    },
+    {
+      "kanji": "海",
+      "hanViet": "HẢI",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "raw": "海 HẢI Biển カイ うみ"
+    },
+    {
+      "kanji": "外",
+      "hanViet": "NGOẠI",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "raw": "外 NGOẠI Bên ngoài, nước ngoài ガイ ゲ そと ほか はずす"
+    },
+    {
+      "kanji": "駅",
+      "hanViet": "DỊCH",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "raw": "駅 DỊCH Nhà ga エキ "
+    },
+    {
+      "kanji": "上",
+      "hanViet": "THƯỢNG",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "raw": "上 THƯỢNG Trên, lên ジョウ ショウ うえ あがる のぼる"
+    },
+    {
+      "kanji": "下",
+      "hanViet": "HẠ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "raw": "下 HẠ Dưới, xuống カ ゲ した さげる おりる"
+    },
+    {
+      "kanji": "地",
+      "hanViet": "ĐỊA",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "raw": "地 ĐỊA Đất, địa điểm チ ジ "
+    },
+    {
+      "kanji": "図",
+      "hanViet": "ĐỒ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "raw": "図 ĐỒ Hình vẽ, bản đồ ズ ト はかる"
+    },
+    {
+      "kanji": "館",
+      "hanViet": "QUÁN",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "raw": "館 QUÁN Tòa nhà, quán/viện カン やかた"
+    },
+    {
+      "kanji": "右",
+      "hanViet": "HỮU",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "raw": "右 HỮU Phải ウ ユウ みぎ"
+    },
+    {
+      "kanji": "左",
+      "hanViet": "TẢ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "raw": "左 TẢ Trái サ ひだり"
+    },
+    {
+      "kanji": "道",
+      "hanViet": "ĐẠO",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "raw": "道 ĐẠO Đường ドウ トウ みち"
+    },
+    {
+      "kanji": "起",
+      "hanViet": "KHỞI",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "raw": "起 KHỞI Thức dậy, khởi động キ おきる おこす"
+    },
+    {
+      "kanji": "歩",
+      "hanViet": "BỘ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "raw": "歩 BỘ Đi bộ, bước ホ ブ あるく あゆむ"
+    },
+    {
+      "kanji": "始",
+      "hanViet": "THỦY",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "raw": "始 THỦY Bắt đầu シ はじまる はじめる"
+    },
+    {
+      "kanji": "終",
+      "hanViet": "CHUNG",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "raw": "終 CHUNG Kết thúc シュウ おわる おえる"
+    },
+    {
+      "kanji": "勉",
+      "hanViet": "MIỄN",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "raw": "勉 MIỄN Cố gắng học ベン "
+    },
+    {
+      "kanji": "強",
+      "hanViet": "CƯỜNG",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "raw": "強 CƯỜNG Mạnh キョウ ゴウ つよい しいる"
+    },
+    {
+      "kanji": "朝",
+      "hanViet": "TRIỀU",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "raw": "朝 TRIỀU Buổi sáng チョウ あさ"
+    },
+    {
+      "kanji": "昼",
+      "hanViet": "TRÚ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "raw": "昼 TRÚ Buổi trưa チュウ ひる"
+    },
+    {
+      "kanji": "夜",
+      "hanViet": "DẠ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "raw": "夜 DẠ Buổi tối/đêm ヤ よる"
+    }
+  ],
+  "vocabWords": [
+    {
+      "word": "私",
+      "kana": "わたし",
+      "romaji": "watashi",
+      "meaning": "Tôi",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "人",
+      "kana": "ひと",
+      "romaji": "hito",
+      "meaning": "Người",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "あの人",
+      "kana": "あのひと",
+      "romaji": "anohito",
+      "meaning": "Người kia",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "2才",
+      "kana": "にさい",
+      "romaji": "nisai",
+      "meaning": "2 tuổi",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "8才",
+      "kana": "はっさい",
+      "romaji": "hassai",
+      "meaning": "8 tuổi",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "何才",
+      "kana": "なんさい",
+      "romaji": "nansai",
+      "meaning": "Mấy tuổi",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "大学",
+      "kana": "だいがく",
+      "romaji": "daigaku",
+      "meaning": "Đại học",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "学生",
+      "kana": "がくせい",
+      "romaji": "gakusei",
+      "meaning": "Học sinh / sinh viên",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "先生",
+      "kana": "せんせい",
+      "romaji": "sensei",
+      "meaning": "thầy/cô giáo",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "学校",
+      "kana": "がっこう",
+      "romaji": "gakkou",
+      "meaning": "Trường học",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "10日",
+      "kana": "とおか",
+      "romaji": "tooka",
+      "meaning": "Mùng 10",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "日曜日",
+      "kana": "にちようび",
+      "romaji": "nichiyoubi",
+      "meaning": "Chủ nhật",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "日",
+      "kana": "ひ",
+      "romaji": "hi",
+      "meaning": "Ngày / mặt trời",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "休日",
+      "kana": "きゅうじつ",
+      "romaji": "kyuujitsu",
+      "meaning": "ngày nghỉ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "本",
+      "kana": "ほん",
+      "romaji": "hon",
+      "meaning": "Sách",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "日本",
+      "kana": "にほん",
+      "romaji": "nihon",
+      "meaning": "Nhật Bản",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "日本人",
+      "kana": "にほんじん",
+      "romaji": "nihonjin",
+      "meaning": "Người Nhật Bản",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "日本語",
+      "kana": "にほんご",
+      "romaji": "nihongo",
+      "meaning": "Tiếng Nhật",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "ベトナム語",
+      "kana": "ベトナムご",
+      "romaji": "betonamugo",
+      "meaning": "Tiếng Việt",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "～人",
+      "kana": "〜じん",
+      "romaji": "jin",
+      "meaning": "người (nước ~)",
+      "course": "jpd113",
+      "lessonId": "jpd113-l1",
+      "bai": "1",
+      "hasKanji": true
+    },
+    {
+      "word": "一日",
+      "kana": "ついたち",
+      "romaji": "tsuitachi",
+      "meaning": "Ngày mồng 1",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "一月",
+      "kana": "いちがつ",
+      "romaji": "ichigatsu",
+      "meaning": "tháng 1",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "一人",
+      "kana": "ひとり",
+      "romaji": "hitori",
+      "meaning": "1 người (cách đọc đặc biệt)",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "一つ",
+      "kana": "ひとつ",
+      "romaji": "hitotsu",
+      "meaning": "1 chiếc",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "一",
+      "kana": "いち",
+      "romaji": "ichi",
+      "meaning": "Số 1",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "二日",
+      "kana": "ふつか",
+      "romaji": "futsuka",
+      "meaning": "Ngày mồng 2",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "二月",
+      "kana": "にがつ",
+      "romaji": "nigatsu",
+      "meaning": "Tháng 2",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "二つ",
+      "kana": "ふたつ",
+      "romaji": "futatsu",
+      "meaning": "2 cái",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "二",
+      "kana": "に",
+      "romaji": "ni",
+      "meaning": "Số 2",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "三日",
+      "kana": "みっか",
+      "romaji": "mikka",
+      "meaning": "Ngày mồng 3",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "三月",
+      "kana": "さんがつ",
+      "romaji": "sangatsu",
+      "meaning": "tháng 3",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "三人",
+      "kana": "さんにん",
+      "romaji": "sannin",
+      "meaning": "3 người",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "三",
+      "kana": "さん",
+      "romaji": "san",
+      "meaning": "Số 3",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "四日",
+      "kana": "よっか",
+      "romaji": "yokka",
+      "meaning": "Ngày mồng 4",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "四月",
+      "kana": "しがつ",
+      "romaji": "shigatsu",
+      "meaning": "tháng 4",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "四人",
+      "kana": "よにん",
+      "romaji": "yonin",
+      "meaning": "4 người",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "四",
+      "kana": "よん",
+      "romaji": "yon",
+      "meaning": "Số 4",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "五日",
+      "kana": "いつか",
+      "romaji": "itsuka",
+      "meaning": "Ngày mồng 5",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "五月",
+      "kana": "ごがつ",
+      "romaji": "gogatsu",
+      "meaning": "tháng 5",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "五つ",
+      "kana": "いつつ",
+      "romaji": "itsutsu",
+      "meaning": "5 cái",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "五",
+      "kana": "ご",
+      "romaji": "go",
+      "meaning": "Số 5",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "六日",
+      "kana": "むいか",
+      "romaji": "muika",
+      "meaning": "Ngày mồng 6",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "六月",
+      "kana": "ろくがつ",
+      "romaji": "rokugatsu",
+      "meaning": "tháng 6",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "六つ",
+      "kana": "むっつ",
+      "romaji": "muttsu",
+      "meaning": "6 cái",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "六",
+      "kana": "ろく",
+      "romaji": "roku",
+      "meaning": "Số 6",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "七日",
+      "kana": "なのか",
+      "romaji": "nanoka",
+      "meaning": "Ngày mồng 7",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "七月",
+      "kana": "しちがつ",
+      "romaji": "shichigatsu",
+      "meaning": "tháng 7",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "七つ",
+      "kana": "ななつ",
+      "romaji": "nanatsu",
+      "meaning": "7 cái",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "七",
+      "kana": "なな/しち",
+      "romaji": "nanashichi",
+      "meaning": "Số 7",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "八日",
+      "kana": "ようか",
+      "romaji": "youka",
+      "meaning": "Ngày mồng 8",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "八月",
+      "kana": "はちがつ",
+      "romaji": "hachigatsu",
+      "meaning": "Tháng 8",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "八つ",
+      "kana": "やっつ",
+      "romaji": "yattsu",
+      "meaning": "8 cái",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "八",
+      "kana": "はち",
+      "romaji": "hachi",
+      "meaning": "Số 8",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "九日",
+      "kana": "ここのか",
+      "romaji": "kokonoka",
+      "meaning": "Ngày mồng 9",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "九月",
+      "kana": "くがつ",
+      "romaji": "kugatsu",
+      "meaning": "tháng 9",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "九つ",
+      "kana": "ここのつ",
+      "romaji": "kokonotsu",
+      "meaning": "9 cái",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "九",
+      "kana": "きゅう",
+      "romaji": "kyuu",
+      "meaning": "Số 9",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "十日",
+      "kana": "とおか",
+      "romaji": "tooka",
+      "meaning": "Ngày mồng 10",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "十月",
+      "kana": "じゅうがつ",
+      "romaji": "juugatsu",
+      "meaning": "tháng 10",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "十",
+      "kana": "じゅう",
+      "romaji": "juu",
+      "meaning": "Số 10",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "二百",
+      "kana": "にひゃく",
+      "romaji": "nihyaku",
+      "meaning": "200",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "三百",
+      "kana": "さんびゃく",
+      "romaji": "sanbyaku",
+      "meaning": "300",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "六百",
+      "kana": "ろっぴゃく",
+      "romaji": "roppyaku",
+      "meaning": "600",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "八百",
+      "kana": "はっぴゃく",
+      "romaji": "happyaku",
+      "meaning": "800",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "千",
+      "kana": "せん",
+      "romaji": "sen",
+      "meaning": "1000",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "三千",
+      "kana": "さんぜん",
+      "romaji": "sanzen",
+      "meaning": "3000",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "八千",
+      "kana": "はっせん",
+      "romaji": "hassen",
+      "meaning": "8000",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "一万",
+      "kana": "いちまん",
+      "romaji": "ichiman",
+      "meaning": "10.000",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "百円",
+      "kana": "ひゃくえん",
+      "romaji": "hyakuen",
+      "meaning": "100 Yên",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "一万円",
+      "kana": "いちまんえん",
+      "romaji": "ichiman'en",
+      "meaning": "10.000 Yên",
+      "course": "jpd113",
+      "lessonId": "jpd113-l2",
+      "bai": "2",
+      "hasKanji": true
+    },
+    {
+      "word": "月",
+      "kana": "つき",
+      "romaji": "tsuki",
+      "meaning": "mặt trăng",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "一月",
+      "kana": "いちがつ",
+      "romaji": "ichigatsu",
+      "meaning": "tháng 1",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "十二月",
+      "kana": "じゅうにがつ",
+      "romaji": "juunigatsu",
+      "meaning": "Tháng 12",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "月曜日",
+      "kana": "げつようび",
+      "romaji": "getsuyoubi",
+      "meaning": "Thứ 2",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "花火",
+      "kana": "はなび",
+      "romaji": "hanabi",
+      "meaning": "pháo hoa",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "火",
+      "kana": "ひ",
+      "romaji": "hi",
+      "meaning": "lửa",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "火曜日",
+      "kana": "かようび",
+      "romaji": "kayoubi",
+      "meaning": "Thứ 3",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "水",
+      "kana": "みず",
+      "romaji": "mizu",
+      "meaning": "nước",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "水曜日",
+      "kana": "すいようび",
+      "romaji": "suiyoubi",
+      "meaning": "Thứ 4",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "木",
+      "kana": "き",
+      "romaji": "ki",
+      "meaning": "Cây / gỗ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "木曜日",
+      "kana": "もくようび",
+      "romaji": "mokuyoubi",
+      "meaning": "Thứ 5",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "お金",
+      "kana": "おかね",
+      "romaji": "okane",
+      "meaning": "tiền",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "金曜日",
+      "kana": "きんようび",
+      "romaji": "kin'youbi",
+      "meaning": "Thứ 6",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "土",
+      "kana": "つち",
+      "romaji": "tsuchi",
+      "meaning": "Đất",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "土曜日",
+      "kana": "どようび",
+      "romaji": "doyoubi",
+      "meaning": "Thứ 7",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "何",
+      "kana": "なん/なに",
+      "romaji": "nannani",
+      "meaning": "Cái gì",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "何月",
+      "kana": "なんがつ",
+      "romaji": "nangatsu",
+      "meaning": "tháng mấy",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "何人",
+      "kana": "なんにん",
+      "romaji": "nannin",
+      "meaning": "Mấy người",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "何曜日",
+      "kana": "なんようび",
+      "romaji": "nan'youbi",
+      "meaning": "Thứ mấy",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "何年",
+      "kana": "なんねん",
+      "romaji": "nannen",
+      "meaning": "Năm bao nhiêu",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "今年",
+      "kana": "ことし",
+      "romaji": "kotoshi",
+      "meaning": "Năm nay",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "九時",
+      "kana": "くじ",
+      "romaji": "kuji",
+      "meaning": "9 giờ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "何時",
+      "kana": "なんじ",
+      "romaji": "nanji",
+      "meaning": "Mấy giờ",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "時間",
+      "kana": "じかん",
+      "romaji": "jikan",
+      "meaning": "Thời gian",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "何時間",
+      "kana": "なんじかん",
+      "romaji": "nanjikan",
+      "meaning": "Mấy tiếng",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "分かります",
+      "kana": "わかります",
+      "romaji": "wakarimasu",
+      "meaning": "Hiểu",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "半分",
+      "kana": "はんぶん",
+      "romaji": "hanbun",
+      "meaning": "Một nửa",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "六分",
+      "kana": "ろっぷん",
+      "romaji": "roppun",
+      "meaning": "6 phút",
+      "course": "jpd113",
+      "lessonId": "jpd113-l3",
+      "bai": "3",
+      "hasKanji": true
+    },
+    {
+      "word": "東",
+      "kana": "ひがし",
+      "romaji": "higashi",
+      "meaning": "Phía đông ĐÔNG",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "東京",
+      "kana": "とうきょう",
+      "romaji": "toukyou",
+      "meaning": "Tokyo ĐÔNG KINH",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "午前",
+      "kana": "ごぜん",
+      "romaji": "gozen",
+      "meaning": "a.m NGỌ TIỀN",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "前日",
+      "kana": "ぜんじつ",
+      "romaji": "zenjitsu",
+      "meaning": "ngày trước đó TIỀN NHẬT",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "名前",
+      "kana": "なまえ",
+      "romaji": "namae",
+      "meaning": "tên DANH TIỀN",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "国",
+      "kana": "くに",
+      "romaji": "kuni",
+      "meaning": "đất nước, quốc gia QUỐC",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "外国",
+      "kana": "がいこく",
+      "romaji": "gaikoku",
+      "meaning": "Nước ngoài NGOẠI QUỐC",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "男の人",
+      "kana": "おとこのひと",
+      "romaji": "otokonohito",
+      "meaning": "người đàn ông NAM",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "女の人",
+      "kana": "おんなのひと",
+      "romaji": "onnanohito",
+      "meaning": "người phụ nữ NỮ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "～区",
+      "kana": "〜く",
+      "romaji": "ku",
+      "meaning": "quận ~",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "～市",
+      "kana": "〜し",
+      "romaji": "shi",
+      "meaning": "Thành phố ~",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "前",
+      "kana": "まえ",
+      "romaji": "mae",
+      "meaning": "Trước",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "京都",
+      "kana": "きょうと",
+      "romaji": "kyouto",
+      "meaning": "Kyoto",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "外国人",
+      "kana": "がいこくじん",
+      "romaji": "gaikokujin",
+      "meaning": "người nước ngoài",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "男女",
+      "kana": "だんじょ",
+      "romaji": "danjo",
+      "meaning": "nam nữ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l4",
+      "bai": "4",
+      "hasKanji": true
+    },
+    {
+      "word": "先生",
+      "kana": "せんせい",
+      "romaji": "sensei",
+      "meaning": "thầy/cô giáo",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "先日",
+      "kana": "せんじつ",
+      "romaji": "senjitsu",
+      "meaning": "vài ngày trước",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "先月",
+      "kana": "せんげつ",
+      "romaji": "sengetsu",
+      "meaning": "Tháng trước",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "先週",
+      "kana": "せんしゅう",
+      "romaji": "senshuu",
+      "meaning": "Tuần trước",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "一週間",
+      "kana": "いっしゅうかん",
+      "romaji": "isshuukan",
+      "meaning": "1 tuần",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "毎日",
+      "kana": "まいにち",
+      "romaji": "mainichi",
+      "meaning": "mỗi ngày",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "毎週",
+      "kana": "まいしゅう",
+      "romaji": "maishuu",
+      "meaning": "Hàng tuần",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "毎年",
+      "kana": "まいとし/まいねん",
+      "romaji": "maitoshimainen",
+      "meaning": "mỗi năm",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "毎月",
+      "kana": "まいつき",
+      "romaji": "maitsuki",
+      "meaning": "mỗi tháng",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "後ろ",
+      "kana": "うしろ",
+      "romaji": "ushiro",
+      "meaning": "Sau",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "後",
+      "kana": "あと",
+      "romaji": "ato",
+      "meaning": "sau đó",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "午後",
+      "kana": "ごご",
+      "romaji": "gogo",
+      "meaning": "p.m NGỌ HẬU",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "前後",
+      "kana": "ぜんご",
+      "romaji": "zengo",
+      "meaning": "trước sau",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "見ます",
+      "kana": "みます",
+      "romaji": "mimasu",
+      "meaning": "nhìn",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "見学",
+      "kana": "けんがく",
+      "romaji": "kengaku",
+      "meaning": "tham quan kiến tập",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "食べます",
+      "kana": "たべます",
+      "romaji": "tabemasu",
+      "meaning": "ăn",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "食事",
+      "kana": "しょくじ",
+      "romaji": "shokuji",
+      "meaning": "ăn, bữa ăn",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "飲みます",
+      "kana": "のみます",
+      "romaji": "nomimasu",
+      "meaning": "uống",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "飲食",
+      "kana": "いんしょく",
+      "romaji": "inshoku",
+      "meaning": "ẩm thực",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "飲み水",
+      "kana": "のみみず",
+      "romaji": "nomimizu",
+      "meaning": "nước uống",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "休みます",
+      "kana": "やすみます",
+      "romaji": "yasumimasu",
+      "meaning": "nghỉ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "休みの日",
+      "kana": "やすみのひ",
+      "romaji": "yasuminohi",
+      "meaning": "ngày nghỉ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "休日",
+      "kana": "きゅうじつ",
+      "romaji": "kyuujitsu",
+      "meaning": "ngày nghỉ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "買います",
+      "kana": "かいます",
+      "romaji": "kaimasu",
+      "meaning": "mua",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "物",
+      "kana": "もの",
+      "romaji": "mono",
+      "meaning": "đồ vật",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "買い物",
+      "kana": "かいもの",
+      "romaji": "kaimono",
+      "meaning": "mua sắm",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "食べ物",
+      "kana": "たべもの",
+      "romaji": "tabemono",
+      "meaning": "đồ ăn",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "飲み物",
+      "kana": "のみもの",
+      "romaji": "nomimono",
+      "meaning": "đồ uống",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "人物",
+      "kana": "じんぶつ",
+      "romaji": "jinbutsu",
+      "meaning": "nhân vật",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "見物",
+      "kana": "けんぶつ",
+      "romaji": "kenbutsu",
+      "meaning": "tham quan",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "行きます",
+      "kana": "いきます",
+      "romaji": "ikimasu",
+      "meaning": "đi",
+      "course": "jpd123",
+      "lessonId": "jpd123-l5",
+      "bai": "5",
+      "hasKanji": true
+    },
+    {
+      "word": "今年",
+      "kana": "ことし",
+      "romaji": "kotoshi",
+      "meaning": "Năm nay",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "今日",
+      "kana": "きょう",
+      "romaji": "kyou",
+      "meaning": "Hôm nay",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "今月",
+      "kana": "こんげつ",
+      "romaji": "kongetsu",
+      "meaning": "Tháng này",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "今週",
+      "kana": "こんしゅう",
+      "romaji": "konshuu",
+      "meaning": "Tuần này",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "来ます",
+      "kana": "きます",
+      "romaji": "kimasu",
+      "meaning": "đến",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "来週",
+      "kana": "らいしゅう",
+      "romaji": "raishuu",
+      "meaning": "Tuần sau",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "来月",
+      "kana": "らいげつ",
+      "romaji": "raigetsu",
+      "meaning": "Tháng sau",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "来年",
+      "kana": "らいねん",
+      "romaji": "rainen",
+      "meaning": "Sang năm",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "来日",
+      "kana": "らいにち",
+      "romaji": "rainichi",
+      "meaning": "đến Nhật Bản",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "帰ります",
+      "kana": "かえります",
+      "romaji": "kaerimasu",
+      "meaning": "về",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "日帰り",
+      "kana": "ひがえり",
+      "romaji": "higaeri",
+      "meaning": "đi về trong ngày",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "帰国",
+      "kana": "きこく",
+      "romaji": "kikoku",
+      "meaning": "về nước",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "会います",
+      "kana": "あいます",
+      "romaji": "aimasu",
+      "meaning": "Gặp gỡ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "飲み会",
+      "kana": "のみかい",
+      "romaji": "nomikai",
+      "meaning": "nhậu",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "国会",
+      "kana": "こっかい",
+      "romaji": "kokkai",
+      "meaning": "quốc hội",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "会見",
+      "kana": "かいけん",
+      "romaji": "kaiken",
+      "meaning": "họp báo",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "会社",
+      "kana": "かいしゃ",
+      "romaji": "kaisha",
+      "meaning": "công ty",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "社会",
+      "kana": "しゃかい",
+      "romaji": "shakai",
+      "meaning": "xã hội",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "聞きます",
+      "kana": "ききます",
+      "romaji": "kikimasu",
+      "meaning": "nghe",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "新聞",
+      "kana": "しんぶん",
+      "romaji": "shinbun",
+      "meaning": "báo",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "読みます",
+      "kana": "よみます",
+      "romaji": "yomimasu",
+      "meaning": "đọc",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "読み物",
+      "kana": "よみもの",
+      "romaji": "yomimono",
+      "meaning": "tài liệu đọc",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "書きます",
+      "kana": "かきます",
+      "romaji": "kakimasu",
+      "meaning": "viết",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "読書",
+      "kana": "どくしょ",
+      "romaji": "dokusho",
+      "meaning": "đọc sách",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "話します",
+      "kana": "はなします",
+      "romaji": "hanashimasu",
+      "meaning": "Nói chuyện",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "話",
+      "kana": "はなし",
+      "romaji": "hanashi",
+      "meaning": "câu chuyện",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "会話",
+      "kana": "かいわ",
+      "romaji": "kaiwa",
+      "meaning": "Hội thoại",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "電話",
+      "kana": "でんわ",
+      "romaji": "denwa",
+      "meaning": "điện thoại",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "今",
+      "kana": "いま",
+      "romaji": "ima",
+      "meaning": "bây giờ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "辞書",
+      "kana": "じしょ",
+      "romaji": "jisho",
+      "meaning": "Từ điển",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "書き物",
+      "kana": "かきもの",
+      "romaji": "kakimono",
+      "meaning": "tài liệu viết",
+      "course": "jpd123",
+      "lessonId": "jpd123-l6",
+      "bai": "6",
+      "hasKanji": true
+    },
+    {
+      "word": "肉",
+      "kana": "にく",
+      "romaji": "niku",
+      "meaning": "thịt",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "牛肉",
+      "kana": "ぎゅうにく",
+      "romaji": "gyuuniku",
+      "meaning": "thịt bò",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "豚肉",
+      "kana": "ぶたにく",
+      "romaji": "butaniku",
+      "meaning": "thịt heo",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "鶏肉",
+      "kana": "とりにく",
+      "romaji": "toriniku",
+      "meaning": "thịt gà",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "料金",
+      "kana": "りょうきん",
+      "romaji": "ryoukin",
+      "meaning": "tiền phí",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "料理",
+      "kana": "りょうり",
+      "romaji": "ryouri",
+      "meaning": "món ăn",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "野菜",
+      "kana": "やさい",
+      "romaji": "yasai",
+      "meaning": "rau",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "半年",
+      "kana": "はんとし/はんねん",
+      "romaji": "hantoshihannen",
+      "meaning": "nửa năm",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "半分",
+      "kana": "はんぶん",
+      "romaji": "hanbun",
+      "meaning": "Một nửa",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "半日",
+      "kana": "はんじつ/はんにち",
+      "romaji": "hanjitsuhannichi",
+      "meaning": "Nửa ngày",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "半月",
+      "kana": "はんつき",
+      "romaji": "hantsuki",
+      "meaning": "Nửa tháng",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "七時半",
+      "kana": "しちじはん",
+      "romaji": "shichijihan",
+      "meaning": "7h30",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "大きい",
+      "kana": "おおきい",
+      "romaji": "ookii",
+      "meaning": "To, lớn",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "大学生",
+      "kana": "だいがくせい",
+      "romaji": "daigakusei",
+      "meaning": "Sinh viên đại học",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "大人",
+      "kana": "おとな",
+      "romaji": "otona",
+      "meaning": "Người lớn",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "大会",
+      "kana": "たいかい",
+      "romaji": "taikai",
+      "meaning": "đại hội",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "大半",
+      "kana": "たいはん",
+      "romaji": "taihan",
+      "meaning": "Phần lớn",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "大学",
+      "kana": "だいがく",
+      "romaji": "daigaku",
+      "meaning": "Đại học",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "小さい",
+      "kana": "ちいさい",
+      "romaji": "chiisai",
+      "meaning": "Nhỏ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "小学校",
+      "kana": "しょうがっこう",
+      "romaji": "shougakkou",
+      "meaning": "Trường tiểu học",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "小学生",
+      "kana": "しょうがくせい",
+      "romaji": "shougakusei",
+      "meaning": "Học sinh tiểu học, cấp 1",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "小人",
+      "kana": "こびと",
+      "romaji": "kobito",
+      "meaning": "đứa trẻ, người tí hon",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "お寺",
+      "kana": "おてら",
+      "romaji": "otera",
+      "meaning": "chùa",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "言います",
+      "kana": "いいます",
+      "romaji": "iimasu",
+      "meaning": "nói",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "言語",
+      "kana": "げんご",
+      "romaji": "gengo",
+      "meaning": "ngôn ngữ",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "言葉",
+      "kana": "ことば",
+      "romaji": "kotoba",
+      "meaning": "từ vựng",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "貝",
+      "kana": "かい",
+      "romaji": "kai",
+      "meaning": "con sò",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "田んぼ",
+      "kana": "たんぼ",
+      "romaji": "tanbo",
+      "meaning": "cánh đồng",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "水田",
+      "kana": "すいでん",
+      "romaji": "suiden",
+      "meaning": "cánh đồng lúa nước",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "力",
+      "kana": "ちから",
+      "romaji": "chikara",
+      "meaning": "sức lực",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "水力",
+      "kana": "すいりょく",
+      "romaji": "suiryoku",
+      "meaning": "sức nước",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "火力",
+      "kana": "かりょく",
+      "romaji": "karyoku",
+      "meaning": "công suất nhiệt, hỏa lực",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "門",
+      "kana": "もん",
+      "romaji": "mon",
+      "meaning": "cổng, cửa",
+      "course": "jpd123",
+      "lessonId": "jpd123-l7",
+      "bai": "7",
+      "hasKanji": true
+    },
+    {
+      "word": "家",
+      "kana": "いえ",
+      "romaji": "ie",
+      "meaning": "Nhà",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "うち",
+      "kana": "うち",
+      "romaji": "uchi",
+      "meaning": "Nhà",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": false
+    },
+    {
+      "word": "家族",
+      "kana": "かぞく",
+      "romaji": "kazoku",
+      "meaning": "gia đình",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "家賃",
+      "kana": "やちん",
+      "romaji": "yachin",
+      "meaning": "tiền thuê nhà",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "父",
+      "kana": "ちち",
+      "romaji": "chichi",
+      "meaning": "Bố (của mình)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "お父さん",
+      "kana": "おとうさん",
+      "romaji": "otousan",
+      "meaning": "Bố (của người khác)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "祖父",
+      "kana": "そふ",
+      "romaji": "sofu",
+      "meaning": "Ông",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "母",
+      "kana": "はは",
+      "romaji": "haha",
+      "meaning": "Mẹ (của mình)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "お母さん",
+      "kana": "おかあさん",
+      "romaji": "okaasan",
+      "meaning": "Mẹ (của người khác)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "母語",
+      "kana": "ぼご",
+      "romaji": "bogo",
+      "meaning": "tiếng mẹ đẻ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "国語",
+      "kana": "こくご",
+      "romaji": "kokugo",
+      "meaning": "quốc ngữ/tiếng mẹ đẻ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "兄",
+      "kana": "あに",
+      "romaji": "ani",
+      "meaning": "Anh trai (của mình)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "お兄さん",
+      "kana": "おにいさん",
+      "romaji": "oniisan",
+      "meaning": "Anh trai (của người khác)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "兄弟",
+      "kana": "きょうだい",
+      "romaji": "kyoudai",
+      "meaning": "Anh chị",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "弟",
+      "kana": "おとうと",
+      "romaji": "otouto",
+      "meaning": "Em trai (của mình)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "弟さん",
+      "kana": "おとうとさん",
+      "romaji": "otoutosan",
+      "meaning": "Em trai (của người khác)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "姉",
+      "kana": "あね",
+      "romaji": "ane",
+      "meaning": "Chị gái (của mình)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "お姉さん",
+      "kana": "おねえさん",
+      "romaji": "oneesan",
+      "meaning": "Chị gái (của người khác)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "姉妹",
+      "kana": "しまい",
+      "romaji": "shimai",
+      "meaning": "chị em",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "妹",
+      "kana": "いもうと",
+      "romaji": "imouto",
+      "meaning": "Em gái (của mình)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "妹さん",
+      "kana": "いもうとさん",
+      "romaji": "imoutosan",
+      "meaning": "Em gái (của người khác)",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "犬",
+      "kana": "いぬ",
+      "romaji": "inu",
+      "meaning": "con chó",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "高い",
+      "kana": "たかい",
+      "romaji": "takai",
+      "meaning": "Cao, đắt",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "高校",
+      "kana": "こうこう",
+      "romaji": "koukou",
+      "meaning": "trường cấp ba",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "高校生",
+      "kana": "こうこうせい",
+      "romaji": "koukousei",
+      "meaning": "Học sinh cấp ba",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "長い",
+      "kana": "ながい",
+      "romaji": "nagai",
+      "meaning": "Dài",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "社長",
+      "kana": "しゃちょう",
+      "romaji": "shachou",
+      "meaning": "giám đốc",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "短い",
+      "kana": "みじかい",
+      "romaji": "mijikai",
+      "meaning": "Ngắn",
+      "course": "jpd133",
+      "lessonId": "jpd133-l8",
+      "bai": "8",
+      "hasKanji": true
+    },
+    {
+      "word": "好き",
+      "kana": "すき",
+      "romaji": "suki",
+      "meaning": "Thích",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "大好き",
+      "kana": "だいすき",
+      "romaji": "daisuki",
+      "meaning": "rất thích",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "楽",
+      "kana": "LẠC/NHẠC",
+      "romaji": "Vui",
+      "meaning": "vẻ, âm nhạc ガク ラク たのしい",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "大好物",
+      "kana": "だいこうぶつ",
+      "romaji": "daikoubutsu",
+      "meaning": "món ăn rất yêu thích",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "歌",
+      "kana": "うた",
+      "romaji": "uta",
+      "meaning": "bài hát",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "歌う",
+      "kana": "うたう",
+      "romaji": "utau",
+      "meaning": "hát",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "国歌",
+      "kana": "こっか",
+      "romaji": "kokka",
+      "meaning": "quốc ca",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "短歌",
+      "kana": "たんか",
+      "romaji": "tanka",
+      "meaning": "thơ ngắn",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "音",
+      "kana": "おと",
+      "romaji": "oto",
+      "meaning": "Âm thanh, tiếng động",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "音読み",
+      "kana": "おんよみ",
+      "romaji": "on'yomi",
+      "meaning": "âm On",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "楽しい",
+      "kana": "たのしい",
+      "romaji": "tanoshii",
+      "meaning": "Vui vẻ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "音楽",
+      "kana": "おんがく",
+      "romaji": "ongaku",
+      "meaning": "âm nhạc",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "車",
+      "kana": "くるま",
+      "romaji": "kuruma",
+      "meaning": "Ô tô",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "映画",
+      "kana": "えいが",
+      "romaji": "eiga",
+      "meaning": "phim",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "計画",
+      "kana": "けいかく",
+      "romaji": "keikaku",
+      "meaning": "kế hoạch",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "旅",
+      "kana": "たび",
+      "romaji": "tabi",
+      "meaning": "chuyến đi",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "旅行",
+      "kana": "りょこう",
+      "romaji": "ryokou",
+      "meaning": "du lịch",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "海",
+      "kana": "うみ",
+      "romaji": "umi",
+      "meaning": "biển",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "海水",
+      "kana": "かいすい",
+      "romaji": "kaisui",
+      "meaning": "nước biển",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "外",
+      "kana": "そと",
+      "romaji": "soto",
+      "meaning": "Ngoài",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "家の外",
+      "kana": "いえのそと",
+      "romaji": "ienosoto",
+      "meaning": "bên ngoài nhà",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "外国",
+      "kana": "がいこく",
+      "romaji": "gaikoku",
+      "meaning": "Nước ngoài NGOẠI QUỐC",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "外国語",
+      "kana": "がいこくご",
+      "romaji": "gaikokugo",
+      "meaning": "ngoại ngữ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "外国人",
+      "kana": "がいこくじん",
+      "romaji": "gaikokujin",
+      "meaning": "người nước ngoài",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "社外",
+      "kana": "しゃがい",
+      "romaji": "shagai",
+      "meaning": "ngoài công ty",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "海外",
+      "kana": "かいがい",
+      "romaji": "kaigai",
+      "meaning": "hải ngoại",
+      "course": "jpd133",
+      "lessonId": "jpd133-l9",
+      "bai": "9",
+      "hasKanji": true
+    },
+    {
+      "word": "駅",
+      "kana": "えき",
+      "romaji": "eki",
+      "meaning": "Nhà ga",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "駅長",
+      "kana": "えきちょう",
+      "romaji": "ekichou",
+      "meaning": "trưởng ga",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "上",
+      "kana": "うえ",
+      "romaji": "ue",
+      "meaning": "Trên",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "上京",
+      "kana": "じょうきょう",
+      "romaji": "joukyou",
+      "meaning": "lên Tokyo",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "上下",
+      "kana": "じょうげ",
+      "romaji": "jouge",
+      "meaning": "trên dưới",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "下",
+      "kana": "した",
+      "romaji": "shita",
+      "meaning": "Dưới",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "下車",
+      "kana": "げしゃ",
+      "romaji": "gesha",
+      "meaning": "xuống xe",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "地",
+      "kana": "ち",
+      "romaji": "chi",
+      "meaning": "đất",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "土地",
+      "kana": "とち",
+      "romaji": "tochi",
+      "meaning": "đất đai",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "地図",
+      "kana": "ちず",
+      "romaji": "chizu",
+      "meaning": "bản đồ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "地下",
+      "kana": "ちか",
+      "romaji": "chika",
+      "meaning": "tầng hầm",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "図",
+      "kana": "ず",
+      "romaji": "zu",
+      "meaning": "hình vẽ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "図書館",
+      "kana": "としょかん",
+      "romaji": "toshokan",
+      "meaning": "thư viện",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "旅館",
+      "kana": "りょかん",
+      "romaji": "ryokan",
+      "meaning": "lữ quán",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "会館",
+      "kana": "かいかん",
+      "romaji": "kaikan",
+      "meaning": "hội quán",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "映画館",
+      "kana": "えいがかん",
+      "romaji": "eigakan",
+      "meaning": "rạp chiếu phim",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "右",
+      "kana": "みぎ",
+      "romaji": "migi",
+      "meaning": "Bên phải",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "左右",
+      "kana": "さゆう",
+      "romaji": "sayuu",
+      "meaning": "trái phải",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "左",
+      "kana": "ひだり",
+      "romaji": "hidari",
+      "meaning": "Bên trái",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "道",
+      "kana": "みち",
+      "romaji": "michi",
+      "meaning": "Đường",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "書道",
+      "kana": "しょどう",
+      "romaji": "shodou",
+      "meaning": "thư pháp",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "国道",
+      "kana": "こくどう",
+      "romaji": "kokudou",
+      "meaning": "quốc lộ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "車道",
+      "kana": "しゃどう",
+      "romaji": "shadou",
+      "meaning": "làn đường xe",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "歩道",
+      "kana": "ほどう",
+      "romaji": "hodou",
+      "meaning": "vỉa hè",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "夜道",
+      "kana": "よみち",
+      "romaji": "yomichi",
+      "meaning": "đường ban đêm",
+      "course": "jpd133",
+      "lessonId": "jpd133-l10",
+      "bai": "10",
+      "hasKanji": true
+    },
+    {
+      "word": "起きます",
+      "kana": "おきます",
+      "romaji": "okimasu",
+      "meaning": "thức dậy",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "起こす",
+      "kana": "おこす",
+      "romaji": "okosu",
+      "meaning": "gây ra/đánh thức",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "一歩",
+      "kana": "いっぽ",
+      "romaji": "ippo",
+      "meaning": "một bước",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "歩く",
+      "kana": "あるく",
+      "romaji": "aruku",
+      "meaning": "đi bộ BỘ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "歩道",
+      "kana": "ほどう",
+      "romaji": "hodou",
+      "meaning": "vỉa hè",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "始まります",
+      "kana": "はじまります",
+      "romaji": "hajimarimasu",
+      "meaning": "bắt đầu",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "始めます",
+      "kana": "はじめます",
+      "romaji": "hajimemasu",
+      "meaning": "bắt đầu",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "終わります",
+      "kana": "おわります",
+      "romaji": "owarimasu",
+      "meaning": "kết thúc",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "終わり",
+      "kana": "おわり",
+      "romaji": "owari",
+      "meaning": "phần kết",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "勉学",
+      "kana": "べんがく",
+      "romaji": "bengaku",
+      "meaning": "học tập chăm chỉ",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "勉強",
+      "kana": "べんきょう",
+      "romaji": "benkyou",
+      "meaning": "học hành",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "強い",
+      "kana": "つよい",
+      "romaji": "tsuyoi",
+      "meaning": "mạnh",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "朝",
+      "kana": "あさ",
+      "romaji": "asa",
+      "meaning": "buổi sáng",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "今朝",
+      "kana": "けさ",
+      "romaji": "kesa",
+      "meaning": "Sáng nay",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "朝食",
+      "kana": "ちょうしょく",
+      "romaji": "choushoku",
+      "meaning": "bữa sáng",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "毎朝",
+      "kana": "まいあさ",
+      "romaji": "maiasa",
+      "meaning": "mỗi sáng",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "昼",
+      "kana": "ひる",
+      "romaji": "hiru",
+      "meaning": "buổi trưa",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "昼食",
+      "kana": "ちゅうしょく",
+      "romaji": "chuushoku",
+      "meaning": "bữa trưa",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "昼間",
+      "kana": "ひるま",
+      "romaji": "hiruma",
+      "meaning": "ban ngày",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "夜",
+      "kana": "よる",
+      "romaji": "yoru",
+      "meaning": "buổi tối",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "今夜",
+      "kana": "こんや",
+      "romaji": "kon'ya",
+      "meaning": "đêm nay",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "夜会",
+      "kana": "やかい",
+      "romaji": "yakai",
+      "meaning": "tiệc đêm",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "夜間",
+      "kana": "やかん",
+      "romaji": "yakan",
+      "meaning": "ban tối",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    },
+    {
+      "word": "夜道",
+      "kana": "よみち",
+      "romaji": "yomichi",
+      "meaning": "đường ban đêm",
+      "course": "jpd133",
+      "lessonId": "jpd133-l11",
+      "bai": "11",
+      "hasKanji": true
+    }
+  ]
+}

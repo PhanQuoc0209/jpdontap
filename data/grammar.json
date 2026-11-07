@@ -1,0 +1,178 @@
+[
+  {
+    "id": "g-38",
+    "pattern": "N1 は N2 です。",
+    "meaning": "Câu khẳng định: N1 là N2",
+    "explanation": "Dùng trợ từ は (đọc là wa) để đánh dấu chủ ngữ N1. です biểu thị sự khẳng định lịch sự.",
+    "examples": [
+      {
+        "jp": "わたしは がくせいです。",
+        "vi": "Tôi là sinh viên."
+      },
+      {
+        "jp": "たなかさんは にほんじんです。",
+        "vi": "Anh Tanaka là người Nhật Bản."
+      },
+      {
+        "jp": "ゴクウさんは えいゆうです。",
+        "vi": "Ngộ Không là một anh hùng."
+      }
+    ]
+  },
+  {
+    "id": "g-39",
+    "pattern": "N1 は N2 じゃありません / ではありません。",
+    "meaning": "Câu phủ định: N1 không phải là N2",
+    "explanation": "じゃありません dùng trong văn nói thân mật, ではありません mang sắc thái trang trọng hơn.",
+    "examples": [
+      {
+        "jp": "わたしは せんせいじゃありません。",
+        "vi": "Tôi không phải là giáo viên."
+      },
+      {
+        "jp": "ワンさんは にほんじんではありません。",
+        "vi": "Anh Wang không phải là người Nhật."
+      }
+    ]
+  },
+  {
+    "id": "g-40",
+    "pattern": "N1 は N2 ですか。",
+    "meaning": "Câu hỏi nghi vấn: N1 có phải là N2 không?",
+    "explanation": "Thêm trợ từ か vào cuối câu để tạo câu hỏi. Khi trả lời khẳng định dùng はい, phủ định dùng いいえ.",
+    "examples": [
+      {
+        "jp": "あなたは がくせいですか。",
+        "vi": "Bạn có phải là sinh viên không?"
+      },
+      {
+        "jp": "はい、がくせいです。",
+        "vi": "Vâng, tôi là sinh viên."
+      },
+      {
+        "jp": "いいえ、かいしゃいんです。",
+        "vi": "Không, tôi là nhân viên công ty."
+      }
+    ]
+  },
+  {
+    "id": "g-41",
+    "pattern": "N も N です。",
+    "meaning": "Cũng... (Trợ từ も)",
+    "explanation": "Trợ từ も thay thế cho は khi nêu một đối tượng có cùng thuộc tính với đối tượng đã nhắc trước đó.",
+    "examples": [
+      {
+        "jp": "わたしも ベトナムじんです。",
+        "vi": "Tôi cũng là người Việt Nam."
+      },
+      {
+        "jp": "あのかたも がくせいです。",
+        "vi": "Người kia cũng là sinh viên."
+      }
+    ]
+  },
+  {
+    "id": "g-42",
+    "pattern": "N1 の N2",
+    "meaning": "Sở hữu / Thuộc tính: N2 của N1",
+    "explanation": "Trợ từ の dùng để nối hai danh từ, N1 bổ nghĩa cho N2 (sở hữu, nguồn gốc, trường học, công ty).",
+    "examples": [
+      {
+        "jp": "これは わたしの ほんです。",
+        "vi": "Đây là sách của tôi."
+      },
+      {
+        "jp": "にほんごの せんせいです。",
+        "vi": "Là giáo viên tiếng Nhật."
+      }
+    ]
+  },
+  {
+    "id": "g-43",
+    "pattern": "これ / それ / あれ は N です。",
+    "meaning": "Cái này / Cái đó / Cái kia là N",
+    "explanation": "これ (gần người nói), それ (gần người nghe), あれ (xa cả hai).",
+    "examples": [
+      {
+        "jp": "これは じしょです。",
+        "vi": "Cái này là từ điển."
+      },
+      {
+        "jp": "それは なんですか。",
+        "vi": "Cái đó là cái gì vậy?"
+      },
+      {
+        "jp": "あれは くるまです。",
+        "vi": "Cái kia là ô tô."
+      }
+    ]
+  },
+  {
+    "id": "g-44",
+    "pattern": "N(Địa điểm) へ 行きます / 来ます / 帰ります。",
+    "meaning": "Đi / Đến / Về một địa điểm nào đó",
+    "explanation": "Trợ từ へ (đọc là e) chỉ phương hướng di chuyển đến địa điểm đích.",
+    "examples": [
+      {
+        "jp": "わたしは にほんへ いきます。",
+        "vi": "Tôi đi Nhật Bản."
+      },
+      {
+        "jp": "うちへ かえります。",
+        "vi": "Tôi trở về nhà."
+      }
+    ]
+  },
+  {
+    "id": "g-45",
+    "pattern": "N を V-ます。",
+    "meaning": "Làm hành động V đối với tân ngữ N",
+    "explanation": "Trợ từ を (đọc là o) đánh dấu đối tượng chịu tác động của hành động.",
+    "examples": [
+      {
+        "jp": "ごはんを たべます。",
+        "vi": "Ăn cơm."
+      },
+      {
+        "jp": "おちゃを のみます。",
+        "vi": "Uống trà xanh."
+      },
+      {
+        "jp": "にほんごを べんきょうします。",
+        "vi": "Học tiếng Nhật."
+      }
+    ]
+  },
+  {
+    "id": "g-46",
+    "pattern": "V-てください。",
+    "meaning": "Xin hãy làm V / Vui lòng làm V",
+    "explanation": "Dùng thể Te (て) cộng ください để đưa ra lời yêu cầu, nhờ vả một cách lịch sự.",
+    "examples": [
+      {
+        "jp": "ここに なまえを かいてください。",
+        "vi": "Xin hãy viết tên vào đây."
+      },
+      {
+        "jp": "ちょっと まってください。",
+        "vi": "Xin hãy chờ một chút."
+      }
+    ]
+  },
+  {
+    "id": "g-47",
+    "pattern": "V-てもいいですか。",
+    "meaning": "Tôi làm V có được không? (Xin phép)",
+    "explanation": "Dùng để xin phép đối phương làm một hành động nào đó.",
+    "examples": [
+      {
+        "jp": "しゃしんを とってもいいですか。",
+        "vi": "Tôi chụp ảnh có được không?"
+      },
+      {
+        "jp": "はい、いいですよ。",
+        "vi": "Vâng, được chứ ạ."
+      }
+    ]
+  }
+]
