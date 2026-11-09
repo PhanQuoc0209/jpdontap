@@ -17,21 +17,46 @@ export default function HomePage() {
 
   return (
     <div className="space-y-4 pb-6">
-      {/* Hero Banner: 3D Wukong Quest Banner (Updated to custom artwork) */}
-      <Link
-        href="/flashcards"
-        onClick={() => sound.playCorrect()}
-        className="block relative overflow-hidden rounded-[2rem] border border-[#e0d6c0] shadow-[0_10px_25px_rgba(20,53,33,0.08)] group hover:shadow-xl transition-all duration-300 cursor-pointer"
-        title="Bấm để ôn lại 4 mục đến hạn cùng Ngộ Không"
-      >
+      {/* Hero Banner: Full-Bleed 3D Wukong Landscape + Interactive Floating Card (Ô Nổi) */}
+      <div className="relative overflow-hidden rounded-[2rem] border border-[#e0d6c0] shadow-[0_12px_28px_rgba(20,53,33,0.09)] min-h-[220px] sm:min-h-[240px] flex items-center p-4 sm:p-6 w-full">
+        {/* Background Image: Full Bleed 3D Wukong + Landscape */}
         <img
-          src="/images/home_hero_banner.jpg"
-          alt="Ôn lại 4 mục đến hạn cùng Ngộ Không"
-          className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-300"
+          src="/images/banner_clean_bg.jpg"
+          alt="Ngộ Không nhiệm vụ tiếp theo"
+          className="absolute inset-0 w-full h-full object-cover object-right pointer-events-none select-none"
         />
-        {/* Subtle shimmer hover effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
-      </Link>
+
+        {/* Floating Content Card (Ô Nổi Thật, không phải ảnh phẳng) */}
+        <div className="relative z-10 rounded-2xl bg-white/90 backdrop-blur-md p-4 sm:p-5 border border-white/90 shadow-[0_8px_24px_rgba(46,29,15,0.12)] max-w-[270px] sm:max-w-sm space-y-2.5 animate-fade-in">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#e78b3e] text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
+            <span>NHIỆM VỤ TIẾP THEO</span>
+            <span className="text-amber-200">✦</span>
+          </div>
+
+          {/* Heading */}
+          <h1 className="text-base sm:text-lg font-black text-[#2e1d0f] leading-snug">
+            Ôn lại 4 mục đến hạn<br />cùng Ngộ Không
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-[11px] text-[#6d5b4b] leading-relaxed font-medium">
+            Những mục đến hạn có nguy cơ bị quên cao nhất.
+          </p>
+
+          {/* 3D Green Button */}
+          <div className="pt-1">
+            <Link
+              href="/flashcards"
+              onClick={() => sound.playCorrect()}
+              className="btn-3d-green inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-white text-xs font-black tracking-wide shadow-md active:scale-95 transition-transform"
+            >
+              <Play className="w-3.5 h-3.5 fill-white" />
+              <span>Ôn ngay</span>
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {/* 3 Stat Cards (Matching Pandarin's soft pastel pagoda cards) */}
       <div className="grid grid-cols-3 gap-2.5">
