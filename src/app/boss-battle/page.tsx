@@ -43,7 +43,8 @@ interface MCQQuestion {
 export default function BossBattlePage() {
   const [selectedTier, setSelectedTier] = useState<'sơ cấp' | 'trung cấp' | 'cao cấp'>('sơ cấp');
   const [selectedBossId, setSelectedBossId] = useState<string>('boss-jpd113-1');
-  const [showIntro, setShowIntro] = useState<boolean>(true);
+  const [viewMode, setViewMode] = useState<'stages' | 'battle'>('stages');
+  const [showIntro, setShowIntro] = useState<boolean>(false);
 
   // Filter bosses by active tier
   const tierBosses = useMemo(() => {
@@ -58,7 +59,6 @@ export default function BossBattlePage() {
   useEffect(() => {
     if (tierBosses.length > 0 && !tierBosses.some(b => b.id === selectedBossId)) {
       setSelectedBossId(tierBosses[0].id);
-      setShowIntro(true);
     }
   }, [selectedTier, tierBosses, selectedBossId]);
 
@@ -509,6 +509,23 @@ export default function BossBattlePage() {
     }
   };
 
+  const handleOpenStageIntro = (bossId: string) => {
+    setSelectedBossId(bossId);
+    setShowIntro(true);
+    sound.playTap();
+  };
+
+  const handleStartBattle = () => {
+    sound.playWukongStrike();
+    setShowIntro(false);
+    setViewMode('battle');
+  };
+
+  const handleExitIntro = () => {
+    setShowIntro(false);
+    setViewMode('stages');
+  };
+
   // Seamless Progression with Intro: "Bấm vào các ải có intro xuất chiến"
   const handleNextStage = () => {
     const currentIndex = tierBosses.findIndex(b => b.id === selectedBossId);
@@ -546,36 +563,198 @@ export default function BossBattlePage() {
 
   return (
     <div className="space-y-4 pb-12 animate-fade-in">
-      {/* Top Header */}
-      <div className="flex items-center justify-between">
-        <Link
-          href="/"
-          className="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center hover:bg-stone-800 transition-colors shadow-sm"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </Link>
-
-        {/* Tier Selector: Sơ cấp (JPD1) / Trung cấp (JPD2) / Cao cấp (JPD3) */}
-        <div className="flex items-center gap-1 bg-[#e4ede1] p-1 rounded-full text-xs font-black">
-          {[
-            { key: 'sơ cấp', label: 'SƠ CẤP (JPD1)' },
-            { key: 'trung cấp', label: 'TRUNG CẤP (JPD2)' },
-            { key: 'cao cấp', label: 'CAO CẤP (JPD3)' }
-          ].map(t => (
-            <button
-              key={t.key}
-              onClick={() => setSelectedTier(t.key as any)}
-              className={`px-3 py-1 rounded-full transition-all text-[11px] ${
-                selectedTier === t.key
-                  ? 'bg-white text-[#143521] shadow-sm font-black'
-                  : 'text-[#718777] font-semibold hover:text-[#143521]'
-              }`}
+      {viewMode === 'stages' ? (
+        /* ========================================================================= */
+        /* TRANG DANH SÁCH CÁC ẢI (BẢN ĐỒ VƯỢT ẢI TRẢM YÊU)                          */
+        /* ========================================================================= */
+        <div className="space-y-4 animate-fade-in">
+          {/* Top Header */}
+          <div className="flex items-center justify-between">
+            <Link
+              href="/"
+              className="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center hover:bg-stone-800 transition-colors shadow-sm"
+              title="Quay lại trang chủ"
             >
-              {t.label}
-            </button>
-          ))}
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+
+            {/* Tier Selector */}
+            <div className="flex items-center gap-1 bg-[#e4ede1] p-1 rounded-full text-xs font-black">
+              {[
+                { key: 'sơ cấp', label: 'SƠ CẤP (JPD1)' },
+                { key: 'trung cấp', label: 'TRUNG CẤP (JPD2)' },
+                { key: 'cao cấp', label: 'CAO CẤP (JPD3)' }
+              ].map(t => (
+                <button
+                  key={t.key}
+                  onClick={() => setSelectedTier(t.key as any)}
+                  className={`px-3 py-1 rounded-full transition-all text-[11px] cursor-pointer ${
+                    selectedTier === t.key
+                      ? 'bg-white text-[#143521] shadow-sm font-black'
+                      : 'text-[#718777] font-semibold hover:text-[#143521]'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Hero Banner with 3D Wukong */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#143521] via-[#1a432b] to-[#0f2818] p-5 sm:p-6 text-white border-2 border-emerald-500/40 shadow-xl flex items-center justify-between gap-4">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10 space-y-1.5 max-w-lg">
+              <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-400 text-stone-950 text-[10px] font-black uppercase tracking-wider shadow-sm">
+                <Sparkles className="w-3 h-3 fill-current" /> CỬU CỬU BÁT THẬP NHẤT NẠN
+              </span>
+              <h1 className="text-xl sm:text-2xl font-black text-amber-100 tracking-tight">
+                Bản Đồ Vượt Ải Trảm Yêu
+              </h1>
+              <p className="text-xs text-emerald-200/90 leading-relaxed">
+                Đường thỉnh kinh muôn trùng hiểm trở. Hãy chọn một ải yêu ma bên dưới để mở màn hình xuất chiến, rèn luyện phản xạ tiếng Nhật chuẩn xác!
+              </p>
+              <div className="pt-1 flex items-center gap-3 text-[11px] text-amber-300 font-bold">
+                <span>❖ {tierBosses.length} Ải Trấn Thủ</span>
+                <span>❖ {selectedTier === 'sơ cấp' ? 'Trình độ N5 (JPD113)' : selectedTier === 'trung cấp' ? 'Trình độ N4 (JPD123)' : 'Trình độ N3-N2 (JPD133)'}</span>
+              </div>
+            </div>
+
+            <div className="relative z-10 shrink-0 hidden sm:flex items-center justify-center w-28 h-28">
+              <div className="absolute inset-0 rounded-full bg-amber-500/20 blur-xl animate-pulse" />
+              <img
+                src="/images/wukong_action.png"
+                alt="Ngộ Không"
+                className="w-full h-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.5)] animate-float select-none"
+              />
+            </div>
+          </div>
+
+          {/* Grid of Stages */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {tierBosses.map((b) => (
+              <div
+                key={b.id}
+                onClick={() => handleOpenStageIntro(b.id)}
+                className={`rounded-3xl p-4 transition-all duration-300 cursor-pointer flex flex-col justify-between border-2 relative overflow-hidden group shadow-xs hover:shadow-xl hover:-translate-y-1 ${
+                  b.isFinalBoss
+                    ? 'bg-gradient-to-br from-red-950/30 via-stone-900/10 to-amber-950/20 border-red-500/60 hover:border-red-500 ring-1 ring-red-500/20'
+                    : 'bg-white border-[#e4ede1] hover:border-amber-400'
+                }`}
+              >
+                {/* Top badges */}
+                <div className="flex items-center justify-between gap-2 pb-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                      b.isFinalBoss
+                        ? 'bg-red-600 text-white animate-pulse'
+                        : 'bg-stone-900 text-amber-200'
+                    }`}>
+                      {b.isFinalBoss ? '👑 TRÙM CUỐI' : `ẢI ${b.stageNumber || b.level}`}
+                    </span>
+                    <span className="text-[11px] font-black text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-md border border-amber-300">
+                      Lv.{b.level}
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-rose-600 font-extrabold flex items-center gap-1">
+                    <Heart className="w-3 h-3 fill-current" /> {b.maxHp} HP
+                  </span>
+                </div>
+
+                {/* 3D Boss Artwork & Lore */}
+                <div className="flex items-center gap-3.5 my-2.5">
+                  <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl bg-gradient-to-b from-stone-900/10 to-stone-900/25 flex items-center justify-center p-1.5 shrink-0 border border-stone-200/80 group-hover:scale-105 transition-transform overflow-hidden shadow-inner">
+                    {b.image ? (
+                      <img
+                        src={b.image}
+                        alt={b.name}
+                        className="w-full h-full object-contain filter drop-shadow-md select-none"
+                      />
+                    ) : (
+                      <span className="text-4xl">{b.avatar}</span>
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0 space-y-1">
+                    <h3 className="font-black text-sm sm:text-base text-stone-900 truncate group-hover:text-emerald-700 transition-colors">
+                      {b.name}
+                    </h3>
+                    <p className="text-[11px] text-stone-500 jp-font truncate font-medium">
+                      {b.japaneseName}
+                    </p>
+                    <p className="text-[11px] text-stone-600 line-clamp-1 font-medium">
+                      📍 {b.location.replace(/^.*•\s*/, '')}
+                    </p>
+                    <div className="text-[10px] text-rose-700 font-bold bg-rose-50 px-2 py-0.5 rounded-md inline-block border border-rose-200/50">
+                      ⚡ {b.specialSkill}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Target & Action Button */}
+                <div className="pt-3 border-t border-stone-100 flex items-center justify-between gap-2 text-xs">
+                  <div className="text-[10px] text-stone-500 font-bold space-y-0.5">
+                    <div>🎯 Đúng {b.requiredCorrect}/{b.totalQuestions || 8} câu</div>
+                    <div className="text-amber-600">🏆 +{b.rewardXp} XP • 🍑 +{b.rewardPeaches} Đào</div>
+                  </div>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenStageIntro(b.id);
+                    }}
+                    className="px-3.5 py-2 rounded-xl bg-stone-900 group-hover:bg-amber-500 text-amber-200 group-hover:text-stone-950 font-black text-[11px] uppercase tracking-wider flex items-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer"
+                  >
+                    <span>Xem ải</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        /* ========================================================================= */
+        /* TRANG CHIẾN ĐẤU (BATTLE ARENA & QUESTION CONSOLE)                         */
+        /* ========================================================================= */
+        <div className="space-y-4 animate-fade-in">
+          {/* Top Header for Battle */}
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => {
+                sound.playTap();
+                setViewMode('stages');
+              }}
+              className="px-3.5 py-1.5 rounded-full bg-stone-900 hover:bg-stone-800 text-white font-black text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              title="Quay lại danh sách các ải"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Trang Các Ải</span>
+            </button>
+
+            {/* Tier Selector */}
+            <div className="flex items-center gap-1 bg-[#e4ede1] p-1 rounded-full text-xs font-black">
+              {[
+                { key: 'sơ cấp', label: 'SƠ CẤP (JPD1)' },
+                { key: 'trung cấp', label: 'TRUNG CẤP (JPD2)' },
+                { key: 'cao cấp', label: 'CAO CẤP (JPD3)' }
+              ].map(t => (
+                <button
+                  key={t.key}
+                  onClick={() => {
+                    setSelectedTier(t.key as any);
+                    setViewMode('stages');
+                  }}
+                  className={`px-3 py-1 rounded-full transition-all text-[11px] cursor-pointer ${
+                    selectedTier === t.key
+                      ? 'bg-white text-[#143521] shadow-sm font-black'
+                      : 'text-[#718777] font-semibold hover:text-[#143521]'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
       {/* Boss Selection Pills Carousel */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
@@ -783,14 +962,20 @@ export default function BossBattlePage() {
           {/* Action buttons with Instant Next Stage progression */}
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
+              onClick={() => setViewMode('stages')}
+              className="px-4 py-3 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <BookOpen className="w-4 h-4" /> Bản Đồ Ải
+            </button>
+            <button
               onClick={handleRestart}
-              className="px-5 py-3 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs flex items-center gap-1.5 transition-colors"
+              className="px-4 py-3 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs flex items-center gap-1.5 transition-colors"
             >
               <RotateCcw className="w-4 h-4" /> Khiêu chiến lại
             </button>
             <button
               onClick={handleNextStage}
-              className="btn-3d-green px-6 py-3 rounded-full text-white font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg active:scale-95 transition-all"
+              className="btn-3d-green px-5 py-3 rounded-full text-white font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg active:scale-95 transition-all"
             >
               <span>{isFinalGameBoss ? 'Tái Chiến Toàn Bộ JPD 🔄' : 'Vượt ải kế tiếp & Chiến luôn ▶'}</span>
             </button>
@@ -812,8 +997,14 @@ export default function BossBattlePage() {
 
           <div className="flex items-center justify-center gap-3 pt-2">
             <button
+              onClick={() => setViewMode('stages')}
+              className="px-4 py-2.5 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold text-xs flex items-center gap-1.5 cursor-pointer"
+            >
+              <ArrowLeft className="w-4 h-4" /> Bản Đồ Ải
+            </button>
+            <button
               onClick={handleRestart}
-              className="px-6 py-2.5 rounded-full bg-gradient-to-r from-rose-600 to-red-600 text-white font-extrabold text-sm flex items-center gap-2 shadow-lg transition-transform active:scale-95"
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-rose-600 to-red-600 text-white font-extrabold text-sm flex items-center gap-2 shadow-lg transition-transform active:scale-95"
             >
               <RotateCcw className="w-4 h-4" /> Tái chiến ngay
             </button>
@@ -1185,11 +1376,21 @@ export default function BossBattlePage() {
           ) : null}
         </>
       )}
+        </div>
+      )}
 
       {/* CINEMATIC BOSS ENCOUNTER INTRO OVERLAY */}
       {showIntro && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-950/85 backdrop-blur-md animate-fade-in overflow-y-auto">
-          <div className="relative w-full max-w-xl bg-gradient-to-b from-[#1c1514] via-[#141216] to-[#0c0a09] border-2 border-amber-500/50 rounded-3xl p-5 sm:p-7 shadow-[0_0_60px_rgba(245,158,11,0.3)] text-white space-y-4 my-auto overflow-hidden">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) handleExitIntro();
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-950/85 backdrop-blur-md animate-fade-in overflow-y-auto cursor-pointer"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-xl bg-gradient-to-b from-[#1c1514] via-[#141216] to-[#0c0a09] border-2 border-amber-500/50 rounded-3xl p-5 sm:p-7 shadow-[0_0_60px_rgba(245,158,11,0.3)] text-white space-y-4 my-auto overflow-hidden cursor-default"
+          >
             {/* Mythical Background Aura / Particles */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-rose-600/15 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
@@ -1211,9 +1412,9 @@ export default function BossBattlePage() {
                 )}
               </div>
               <button
-                onClick={() => setShowIntro(false)}
+                onClick={handleExitIntro}
                 className="w-8 h-8 rounded-full bg-stone-800/80 hover:bg-stone-700 text-stone-400 hover:text-white flex items-center justify-center transition-colors text-sm font-bold cursor-pointer"
-                title="Bỏ qua Intro"
+                title="Thoát ra danh sách ải"
               >
                 ✕
               </button>
@@ -1348,18 +1549,22 @@ export default function BossBattlePage() {
               </div>
             </div>
 
-            {/* Big Action Button */}
-            <div className="relative z-10 pt-1">
+            {/* Big Action Buttons */}
+            <div className="relative z-10 pt-1 space-y-2">
               <button
-                onClick={() => {
-                  sound.playWukongStrike();
-                  setShowIntro(false);
-                }}
+                onClick={handleStartBattle}
                 className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-stone-950 font-black text-sm sm:text-base uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(245,158,11,0.6)] border-2 border-yellow-200 active:scale-98 transition-all cursor-pointer"
               >
                 <Swords className="w-5 h-5 fill-current" />
                 <span>VÀO CHIẾN ĐẤU NGAY</span>
                 <ChevronRight className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={handleExitIntro}
+                className="w-full py-2.5 rounded-xl bg-stone-900/80 hover:bg-stone-800 text-stone-300 hover:text-white text-xs font-bold transition-all text-center cursor-pointer border border-stone-800"
+              >
+                ✕ Thoát ra Trang Danh Sách Ải
               </button>
             </div>
           </div>
