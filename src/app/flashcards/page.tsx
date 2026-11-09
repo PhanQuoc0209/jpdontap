@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { dataset, VocabWord } from '@/lib/dataset';
+import { dataset, VocabWord, UnitMeta } from '@/lib/dataset';
 import { sound } from '@/lib/sound';
 import { WukongMascot } from '@/components/WukongMascot';
 import {
@@ -22,20 +22,17 @@ import {
   FileQuestion,
   Timer,
   Trophy,
-  Award,
-  HelpCircle,
   Send,
-  RefreshCw,
-  Flame,
-  ArrowRight,
-  Eye,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  HelpCircle,
+  Settings,
+  Search
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 type StudyMode = 'dashboard' | 'flashcard' | 'typing' | 'exam';
-type MainTab = 'flashcard' | 'typing' | 'exam';
+type ActionFilter = 'all' | 'due' | 'typing' | 'exam';
 
 interface ExamQuestion {
   id: string;
@@ -51,11 +48,13 @@ interface ExamQuestion {
 }
 
 export default function FlashcardsPage() {
-  const [activeTab, setActiveTab] = useState<MainTab>('flashcard');
   const [currentMode, setCurrentMode] = useState<StudyMode>('dashboard');
+  const [activeFilter, setActiveFilter] = useState<ActionFilter>('all');
   const [selectedLevel, setSelectedLevel] = useState<'jpd113' | 'jpd123' | 'jpd133'>('jpd113');
   const [selectedUnitId, setSelectedUnitId] = useState<string | 'all'>('all');
   const [isShuffled, setIsShuffled] = useState(false);
+  const [selectedUnitForAction, setSelectedUnitForAction] = useState<UnitMeta | null>(null);
+  const [modalSearchQuery, setModalSearchQuery] = useState('');
 
   // ===================== 1. FLASHCARD SRS STATE =====================
   const [flashcardIndex, setFlashcardIndex] = useState(0);
@@ -84,7 +83,7 @@ export default function FlashcardsPage() {
   const [selectedExamOption, setSelectedExamOption] = useState<string | null>(null);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Active deck calculation
+  // Active deck calculation based on chosen level & unit
   const activeDeck = useMemo(() => {
     let list: VocabWord[] = [];
     if (selectedUnitId === 'all') {
@@ -113,10 +112,23 @@ export default function FlashcardsPage() {
     return dataset.units.find(u => u.id === selectedUnitId) || { title: 'Bài học', tag: 'UNIT' };
   }, [selectedUnitId, selectedLevel]);
 
-  // Current cards for active modes
   const currentFlashcard = activeDeck[flashcardIndex] || activeDeck[0];
   const currentTypingWord = activeDeck[typingIndex] || activeDeck[0];
   const currentExamQuestion = examQuestions[examCurrentIndex];
+
+  // Unit words for the action modal (with search filter)
+  const modalUnitWords = useMemo(() => {
+    if (!selectedUnitForAction) return [];
+    const words = dataset.words.filter(w => w.unitId === selectedUnitForAction.id);
+    if (!modalSearchQuery.trim()) return words;
+    const q = modalSearchQuery.toLowerCase().trim();
+    return words.filter(w =>
+      w.word.toLowerCase().includes(q) ||
+      w.kana.toLowerCase().includes(q) ||
+      w.romaji.toLowerCase().includes(q) ||
+      w.meaning.toLowerCase().includes(q)
+    );
+  }, [selectedUnitForAction, modalSearchQuery]);
 
   // Auto-focus input in typing mode
   useEffect(() => {
@@ -150,9 +162,7 @@ export default function FlashcardsPage() {
     }
   }, [currentMode, examCurrentIndex, examFinished, examQuestions.length]);
 
-  // ===================== HANDLERS: START SESSIONS ====================
-
-  // 1. Start Flashcard Study
+  // ===================== SESSION LAUNCHERS ==========================
   const handleStartFlashcard = (unitId: string | 'all' = 'all') => {
     sound.playTap();
     setSelectedUnitId(unitId);
@@ -163,7 +173,6 @@ export default function FlashcardsPage() {
     setCurrentMode('flashcard');
   };
 
-  // 2. Start Typing Practice
   const handleStartTyping = (unitId: string | 'all' = 'all') => {
     sound.playTap();
     setSelectedUnitId(unitId);
@@ -178,12 +187,10 @@ export default function FlashcardsPage() {
     setCurrentMode('typing');
   };
 
-  // 3. Start Exam & Test Mode
   const handleStartExam = (unitId: string | 'all' = 'all') => {
     sound.playTap();
     setSelectedUnitId(unitId);
 
-    // Build question pool
     let pool = dataset.words.filter(w => w.course === selectedLevel);
     if (unitId !== 'all') {
       const unitWords = dataset.words.filter(w => w.unitId === unitId);
@@ -269,6 +276,19 @@ export default function FlashcardsPage() {
     setCurrentMode('exam');
   };
 
+  // Unit Card Click handler (Opens mode picker or starts active mode)
+  const handleUnitClick = (unit: UnitMeta) => {
+    sound.playTap();
+    if (activeFilter === 'typing') {
+      handleStartTyping(unit.id);
+    } else if (activeFilter === 'exam') {
+      handleStartExam(unit.id);
+    } else {
+      // By default open the quick mode selector modal for this unit!
+      setSelectedUnitForAction(unit);
+    }
+  };
+
   // ===================== FLASHCARD ACTIONS ===========================
   const handleFlip = () => {
     sound.playTap();
@@ -327,7 +347,6 @@ export default function FlashcardsPage() {
       setTypingCombo(prev => prev + 1);
       setTypingCorrectCount(prev => prev + 1);
 
-      // Auto advance next after 800ms
       setTimeout(() => {
         handleNextTypingWord();
       }, 800);
@@ -359,7 +378,7 @@ export default function FlashcardsPage() {
     setTypingWrongCount(prev => prev + 1);
   };
 
-  // ===================== EXAM & TEST ACTIONS =========================
+  // ===================== EXAM ACTIONS ================================
   const handleExamOptionClick = (optionText: string) => {
     if (selectedExamOption !== null || !currentExamQuestion) return;
 
@@ -377,7 +396,6 @@ export default function FlashcardsPage() {
       sound.playWrong();
     }
 
-    // Auto next after 1.2s
     setTimeout(() => {
       if (examCurrentIndex + 1 < examQuestions.length) {
         setExamCurrentIndex(prev => prev + 1);
@@ -424,267 +442,484 @@ export default function FlashcardsPage() {
 
   return (
     <div className="space-y-4 pb-12 animate-fade-in">
-      {/* Top Header Navigation */}
+      {/* 1. TOP HEADER (Exact Pandarin reproduction: Back button, Title, Right icons) */}
       <div className="flex items-center justify-between">
         <Link
           href="/"
-          className="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center hover:bg-stone-800 transition-colors shadow-sm"
+          className="w-10 h-10 rounded-2xl bg-stone-900 text-white flex items-center justify-center hover:bg-stone-800 transition-colors shadow-sm"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-5 h-5" />
         </Link>
-        <h1 className="text-base font-black text-[#143521]">Luyện Từ Vựng JPD</h1>
-        <div className="flex items-center gap-1.5">
+        <h1 className="text-base sm:text-lg font-black text-[#143521]">Học Flashcard</h1>
+        <div className="flex items-center gap-2">
           <Link
             href="/tien-do"
-            className="w-8 h-8 rounded-full bg-stone-900 text-white flex items-center justify-center text-xs shadow-sm hover:scale-105 transition-transform"
-            title="Xem bảng tiến độ"
+            className="w-10 h-10 rounded-2xl bg-stone-900 text-white flex items-center justify-center text-xs shadow-sm hover:scale-105 transition-transform"
+            title="Tiến độ học tập"
           >
             <BarChart2 className="w-4 h-4" />
           </Link>
           <button
             onClick={() => setIsShuffled(!isShuffled)}
-            className={`w-8 h-8 rounded-full border flex items-center justify-center text-xs shadow-sm transition-all ${
-              isShuffled ? 'bg-[#22c55e] text-white border-[#22c55e]' : 'bg-white text-stone-700 border-stone-300'
+            className={`w-10 h-10 rounded-2xl border flex items-center justify-center text-xs shadow-sm transition-all cursor-pointer ${
+              isShuffled ? 'bg-[#22c55e] text-white border-[#22c55e]' : 'bg-white text-stone-700 border-stone-200'
             }`}
-            title="Xáo trộn ngẫu nhiên thẻ"
+            title="Cài đặt & Xáo trộn"
           >
-            <Shuffle className="w-4 h-4" />
+            <Settings className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* =============================================================== */}
-      {/* 1. DASHBOARD VIEW (When not in any active study session)         */}
+      {/* DASHBOARD VIEW: EXACT PANDARIN REPRODUCTION                     */}
       {/* =============================================================== */}
       {currentMode === 'dashboard' && (
         <>
-          {/* Main 3-Mode Switcher Tabs */}
-          <div className="grid grid-cols-3 gap-1.5 p-1 bg-[#e4ede1] rounded-2xl border border-[#d2ded0]">
-            <button
-              onClick={() => setActiveTab('flashcard')}
-              className={`py-2 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                activeTab === 'flashcard'
-                  ? 'bg-white text-[#15803d] shadow-sm'
-                  : 'text-[#597361] hover:text-[#143521]'
-              }`}
-            >
-              <Zap className="w-3.5 h-3.5" />
-              <span>Thẻ Lật SRS</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('typing')}
-              className={`py-2 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                activeTab === 'typing'
-                  ? 'bg-white text-[#15803d] shadow-sm'
-                  : 'text-[#597361] hover:text-[#143521]'
-              }`}
-            >
-              <Keyboard className="w-3.5 h-3.5" />
-              <span>Luyện Gõ</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('exam')}
-              className={`py-2 px-3 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                activeTab === 'exam'
-                  ? 'bg-white text-red-600 shadow-sm'
-                  : 'text-[#597361] hover:text-[#143521]'
-              }`}
-            >
-              <FileQuestion className="w-3.5 h-3.5" />
-              <span>Thi Thử JPD</span>
-            </button>
-          </div>
-
-          {/* Hero Banner based on Active Tab */}
-          <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#f8f5ea] via-[#f5efe2] to-[#ecdfc8] border border-[#e4dac3] p-4 sm:p-5 shadow-[0_8px_20px_rgba(20,53,33,0.06)] space-y-3">
-            {/* Mascot Peeking */}
+          {/* Hero SRS Box (Exact Pandarin: HÔM NAY, Heading, 4 Stats Tiles, Green 3D Button) */}
+          <div className="relative overflow-hidden rounded-[2rem] bg-white border border-[#e2ece0] p-4 sm:p-5 shadow-[0_8px_20px_rgba(20,53,33,0.04)] space-y-3">
+            {/* Mascot Peeking at top right */}
             <div className="absolute top-2 right-4 select-none">
               <div className="w-14 h-14 relative">
                 <WukongMascot mood="happy" size="sm" showCloud={false} />
               </div>
             </div>
 
-            <span className="px-3 py-1 rounded-full bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-wider">
-              {activeTab === 'flashcard' && 'CHẾ ĐỘ THẺ LẬT SRS'}
-              {activeTab === 'typing' && 'CHẾ ĐỘ LUYỆN GÕ TỪ VỰNG'}
-              {activeTab === 'exam' && 'KỲ THI SÁT HẠCH TỪ VỰNG'}
+            {/* HÔM NAY Badge */}
+            <span className="inline-block px-3 py-1 rounded-full bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-wider shadow-2xs">
+              HÔM NAY
             </span>
 
+            {/* Heading & Streak */}
             <div>
-              <h2 className="text-lg font-black text-[#2e1d0f]">
-                {activeTab === 'flashcard' && `${levelWords.length} Thẻ Từ Vựng ${selectedLevel.toUpperCase()}`}
-                {activeTab === 'typing' && `Luyện Gõ Siêu Tốc ${selectedLevel.toUpperCase()}`}
-                {activeTab === 'exam' && `Thi Sát Hạch ${selectedLevel.toUpperCase()} Chuẩn JPD`}
+              <h2 className="text-lg sm:text-xl font-black text-[#143521]">
+                {activeFilter === 'due' ? 'Đang ôn 12 thẻ đến hạn' : 'Không còn thẻ đến hạn'}
               </h2>
               <p className="text-xs text-[#ea580c] font-bold mt-0.5 flex items-center gap-1">
-                {activeTab === 'flashcard' && '🔥 Chuỗi học 7 ngày liên tiếp • Lật thẻ ghi nhớ SRS'}
-                {activeTab === 'typing' && '⌨️ Gõ Romaji hoặc Kana để tăng tốc độ phản xạ và chính tả'}
-                {activeTab === 'exam' && '📝 15 câu hỏi trắc nghiệm & nghe chuẩn format thi JPD'}
+                <span>🔥</span> Chuỗi học 7 ngày liên tiếp
               </p>
             </div>
 
-            {/* Quick Stats Grid */}
+            {/* 4 Stats Tiles in 1 Row */}
             <div className="grid grid-cols-4 gap-2 pt-1">
-              <div className="bg-white rounded-2xl p-2.5 text-center shadow-xs">
-                <span className="text-[10px] text-[#718777] block font-bold">⏰ Đến hạn</span>
-                <span className="text-base font-black text-[#143521]">12</span>
+              <div className="bg-[#fcfbf7] rounded-2xl border border-[#efe9dc] p-2.5 text-center shadow-2xs">
+                <span className="text-xs sm:text-sm block">⏰</span>
+                <span className="text-base sm:text-lg font-black text-[#143521] block leading-tight">12</span>
+                <span className="text-[10px] text-[#718777] font-bold block">Đến hạn</span>
               </div>
-              <div className="bg-white rounded-2xl p-2.5 text-center shadow-xs">
-                <span className="text-[10px] text-[#718777] block font-bold">🆕 Thẻ mới</span>
-                <span className="text-base font-black text-[#143521]">{levelWords.length}</span>
+              <div className="bg-[#fcfbf7] rounded-2xl border border-[#efe9dc] p-2.5 text-center shadow-2xs">
+                <span className="text-xs sm:text-sm block">🆕</span>
+                <span className="text-base sm:text-lg font-black text-[#143521] block leading-tight">{levelWords.length}</span>
+                <span className="text-[10px] text-[#718777] font-bold block">Thẻ mới</span>
               </div>
-              <div className="bg-white rounded-2xl p-2.5 text-center shadow-xs">
-                <span className="text-[10px] text-[#718777] block font-bold">🔄 Đang học</span>
-                <span className="text-base font-black text-[#143521]">35</span>
+              <div className="bg-[#fcfbf7] rounded-2xl border border-[#efe9dc] p-2.5 text-center shadow-2xs">
+                <span className="text-xs sm:text-sm block">🔄</span>
+                <span className="text-base sm:text-lg font-black text-[#143521] block leading-tight">35</span>
+                <span className="text-[10px] text-[#718777] font-bold block">Đang học</span>
               </div>
-              <div className="bg-white rounded-2xl p-2.5 text-center shadow-xs">
-                <span className="text-[10px] text-[#718777] block font-bold">✅ Đã nhớ</span>
-                <span className="text-base font-black text-[#143521]">84</span>
+              <div className="bg-[#fcfbf7] rounded-2xl border border-[#efe9dc] p-2.5 text-center shadow-2xs">
+                <span className="text-xs sm:text-sm block">✅</span>
+                <span className="text-base sm:text-lg font-black text-[#143521] block leading-tight">84</span>
+                <span className="text-[10px] text-[#718777] font-bold block">Đã nhớ</span>
               </div>
             </div>
 
-            {/* Big Action Button for Selected Mode */}
-            {activeTab === 'flashcard' && (
-              <button
-                onClick={() => handleStartFlashcard('all')}
-                className="btn-3d-green w-full py-3.5 rounded-2xl text-white text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg cursor-pointer"
-              >
-                <Zap className="w-4 h-4 fill-white" />
-                Học Toàn Bộ Thẻ {selectedLevel.toUpperCase()} ({levelWords.length} từ)
-              </button>
-            )}
-
-            {activeTab === 'typing' && (
-              <button
-                onClick={() => handleStartTyping('all')}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-amber-600/30 active:scale-98 transition-all cursor-pointer"
-              >
-                <Keyboard className="w-4 h-4" />
-                Bắt Đầu Luyện Gõ {selectedLevel.toUpperCase()} ({levelWords.length} từ)
-              </button>
-            )}
-
-            {activeTab === 'exam' && (
-              <button
-                onClick={() => handleStartExam('all')}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-red-600/30 active:scale-98 transition-all cursor-pointer"
-              >
-                <FileQuestion className="w-4 h-4" />
-                Vào Thi Thử Sát Hạch {selectedLevel.toUpperCase()} (15 Câu)
-              </button>
-            )}
+            {/* Big Green 3D Button */}
+            <button
+              onClick={() => {
+                if (activeFilter === 'typing') {
+                  handleStartTyping('all');
+                } else if (activeFilter === 'exam') {
+                  handleStartExam('all');
+                } else {
+                  handleStartFlashcard('all');
+                }
+              }}
+              className="btn-3d-green w-full py-3.5 rounded-2xl text-white text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-98 transition-transform cursor-pointer"
+            >
+              <Zap className="w-4 h-4 fill-white" />
+              <span>
+                {activeFilter === 'typing'
+                  ? `⌨️ Luyện gõ toàn bộ ${selectedLevel.toUpperCase()} (${levelWords.length} từ)`
+                  : activeFilter === 'exam'
+                  ? `📝 Vào thi thử sát hạch ${selectedLevel.toUpperCase()} (15 câu)`
+                  : `⚡ Học thẻ mới hôm nay (${levelWords.length} từ)`}
+              </span>
+            </button>
           </div>
 
-          {/* Course Level Pills (JPD113, JPD123, JPD133) */}
+          {/* Action / Mode Selector Pills (Học thẻ mới, Luyện gõ, Mục thi, Chỉ ôn đến hạn) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button
+              onClick={() => setActiveFilter('all')}
+              className={`py-2 px-3 rounded-full text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                activeFilter === 'all'
+                  ? 'bg-[#22c55e] text-white shadow-sm'
+                  : 'bg-white text-[#597361] border border-[#d8e5d6] hover:border-[#22c55e]'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Học thẻ mới</span>
+            </button>
+
+            <button
+              onClick={() => setActiveFilter('typing')}
+              className={`py-2 px-3 rounded-full text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                activeFilter === 'typing'
+                  ? 'bg-[#22c55e] text-white shadow-sm'
+                  : 'bg-white text-[#597361] border border-[#d8e5d6] hover:border-[#22c55e]'
+              }`}
+            >
+              <Keyboard className="w-3.5 h-3.5" />
+              <span>Luyện gõ</span>
+            </button>
+
+            <button
+              onClick={() => setActiveFilter('exam')}
+              className={`py-2 px-3 rounded-full text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                activeFilter === 'exam'
+                  ? 'bg-[#22c55e] text-white shadow-sm'
+                  : 'bg-white text-[#597361] border border-[#d8e5d6] hover:border-[#22c55e]'
+              }`}
+            >
+              <FileQuestion className="w-3.5 h-3.5" />
+              <span>Mục thi</span>
+            </button>
+
+            <button
+              onClick={() => setActiveFilter('due')}
+              className={`py-2 px-3 rounded-full text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                activeFilter === 'due'
+                  ? 'bg-[#22c55e] text-white shadow-sm'
+                  : 'bg-white text-[#597361] border border-[#d8e5d6] hover:border-[#22c55e]'
+              }`}
+            >
+              <RotateCw className="w-3.5 h-3.5" />
+              <span>Chỉ ôn đến hạn</span>
+            </button>
+          </div>
+
+          {/* Level Pills: JPD 1, JPD 2, JPD 3 (Matching Pandarin HSK 1, HSK 2, HSK 3) */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
             {[
-              { key: 'jpd113', label: 'JPD113 (Nhật 1 - Sơ Cấp)', count: dataset.words.filter(w => w.course === 'jpd113').length },
-              { key: 'jpd123', label: 'JPD123 (Nhật 2 - Trung Cấp)', count: dataset.words.filter(w => w.course === 'jpd123').length },
-              { key: 'jpd133', label: 'JPD133 (Nhật 3 - Cao Cấp)', count: dataset.words.filter(w => w.course === 'jpd133').length }
-            ].map(lvl => (
+              { key: 'jpd113', label: 'JPD 1' },
+              { key: 'jpd123', label: 'JPD 2' },
+              { key: 'jpd133', label: 'JPD 3' }
+            ].map((lvl) => (
               <button
                 key={lvl.key}
                 onClick={() => {
                   setSelectedLevel(lvl.key as any);
                   setSelectedUnitId('all');
                 }}
-                className={`px-4 py-2 rounded-full text-xs font-black whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+                className={`px-5 py-2 rounded-full text-xs font-black transition-all cursor-pointer ${
                   selectedLevel === lvl.key
                     ? 'bg-[#22c55e] text-white shadow-md'
-                    : 'bg-white text-[#718777] border border-[#e2ece0] hover:border-[#22c55e]'
+                    : 'bg-white text-[#718777] border border-[#d8e5d6] hover:border-[#22c55e]'
                 }`}
               >
-                <span>{lvl.label}</span>
-                <span className={`px-2 py-0.2 rounded-full text-[10px] font-bold ${
-                  selectedLevel === lvl.key ? 'bg-white/20 text-white' : 'bg-stone-100 text-stone-600'
-                }`}>
-                  {lvl.count}
-                </span>
+                {lvl.label}
               </button>
             ))}
           </div>
 
-          {/* Header of Lesson List */}
+          {/* Section Course Header (Matching Pandarin Panda icon + HSK 1 116 từ + Học cả HSK >) */}
           <div className="flex items-center justify-between text-xs pt-1">
-            <div className="flex items-center gap-1.5 font-bold text-[#143521]">
-              <span>🐒</span>
+            <div className="flex items-center gap-2 font-bold text-[#143521]">
+              <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center text-sm shadow-2xs">
+                🐒
+              </div>
               <span className="font-black">
-                {selectedLevel.toUpperCase()} • Đầy đủ {levelUnits.length} Bài học ({levelWords.length} từ)
+                {selectedLevel === 'jpd113' ? 'JPD 1' : selectedLevel === 'jpd123' ? 'JPD 2' : 'JPD 3'} • {levelWords.length} từ
               </span>
             </div>
-            <span className="text-[#718777] text-[11px]">
-              Chọn bài để học thẻ, luyện gõ hoặc thi
-            </span>
+            <button
+              onClick={() => {
+                if (activeFilter === 'typing') handleStartTyping('all');
+                else if (activeFilter === 'exam') handleStartExam('all');
+                else handleStartFlashcard('all');
+              }}
+              className="text-[#15803d] font-black hover:underline flex items-center gap-0.5 text-xs cursor-pointer"
+            >
+              Học cả {selectedLevel.toUpperCase()} &gt;
+            </button>
           </div>
 
-          {/* Unit List with 3 Action Buttons (Học Thẻ, Gõ Phím, Thi Thử) */}
-          <div className="space-y-2.5">
-            {levelUnits.map((unit) => {
+          {/* THE LESSON LIST (Exact Pandarin list to review/study like normal) */}
+          <div className="space-y-3">
+            {levelUnits.map((unit, index) => {
               const unitWordsCount = dataset.words.filter(w => w.unitId === unit.id).length;
 
               return (
                 <div
                   key={unit.id}
-                  className="rounded-2xl bg-white border border-[#e2ece0] p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-[0_4px_12px_rgba(20,53,33,0.03)] hover:border-[#22c55e] transition-all"
+                  onClick={() => handleUnitClick(unit)}
+                  className="rounded-2xl bg-white border border-[#e2ece0] p-3.5 sm:p-4 flex items-center justify-between gap-3 shadow-[0_4px_12px_rgba(20,53,33,0.03)] hover:border-[#22c55e] hover:shadow-sm transition-all cursor-pointer group"
                 >
-                  {/* Left: Unit Info */}
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-100 to-green-50 border border-emerald-200 text-emerald-800 flex items-center justify-center font-black text-sm shrink-0 font-mono shadow-2xs">
-                      {unit.tag}
+                  {/* Left: Rounded Square Icon + Info */}
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    {/* Rounded Square Card Icon */}
+                    <div className="w-12 h-12 rounded-2xl bg-[#fff8ed] border border-[#fed7aa] flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                      <span className="text-xl">🎴</span>
                     </div>
-                    <div className="min-w-0">
+
+                    {/* Unit Info & Progress */}
+                    <div className="min-w-0 space-y-1">
                       <h4 className="text-xs sm:text-sm font-black text-[#143521] truncate">
-                        {unit.title}
+                        Phần 1 • {unit.title}
                       </h4>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[11px] font-bold text-[#15803d]">
-                          {unitWordsCount} thẻ từ vựng
+
+                      {/* Badges: X thẻ | X mới */}
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded-md bg-[#f4f7f2] text-[#597361] text-[10px] font-bold">
+                          {unitWordsCount} thẻ
                         </span>
-                        <span className="px-2 py-0.2 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase">
-                          Chuẩn JPD
+                        <span className="px-2 py-0.5 rounded-md bg-[#ecfdf5] text-[#15803d] text-[10px] font-bold">
+                          {unitWordsCount} mới
+                        </span>
+                      </div>
+
+                      {/* Progress Bar with 0% */}
+                      <div className="flex items-center gap-2 pt-0.5">
+                        <div className="w-32 sm:w-48 h-1.5 rounded-full bg-[#e2ede0] overflow-hidden">
+                          <div className="h-full bg-[#22c55e] rounded-full w-0" />
+                        </div>
+                        <span className="text-[10px] text-[#718777] font-mono font-bold">
+                          0%
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Right: 3 Action Buttons */}
-                  <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
-                    {/* 1. Flashcard Study Button */}
-                    <button
-                      onClick={() => handleStartFlashcard(unit.id)}
-                      className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-black flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
-                      title="Học Thẻ Flashcard Lật"
-                    >
-                      <Zap className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Học Thẻ</span>
-                    </button>
-
-                    {/* 2. Typing Practice Button */}
-                    <button
-                      onClick={() => handleStartTyping(unit.id)}
-                      className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-black flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
-                      title="Luyện Gõ Từ Vựng"
-                    >
-                      <Keyboard className="w-3.5 h-3.5 text-amber-600" />
-                      <span>Luyện Gõ</span>
-                    </button>
-
-                    {/* 3. Exam Test Button */}
-                    <button
-                      onClick={() => handleStartExam(unit.id)}
-                      className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-black flex items-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer"
-                      title="Thi Thử Sát Hạch Bài Này"
-                    >
-                      <FileQuestion className="w-3.5 h-3.5 text-rose-600" />
-                      <span>Thi</span>
-                    </button>
-                  </div>
+                  {/* Right: Clean Green 3D "▶ Học" Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleUnitClick(unit);
+                    }}
+                    className="btn-3d-green px-5 py-2.5 rounded-2xl text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-sm active:scale-95 transition-transform shrink-0 cursor-pointer"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-white" />
+                    <span>Học</span>
+                  </button>
                 </div>
               );
             })}
           </div>
+
+          {/* Quick Action & Vocabulary List Modal when clicking on any Unit Card */}
+          {selectedUnitForAction && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+              {/* Backdrop */}
+              <div
+                className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+                onClick={() => {
+                  setSelectedUnitForAction(null);
+                  setModalSearchQuery('');
+                }}
+              />
+
+              {/* Modal Card */}
+              <div className="relative w-full max-w-md sm:max-w-lg max-h-[90vh] bg-white rounded-3xl shadow-2xl border border-[#e2ece0] z-10 animate-in fade-in zoom-in duration-200 flex flex-col overflow-hidden">
+                {/* Modal Header (Sticky) */}
+                <div className="p-4 sm:p-5 pb-3 border-b border-[#e2ece0] flex items-center justify-between bg-[#fbfdf9] shrink-0">
+                  <div className="min-w-0 pr-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                        Bài {selectedUnitForAction.tag}
+                      </span>
+                      <span className="text-[10px] font-bold text-[#718777]">
+                        {dataset.words.filter(w => w.unitId === selectedUnitForAction.id).length} từ vựng
+                      </span>
+                    </div>
+                    <h3 className="text-base font-black text-[#143521] mt-1 truncate">
+                      {selectedUnitForAction.title}
+                    </h3>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setSelectedUnitForAction(null);
+                      setModalSearchQuery('');
+                    }}
+                    className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer shrink-0"
+                    title="Đóng"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Modal Scrollable Body */}
+                <div className="p-4 sm:p-5 overflow-y-auto space-y-4">
+                  {/* Section 1: 3 Study Modes */}
+                  <div className="space-y-2">
+                    <span className="text-[11px] font-bold text-[#597361] block">
+                      Chọn phương thức ôn tập cho bài học này:
+                    </span>
+
+                    <div className="space-y-2">
+                      {/* Mode 1: Flashcard SRS */}
+                      <button
+                        onClick={() => {
+                          const id = selectedUnitForAction.id;
+                          setSelectedUnitForAction(null);
+                          setModalSearchQuery('');
+                          handleStartFlashcard(id);
+                        }}
+                        className="w-full p-3 rounded-2xl border-2 border-emerald-300 hover:border-emerald-500 bg-emerald-50/50 hover:bg-emerald-50 text-left flex items-center justify-between transition-all group cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg shrink-0">
+                            🎴
+                          </div>
+                          <div className="min-w-0">
+                            <span className="text-xs sm:text-sm font-black text-[#143521] block">
+                              Thẻ Lật SRS
+                            </span>
+                            <span className="text-[10px] text-[#718777] block truncate">
+                              Lật thẻ ghi nhớ Spaced Repetition
+                            </span>
+                          </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-1 transition-transform shrink-0" />
+                      </button>
+
+                      {/* Mode 2: Typing Practice */}
+                      <button
+                        onClick={() => {
+                          const id = selectedUnitForAction.id;
+                          setSelectedUnitForAction(null);
+                          setModalSearchQuery('');
+                          handleStartTyping(id);
+                        }}
+                        className="w-full p-3 rounded-2xl border-2 border-amber-300 hover:border-amber-500 bg-amber-50/50 hover:bg-amber-50 text-left flex items-center justify-between transition-all group cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-lg shrink-0">
+                            ⌨️
+                          </div>
+                          <div className="min-w-0">
+                            <span className="text-xs sm:text-sm font-black text-[#143521] block">
+                              Luyện Gõ Từ Vựng
+                            </span>
+                            <span className="text-[10px] text-[#718777] block truncate">
+                              Gõ Romaji &amp; Kana tăng tốc phản xạ
+                            </span>
+                          </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-amber-600 group-hover:translate-x-1 transition-transform shrink-0" />
+                      </button>
+
+                      {/* Mode 3: Exam Test */}
+                      <button
+                        onClick={() => {
+                          const id = selectedUnitForAction.id;
+                          setSelectedUnitForAction(null);
+                          setModalSearchQuery('');
+                          handleStartExam(id);
+                        }}
+                        className="w-full p-3 rounded-2xl border-2 border-rose-300 hover:border-rose-500 bg-rose-50/50 hover:bg-rose-50 text-left flex items-center justify-between transition-all group cursor-pointer"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-lg shrink-0">
+                            📝
+                          </div>
+                          <div className="min-w-0">
+                            <span className="text-xs sm:text-sm font-black text-[#143521] block">
+                              Mục Thi Sát Hạch
+                            </span>
+                            <span className="text-[10px] text-[#718777] block truncate">
+                              15 câu trắc nghiệm &amp; nghe có tính giờ
+                            </span>
+                          </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-rose-600 group-hover:translate-x-1 transition-transform shrink-0" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Section 2: Vocabulary List of This Unit */}
+                  <div className="space-y-2.5 pt-3 border-t border-[#e2ece0]">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <BookOpen className="w-4 h-4 text-emerald-600" />
+                        <span className="text-xs font-black text-[#143521]">
+                          Danh sách từ vựng bài này ({modalUnitWords.length} từ)
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-[#718777] font-semibold">
+                        Chạm loa 🔊 để nghe phát âm
+                      </span>
+                    </div>
+
+                    {/* Search inside unit */}
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={modalSearchQuery}
+                        onChange={(e) => setModalSearchQuery(e.target.value)}
+                        placeholder="Tìm từ trong bài (Kanji, Kana, Nghĩa)..."
+                        className="w-full py-2 pl-8 pr-3 rounded-xl bg-[#f4f8f3] border border-[#d8e5d6] text-xs font-medium text-[#143521] placeholder-[#889e8f] outline-none focus:border-emerald-500 focus:bg-white transition-all"
+                      />
+                      <Search className="w-3.5 h-3.5 text-[#718777] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    </div>
+
+                    {/* Word Items */}
+                    <div className="space-y-1.5 max-h-64 sm:max-h-80 overflow-y-auto pr-1">
+                      {modalUnitWords.length === 0 ? (
+                        <p className="text-xs text-center py-4 text-[#718777]">
+                          Không tìm thấy từ vựng nào phù hợp.
+                        </p>
+                      ) : (
+                        modalUnitWords.map((w, idx) => (
+                          <div
+                            key={w.id}
+                            className="p-2.5 rounded-2xl bg-[#f8faf6] border border-[#e4ede2] hover:border-emerald-400 hover:bg-emerald-50/40 transition-all flex items-center justify-between gap-2"
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className="w-5 text-center text-[10px] font-mono font-bold text-[#889e8f] shrink-0">
+                                {idx + 1}
+                              </span>
+                              <div className="min-w-0">
+                                <div className="flex items-baseline gap-1.5 flex-wrap">
+                                  <span className="text-sm font-black text-[#143521] jp-font">
+                                    {w.word}
+                                  </span>
+                                  <span className="text-xs font-bold text-red-600 font-mono">
+                                    {w.kana}
+                                  </span>
+                                  {w.romaji && (
+                                    <span className="text-[10px] text-[#718777] font-mono">
+                                      ({w.romaji})
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="text-xs font-bold text-[#b45309] block truncate">
+                                  {w.meaning}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Speaker button */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                sound.speakJapanese(w.word);
+                              }}
+                              className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] hover:bg-emerald-50 hover:border-emerald-400 text-[#15803d] flex items-center justify-center shrink-0 shadow-2xs active:scale-90 transition-transform cursor-pointer"
+                              title="Nghe phát âm chuẩn"
+                            >
+                              <Volume2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
 
@@ -805,7 +1040,7 @@ export default function FlashcardsPage() {
       )}
 
       {/* =============================================================== */}
-      {/* 3. TYPING PRACTICE ACTIVE MODE (Nút Luyện Gõ)                   */}
+      {/* 3. TYPING PRACTICE ACTIVE MODE (Luyện Gõ)                       */}
       {/* =============================================================== */}
       {currentMode === 'typing' && !typingFinished && (
         <div className="space-y-4 animate-fade-in">
@@ -1001,7 +1236,7 @@ export default function FlashcardsPage() {
       )}
 
       {/* =============================================================== */}
-      {/* 4. EXAM & TEST ACTIVE MODE (Mục Thi Sát Hạch)                    */}
+      {/* 4. EXAM ACTIVE MODE (Mục Thi Sát Hạch)                          */}
       {/* =============================================================== */}
       {currentMode === 'exam' && !examFinished && currentExamQuestion && (
         <div className="space-y-4 animate-fade-in">
