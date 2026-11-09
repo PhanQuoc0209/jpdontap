@@ -17,58 +17,21 @@ export default function HomePage() {
 
   return (
     <div className="space-y-4 pb-6">
-      {/* Hero Banner: Wooden Board + Landscape + Mascot Ngộ Không */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#f8f5ea] via-[#f4eee0] to-[#ece3cf] border border-[#e0d6c0] p-4 shadow-[0_10px_25px_rgba(20,53,33,0.06)]">
-        {/* Background landscape hint: mountain peaks, mist & red lantern */}
-        <div className="absolute top-2 right-3 flex items-center gap-1 opacity-80 pointer-events-none">
-          <div className="w-5 h-8 rounded-full bg-red-600 border border-yellow-400 flex items-center justify-center text-[10px] font-black text-yellow-300 shadow">
-            日
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between gap-3">
-          {/* Left: Wooden Notice Board */}
-          <div className="flex-1 space-y-2 relative z-10">
-            {/* Tag Badge */}
-            <div className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-[#e78b3e] text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
-              NHIỆM VỤ TIẾP THEO
-            </div>
-
-            <h1 className="text-base sm:text-lg font-black text-[#2e1d0f] leading-snug">
-              Ôn lại 4 mục đến hạn<br />cùng Ngộ Không
-            </h1>
-
-            <p className="text-[11px] text-[#6d5b4b] leading-relaxed max-w-[200px]">
-              Những mục đến hạn có nguy cơ bị quên cao nhất.
-            </p>
-
-            {/* Green 3D Button */}
-            <div className="pt-1">
-              <Link
-                href="/flashcards"
-                onClick={() => sound.playCorrect()}
-                className="btn-3d-green inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-white text-xs font-black tracking-wide"
-              >
-                <Play className="w-3.5 h-3.5 fill-white" />
-                Ôn ngay
-              </Link>
-            </div>
-          </div>
-
-          {/* Right: Mascot Ngộ Không */}
-          <div
-            onClick={handleWukongClick}
-            className="cursor-pointer select-none shrink-0 group flex flex-col items-center"
-            title="Chạm vào Ngộ Không để nghe chào!"
-          >
-            <WukongMascot
-              size="md"
-              mood={wukongMood}
-              speechBubble={wukongMood === 'happy' ? 'Hahaha! Tiến lên nào!' : undefined}
-            />
-          </div>
-        </div>
-      </div>
+      {/* Hero Banner: 3D Wukong Quest Banner (Updated to custom artwork) */}
+      <Link
+        href="/flashcards"
+        onClick={() => sound.playCorrect()}
+        className="block relative overflow-hidden rounded-[2rem] border border-[#e0d6c0] shadow-[0_10px_25px_rgba(20,53,33,0.08)] group hover:shadow-xl transition-all duration-300 cursor-pointer"
+        title="Bấm để ôn lại 4 mục đến hạn cùng Ngộ Không"
+      >
+        <img
+          src="/images/home_hero_banner.jpg"
+          alt="Ôn lại 4 mục đến hạn cùng Ngộ Không"
+          className="w-full h-auto object-cover group-hover:scale-[1.01] transition-transform duration-300"
+        />
+        {/* Subtle shimmer hover effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
+      </Link>
 
       {/* 3 Stat Cards (Matching Pandarin's soft pastel pagoda cards) */}
       <div className="grid grid-cols-3 gap-2.5">

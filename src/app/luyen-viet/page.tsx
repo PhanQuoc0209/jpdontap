@@ -5,47 +5,35 @@ import Link from 'next/link';
 import { dataset, KanjiItem } from '@/lib/dataset';
 import { sound } from '@/lib/sound';
 import { WukongMascot } from '@/components/WukongMascot';
-import { ArrowLeft, Volume2, RotateCcw, Check, ChevronLeft, ChevronRight, Sparkles, Play } from 'lucide-react';
+import {
+  ArrowLeft,
+  Volume2,
+  RotateCcw,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  Undo2,
+  Eye,
+  EyeOff
+} from 'lucide-react';
 import confetti from 'canvas-confetti';
-
-// Stroke guidance positions for common Kanji
-const STROKE_GUIDES: Record<string, { x: string; y: string; angle: number; label: string }[]> = {
-  '水': [
-    { x: '50%', y: '26%', angle: 90, label: 'Nét 1: Nét sổ móc thẳng từ trên xuống' },
-    { x: '35%', y: '42%', angle: -135, label: 'Nét 2: Nét ngang gập phẩy bên trái' },
-    { x: '28%', y: '68%', angle: 45, label: 'Nét 3: Nét hất từ dưới lên' },
-    { x: '60%', y: '45%', angle: 45, label: 'Nét 4: Nét mác sang phải' }
-  ],
-  '日': [
-    { x: '32%', y: '30%', angle: 90, label: 'Nét 1: Nét sổ trái' },
-    { x: '32%', y: '28%', angle: 0, label: 'Nét 2: Ngang gập móc' },
-    { x: '35%', y: '50%', angle: 0, label: 'Nét 3: Ngang giữa' },
-    { x: '32%', y: '72%', angle: 0, label: 'Nét 4: Ngang đáy đóng' }
-  ],
-  '木': [
-    { x: '25%', y: '40%', angle: 0, label: 'Nét 1: Nét ngang dài' },
-    { x: '50%', y: '22%', angle: 90, label: 'Nét 2: Nét sổ thẳng giữa' },
-    { x: '45%', y: '45%', angle: -135, label: 'Nét 3: Nét phẩy trái' },
-    { x: '55%', y: '45%', angle: 45, label: 'Nét 4: Nét mác phải' }
-  ]
-};
 
 export default function LuyenVietPage() {
   const [currentKanjiIndex, setCurrentKanjiIndex] = useState(0);
-  const [currentStroke, setCurrentStroke] = useState(1);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
-  const [isAnimatingStroke, setIsAnimatingStroke] = useState(false);
+  const [drawnStrokeCount, setDrawnStrokeCount] = useState(0);
+  const [showGhostGuide, setShowGhostGuide] = useState(true);
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const undoHistoryRef = useRef<ImageData[]>([]);
 
   const kanji: KanjiItem = dataset.kanji[currentKanjiIndex] || dataset.kanji[0];
   const maxStrokes = kanji.strokes || 4;
-  const guideList = STROKE_GUIDES[kanji.kanji] || STROKE_GUIDES['水'];
-  const activeGuide = guideList[(currentStroke - 1) % guideList.length];
 
   useEffect(() => {
     clearCanvas();
-    setCurrentStroke(1);
   }, [currentKanjiIndex]);
 
   const clearCanvas = () => {
@@ -55,6 +43,8 @@ export default function LuyenVietPage() {
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     setHasDrawn(false);
+    setDrawnStrokeCount(0);
+    undoHistoryRef.current = [];
   };
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
@@ -62,6 +52,10 @@ export default function LuyenVietPage() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    // Save canvas snapshot for undo
+    const snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    undoHistoryRef.current.push(snapshot);
 
     setIsDrawing(true);
     setHasDrawn(true);
@@ -93,25 +87,47 @@ export default function LuyenVietPage() {
   };
 
   const stopDrawing = () => {
-    setIsDrawing(false);
+    if (isDrawing) {
+      setIsDrawing(false);
+      setDrawnStrokeCount(prev => prev + 1);
+    }
   };
 
-  const handleNextStroke = () => {
-    sound.playCorrect();
-    if (currentStroke < maxStrokes) {
-      setCurrentStroke(prev => prev + 1);
-      clearCanvas();
-    } else {
-      sound.playVictory();
-      confetti({ particleCount: 90, spread: 65, origin: { y: 0.6 } });
-      setTimeout(() => {
-        if (currentKanjiIndex + 1 < dataset.kanji.length) {
-          setCurrentKanjiIndex(prev => prev + 1);
-        } else {
-          setCurrentKanjiIndex(0);
-        }
-      }, 1200);
+  // Undo last drawn stroke
+  const handleUndoLastStroke = () => {
+    const canvas = canvasRef.current;
+    if (!canvas || undoHistoryRef.current.length === 0) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const previousSnapshot = undoHistoryRef.current.pop();
+    if (previousSnapshot) {
+      ctx.putImageData(previousSnapshot, 0, 0);
+      setDrawnStrokeCount(prev => Math.max(0, prev - 1));
+      if (undoHistoryRef.current.length === 0) {
+        setHasDrawn(false);
+      }
     }
+  };
+
+  // "lúc luyện viết nếu viết xong là qua" -> Hoàn thành & Qua chữ tiếp theo
+  const handleCompleteAndNext = () => {
+    sound.playVictory();
+    confetti({ particleCount: 90, spread: 65, origin: { y: 0.6 } });
+
+    setTimeout(() => {
+      if (currentKanjiIndex + 1 < dataset.kanji.length) {
+        setCurrentKanjiIndex(prev => prev + 1);
+      } else {
+        setCurrentKanjiIndex(0);
+      }
+    }, 600);
+  };
+
+  // "hoặc cho luyện lại ko bắt viết đi lại nhiều net" -> Xóa để viết lại chữ này
+  const handleRetryCurrent = () => {
+    sound.playTap();
+    clearCanvas();
   };
 
   const handlePlaySound = () => {
@@ -120,7 +136,7 @@ export default function LuyenVietPage() {
 
   return (
     <div className="space-y-4 pb-8 animate-fade-in">
-      {/* Top Header matching Image 6 */}
+      {/* Top Header */}
       <div className="flex items-center justify-between">
         <Link
           href="/"
@@ -129,28 +145,30 @@ export default function LuyenVietPage() {
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <h1 className="text-base font-black text-[#143521] flex items-center gap-1.5">
-          <span>Viết chữ:</span>
-          <span className="jp-font text-xl font-black text-[#15803d]">{kanji.kanji}</span>
+          <span>Tập viết chữ:</span>
+          <span className="jp-font text-2xl font-black text-[#15803d]">{kanji.kanji}</span>
         </h1>
         <div className="flex items-center gap-1">
           <button
             onClick={() => currentKanjiIndex > 0 && setCurrentKanjiIndex(currentKanjiIndex - 1)}
             disabled={currentKanjiIndex === 0}
-            className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-xs"
+            className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-xs cursor-pointer"
+            title="Chữ trước"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => currentKanjiIndex + 1 < dataset.kanji.length && setCurrentKanjiIndex(currentKanjiIndex + 1)}
             disabled={currentKanjiIndex + 1 === dataset.kanji.length}
-            className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-xs"
+            className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-xs cursor-pointer"
+            title="Chữ tiếp theo"
           >
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* Top Card (Matching Image 6 Pixel-for-Pixel) */}
+      {/* Top Card: Kanji Profile */}
       <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#f8f5ea] via-[#f5efe2] to-[#ecdfc8] border border-[#e4dac3] p-4 shadow-md space-y-2.5">
         {/* Peeking Mascot Top-Right */}
         <div className="absolute top-2 right-4 pointer-events-none select-none">
@@ -162,13 +180,16 @@ export default function LuyenVietPage() {
         {/* Lượt pill tag */}
         <div className="flex items-center gap-2">
           <span className="px-3 py-1 rounded-full bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
-            LƯỢT {(currentKanjiIndex % 10) + 1}/10
+            CHỮ SỐ {(currentKanjiIndex % dataset.kanji.length) + 1}/{dataset.kanji.length}
+          </span>
+          <span className="px-2.5 py-0.5 rounded-full bg-white text-[#718777] text-[10px] font-bold border border-[#e4dac3]">
+            {maxStrokes} nét chuẩn
           </span>
         </div>
 
         {/* Heading */}
         <h3 className="text-base font-black text-[#2e1d0f]">
-          Viết theo nét được hướng dẫn
+          Viết tự do cả chữ • Viết xong là qua ngay
         </h3>
 
         {/* Word Info Row */}
@@ -182,15 +203,23 @@ export default function LuyenVietPage() {
             </span>
             <button
               onClick={handlePlaySound}
-              className="w-6 h-6 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-600 shadow-xs active:scale-95"
+              className="w-7 h-7 rounded-full bg-white border border-stone-200 flex items-center justify-center text-stone-600 shadow-xs active:scale-95 cursor-pointer"
+              title="Nghe phát âm"
             >
-              <Volume2 className="w-3 h-3 text-emerald-700" />
+              <Volume2 className="w-3.5 h-3.5 text-emerald-700" />
             </button>
           </div>
 
-          <span className="px-3 py-1 rounded-full bg-white text-[#143521] text-xs font-black shadow-xs border border-[#e4dac3]">
-            Nét {currentStroke}/{maxStrokes}
-          </span>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setShowGhostGuide(!showGhostGuide)}
+              className="px-2.5 py-1 rounded-full bg-white hover:bg-stone-50 border border-[#e4dac3] text-stone-600 text-[10px] font-bold flex items-center gap-1 shadow-xs cursor-pointer"
+              title="Bật/tắt chữ mờ hướng dẫn"
+            >
+              {showGhostGuide ? <Eye className="w-3 h-3 text-emerald-600" /> : <EyeOff className="w-3 h-3 text-stone-400" />}
+              <span>{showGhostGuide ? 'Nét mờ: Bật' : 'Nét mờ: Tắt'}</span>
+            </button>
+          </div>
         </div>
 
         {/* 10 Stepper Dots */}
@@ -209,46 +238,29 @@ export default function LuyenVietPage() {
       </div>
 
       {/* Instructional text below card */}
-      <div className="text-center text-xs font-bold text-[#718777]">
-        Hãy viết nét {currentStroke}/{maxStrokes}.
+      <div className="flex items-center justify-between px-2 text-xs font-bold text-[#718777]">
+        <span>✍️ Bạn có thể vẽ thoải mái toàn bộ chữ vào ô bên dưới.</span>
+        <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+          Đã vẽ: {drawnStrokeCount} nét
+        </span>
       </div>
 
-      {/* Tianzige Square Grid Canvas (Matching Image 6) */}
+      {/* Tianzige Square Grid Canvas */}
       <div className="flex flex-col items-center justify-center">
         <div className="relative w-[300px] h-[300px] sm:w-[320px] sm:h-[320px] rounded-3xl overflow-hidden border-2 border-[#cbd5e1] bg-white shadow-xl">
           {/* True Tianzige 米-Grid Overlay with Dashed Lines */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-            {/* Center vertical dashed line */}
             <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#d1d5db" strokeWidth="1.5" strokeDasharray="6,4" />
-            {/* Center horizontal dashed line */}
             <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#d1d5db" strokeWidth="1.5" strokeDasharray="6,4" />
-            {/* Diagonal top-left to bottom-right */}
             <line x1="0" y1="0" x2="100%" y2="100%" stroke="#e5e7eb" strokeWidth="1.5" strokeDasharray="6,4" />
-            {/* Diagonal bottom-left to top-right */}
             <line x1="0" y1="100%" x2="100%" y2="0" stroke="#e5e7eb" strokeWidth="1.5" strokeDasharray="6,4" />
           </svg>
 
-          {/* Light Gray Ghost Stroke in Background */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
-            <span className="text-[200px] sm:text-[220px] font-black text-stone-200 jp-font leading-none select-none">
-              {kanji.kanji}
-            </span>
-          </div>
-
-          {/* Guide Starting Dot & Direction Arrow (Matching Image 6) */}
-          {activeGuide && (
-            <div
-              className="absolute pointer-events-none animate-bounce flex items-center gap-1 z-20"
-              style={{ top: activeGuide.x, left: activeGuide.y, transform: 'translate(-50%, -50%)' }}
-            >
-              <div className="w-5 h-5 rounded-full bg-orange-500 shadow-md ring-2 ring-white flex items-center justify-center text-white text-[9px] font-bold">
-                ●
-              </div>
-              <span
-                className="text-sm text-orange-600 font-black inline-block drop-shadow"
-                style={{ transform: `rotate(${activeGuide.angle}deg)` }}
-              >
-                ➔
+          {/* Light Gray Ghost Stroke in Background (Can toggle) */}
+          {showGhostGuide && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none transition-opacity duration-300">
+              <span className="text-[200px] sm:text-[220px] font-black text-stone-200/90 jp-font leading-none select-none">
+                {kanji.kanji}
               </span>
             </div>
           )}
@@ -271,24 +283,38 @@ export default function LuyenVietPage() {
       </div>
 
       {/* Control Buttons */}
-      <div className="flex items-center justify-center gap-3 pt-2">
+      <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+        {/* Undo Button */}
         <button
-          onClick={clearCanvas}
-          className="px-4 py-2.5 rounded-full bg-white border border-[#cbd5e1] hover:border-stone-400 text-[#718777] font-bold text-xs flex items-center gap-1.5 shadow-xs active:scale-95 transition-all"
+          onClick={handleUndoLastStroke}
+          disabled={!hasDrawn || undoHistoryRef.current.length === 0}
+          className="px-3.5 py-2.5 rounded-full bg-white border border-[#cbd5e1] hover:border-stone-400 text-[#718777] font-bold text-xs flex items-center gap-1 shadow-xs active:scale-95 transition-all disabled:opacity-40 cursor-pointer"
+          title="Xóa nét vừa vẽ"
         >
-          <RotateCcw className="w-3.5 h-3.5" /> Viết lại
+          <Undo2 className="w-3.5 h-3.5" /> Nét trước
         </button>
 
+        {/* Retry Current Kanji Button: "cho luyện lại ko bắt viết đi lại nhiều net" */}
         <button
-          onClick={handleNextStroke}
-          className="btn-3d-green px-6 py-2.5 rounded-full text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md"
+          onClick={handleRetryCurrent}
+          className="px-4 py-2.5 rounded-full bg-white border-2 border-amber-300 hover:border-amber-400 text-amber-800 font-bold text-xs flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer"
+          title="Xóa canvas để luyện viết lại chữ này"
         >
-          <Check className="w-3.5 h-3.5" /> Hoàn thành nét
+          <RotateCcw className="w-3.5 h-3.5 text-amber-600" /> Luyện lại chữ này
+        </button>
+
+        {/* Complete & Advance: "viết xong là qua" */}
+        <button
+          onClick={handleCompleteAndNext}
+          className="btn-3d-green px-6 py-2.5 rounded-full text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
+          title="Hoàn thành và chuyển sang chữ tiếp theo"
+        >
+          <Check className="w-4 h-4" /> Hoàn thành & Qua chữ tiếp ➔
         </button>
       </div>
 
       {/* Han-Viet & Onyomi/Kunyomi Details Footer */}
-      <div className="rounded-2xl bg-white border border-[#e2ece0] p-3 text-center space-y-1 shadow-xs">
+      <div className="rounded-2xl bg-white border border-[#e2ece0] p-3.5 text-center space-y-1 shadow-xs">
         <div className="text-xs font-black text-[#143521]">
           Hán-Việt: <span className="text-[#ea580c] uppercase">{kanji.hanViet}</span> • Cấp độ: <span className="text-emerald-700">{kanji.level}</span>
         </div>
