@@ -70,6 +70,7 @@ export default function BossBattlePage() {
   const [bossHurt, setBossHurt] = useState(false);
   const [playerHurt, setPlayerHurt] = useState(false);
   const [battleOutcome, setBattleOutcome] = useState<'playing' | 'victory' | 'defeat'>('playing');
+  const [lastDamage, setLastDamage] = useState<number>(25);
 
   // MCQ state
   const [mcqQuestions, setMcqQuestions] = useState<MCQQuestion[]>([]);
@@ -415,13 +416,14 @@ export default function BossBattlePage() {
       const baseDamage = Math.ceil(boss.maxHp / boss.requiredCorrect);
       const comboBonus = Math.floor(baseDamage * (newCombo * 0.15));
       const totalDamage = baseDamage + comboBonus;
+      setLastDamage(totalDamage);
       const newBossHp = Math.max(0, bossHp - totalDamage);
       setBossHp(newBossHp);
 
       setTimeout(() => {
         setWukongMood('idle');
         setBossHurt(false);
-      }, 700);
+      }, 800);
 
       // Check Boss Defeat
       if (newBossHp <= 0 || newCorrect >= boss.requiredCorrect) {
@@ -651,12 +653,18 @@ export default function BossBattlePage() {
 
         {/* Combat Characters: Hero Ngộ Không vs Boss */}
         <div className="relative z-10 flex items-end justify-between px-4 sm:px-10 pb-2">
-          {/* Left: TÔN NGỘ KHÔNG */}
-          <div className="flex flex-col items-center">
+          {/* Left: TÔN NGỘ KHÔNG - Lunges with staff on attack */}
+          <div className={`flex flex-col items-center transition-all duration-500 ease-out z-20 ${
+            wukongMood === 'attack'
+              ? 'translate-x-[90px] sm:translate-x-[200px] scale-120 z-30'
+              : wukongMood === 'hurt'
+              ? '-translate-x-3 scale-95'
+              : ''
+          }`}>
             <WukongMascot
               size="lg"
               mood={wukongMood}
-              speechBubble={wukongMood === 'attack' ? 'KIM CÔ BỔNG BIẾN!!' : wukongMood === 'hurt' ? 'A nha!' : undefined}
+              speechBubble={wukongMood === 'attack' ? 'KIM CÔ BỔNG XUẤT CHIÊU! 💥' : wukongMood === 'hurt' ? 'A nha!' : undefined}
             />
             <div className="mt-1 w-24 sm:w-28 space-y-0.5 text-center">
               <div className="flex items-center justify-between text-[10px] font-bold text-emerald-400">
@@ -673,19 +681,43 @@ export default function BossBattlePage() {
           </div>
 
           {/* VS Center Marker */}
-          <div className="text-amber-500/60 font-black text-xl italic select-none pb-8 animate-pulse">
+          <div className={`text-amber-500/60 font-black text-xl italic select-none pb-8 transition-all duration-300 ${
+            wukongMood === 'attack' ? 'opacity-0 scale-50' : 'animate-pulse opacity-100'
+          }`}>
             VS
           </div>
 
-          {/* Right: Boss Demon */}
-          <div className="flex flex-col items-center">
-            <div className={`relative transition-all duration-300 ${bossHurt ? 'scale-90 opacity-80 brightness-150' : 'animate-float'}`}>
-              <div className="text-7xl sm:text-8xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] filter">
+          {/* Right: Boss Demon taking Staff Strike */}
+          <div className="flex flex-col items-center relative">
+            <div className={`relative transition-all duration-300 ${
+              bossHurt ? 'translate-x-4 rotate-12 scale-85 filter brightness-150 drop-shadow-[0_0_30px_rgba(239,68,68,0.9)]' : 'animate-float'
+            }`}>
+              <div className="text-7xl sm:text-8xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] filter select-none">
                 {boss.avatar}
               </div>
+
+              {/* Epic Golden Staff Slam Effect When Wukong Strikes */}
               {bossHurt && (
-                <div className="absolute inset-0 flex items-center justify-center text-amber-300 text-3xl font-black animate-ping">
-                  💥
+                <div className="absolute -inset-6 z-40 pointer-events-none flex items-center justify-center">
+                  {/* 3D Golden-Red Ruyi Jingu Bang Staff Slamming Down onto Boss */}
+                  <div className="absolute w-48 sm:w-60 h-6 sm:h-7 bg-gradient-to-r from-yellow-300 via-red-600 to-yellow-300 rounded-full border-2 border-yellow-100 shadow-[0_0_35px_#f59e0b,0_0_60px_#ef4444] animate-staff-slam" />
+
+                  {/* Golden Slash Shockwave */}
+                  <div className="absolute w-32 h-32 rounded-full border-4 border-t-yellow-300 border-r-amber-400 border-b-transparent border-l-transparent animate-slash-arc filter drop-shadow-[0_0_20px_#f59e0b]" />
+
+                  {/* Energy Pulse */}
+                  <div className="absolute w-20 h-20 rounded-full bg-yellow-400/40 blur-md animate-ping" />
+
+                  {/* Floating Damage & Action Text */}
+                  <div className="absolute -top-10 sm:-top-12 animate-float-damage whitespace-nowrap text-center">
+                    <div className="text-yellow-300 font-black text-xl sm:text-2xl drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] flex items-center justify-center gap-1 font-mono">
+                      <span>⚡ -{lastDamage || 25} HP</span>
+                      <span className="text-base sm:text-lg text-amber-200">💥</span>
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-amber-300 bg-black/80 px-2.5 py-0.5 rounded-full border border-amber-500/50 shadow-md">
+                      Gậy Như Ý Bạo Kích
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
