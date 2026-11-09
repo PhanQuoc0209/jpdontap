@@ -21,7 +21,9 @@
     "description": "Thử thách toàn bộ từ vựng Bài 1-1: Chào hỏi, tên tuổi, nghề nghiệp, quốc gia và đại học.",
     "specialSkill": "Hỏa Diệm Phun Trào",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_xich_hoa_long.png",
+    "quote": "Hỏa Vân Động ngàn năm chưa kẻ nào dám phạm! Muốn qua ải của ta, hãy chứng minh vốn từ vựng tiếng Nhật của ngươi!"
   },
   {
     "id": "boss-jpd113-2",
@@ -45,7 +47,9 @@
     "description": "Thử thách phản xạ 12 tháng trong năm (一月〜十二月) và cách tính tuổi tác tiếng Nhật.",
     "specialSkill": "Nguyệt Quang Trấn Áp",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_cuu_vi_linh_ho.png",
+    "quote": "Nguyệt cung u uất muôn trùng linh khí. Ngươi có dám đọ phản xạ ngày tháng và tuổi tác tiếng Nhật cùng ta?"
   },
   {
     "id": "boss-jpd113-3",
@@ -69,7 +73,9 @@
     "description": "Kiểm tra thuộc lòng các ngày đặc biệt: ついたち, ふつか, みっか, よっか, いつか, はつか...",
     "specialSkill": "Thời Không Đảo Nghịch",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_kim_giac_ngan_giac.png",
+    "quote": "Nhật dạ xoay vần, lịch pháp thiên cơ! Trả lời sai một ngày mùng đặc biệt là hồn tiêu phách tán!"
   },
   {
     "id": "boss-jpd113-4",
@@ -93,7 +99,9 @@
     "description": "Thử thách từ vựng thể thao, âm nhạc, phim ảnh, đọc sách và các tính từ giỏi/kém (上手, 下手).",
     "specialSkill": "Hắc Phong Hộ Thể",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_hac_hung_tinh.png",
+    "quote": "Hắc Phong Sơn là lãnh địa của ta! Mau đem hết vốn từ vựng sở thích và tài lẻ ra phân định cao thấp!"
   },
   {
     "id": "boss-jpd113-5",
@@ -117,7 +125,9 @@
     "description": "Bão cát che mờ nơi chốn: siêu thị, bách hóa, phòng họp, thư viện, quầy tiếp tân, cầu thang...",
     "specialSkill": "Tam Muội Thần Phong",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_hoang_phong_quai.png",
+    "quote": "Tam Muội Thần Phong của ta thổi bay trời đất! Một câu ngữ pháp sai lầm cũng đủ vùi xác ngươi trong bão cát!"
   },
   {
     "id": "boss-jpd113-6",
@@ -141,7 +151,9 @@
     "description": "Đố toàn bộ đồ dùng học tập: bút chì, bút bi, sổ tay, cặp xách, đồng hồ, ô dù, máy ảnh, vi tính...",
     "specialSkill": "Kim Cương Bất Hoại",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_kim_giac_ngan_giac.png",
+    "quote": "Bình Hồ Lô Tử Kim đã mở nắp! Ta gọi tên một địa điểm trường học, ngươi có dám đối đáp tiếng Nhật?"
   },
   {
     "id": "boss-jpd113-7",
@@ -165,7 +177,9 @@
     "description": "Số đếm hàng trăm (百), nghìn (千), vạn (万), đồng Yên Nhật và hỏi giá tiền (いくら).",
     "specialSkill": "Vạn Lượng Kim Sa",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_thiet_bi_bao.png",
+    "quote": "Tốc độ của ta nhanh như điện xẹt! Hãy trổ tài phản xạ số đếm đồ vật và giá tiền trước móng vuốt của ta!"
   },
   {
     "id": "boss-jpd113-8",
@@ -189,7 +203,9 @@
     "description": "Thực đơn Nhật Bản: cơm, bánh mì, trứng, thịt, cá, rau, trà xanh, bia, gọi món và nước lọc.",
     "specialSkill": "Thực Hồn Cuồng Nộ",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_nguu_ma_vuong.png",
+    "quote": "Thao Thiết há miệng nuốt chửng càn khôn! Đừng hòng vượt qua ải ẩm thực ăn uống nếu chưa nắm chắc từ vựng!"
   },
   {
     "id": "boss-jpd113-9",
@@ -213,7 +229,9 @@
     "description": "Mấy giờ, mấy phút, nửa tiếng, sáng, chiều, tối, hôm qua, hôm nay, ngày mai, sáng nay, tối nay...",
     "specialSkill": "Thời Không Tĩnh Chỉ",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_luc_nhi_my_hau.png",
+    "quote": "Thời gian như bóng câu qua cửa sổ! Ngươi có bắt kịp các mốc thời gian giờ phút trong tiếng Nhật hay không?"
   },
   {
     "id": "boss-jpd113-10",
@@ -237,7 +255,9 @@
     "description": "4 mùa trong năm và các động từ cốt lõi: đi, đến, về, thức dậy, ngủ, làm việc, nghỉ ngơi, ăn, uống...",
     "specialSkill": "Hoa Lạc Tuyết Bay",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_xich_hoa_long.png",
+    "quote": "Bốn mùa xuân hạ thu đông luân hồi chuyển biến. Hãy vượt qua trận đồ thời tiết khí hậu của ta!"
   },
   {
     "id": "boss-jpd113-11",
@@ -261,7 +281,9 @@
     "description": "Trận chiến tổng hợp toàn bộ 11 bài học JPD113 trước khi đối mặt với Trùm Cuối Bạch Cốt Tinh!",
     "specialSkill": "Ngũ Hành Thần Lôi",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_kim_si_dieu.png",
+    "quote": "Tổng hợp ngũ hành N5 hội tụ tại đây! Chỉ có kỳ tài tiếng Nhật chân chính mới chạm tới cửa ải Trùm Cuối!"
   },
   {
     "id": "boss-jpd113-final",
@@ -285,7 +307,9 @@
     "description": "TRÙM CUỐI SƠ CẤP JPD1! Bạch Cốt Tinh xáo trộn toàn bộ cú pháp. Hãy dịch và lắp ghép chính xác các câu tiếng Nhật để phong ấn vĩnh viễn!",
     "specialSkill": "Thi Cốt Hỗn Độn Trận (Ghép Câu)",
     "questionType": "sentence_scramble",
-    "isFinalBoss": true
+    "isFinalBoss": true,
+    "image": "/images/boss_bach_cot_tinh.png",
+    "quote": "Hahaha! Tôn Ngộ Không, mắt thần Hỏa Nhãn Kim Tinh của ngươi liệu có phân biệt được ma trận ngữ pháp của Bạch Cốt phu nhân ta?"
   },
   {
     "id": "boss-jpd123-1",
@@ -309,7 +333,9 @@
     "description": "Tàu điện, tàu ngầm, máy bay, taxi, xe đạp, đi bộ và các cách diễn đạt phương tiện di chuyển.",
     "specialSkill": "Phong Trì Điện Xế",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_thiet_bi_bao.png",
+    "quote": "Thiết Bì Báo tung hoành vạn dặm! Ngươi biết đi xe buýt, tàu điện ngầm hay máy bay bằng tiếng Nhật chưa?"
   },
   {
     "id": "boss-jpd123-2",
@@ -333,7 +359,9 @@
     "description": "Tính từ đuôi い và な: đẹp, yên tĩnh, nổi tiếng, thân thiện, lớn, nhỏ, mới, cũ, nóng, lạnh...",
     "specialSkill": "Tử Kim Hồ Lô Hút Hồn",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_kim_giac_ngan_giac.png",
+    "quote": "Thất Tinh Kiếm và Hồ Lô Tím Vàng của huynh đệ ta sẽ khảo thí toàn bộ tính từ i và tính từ na trong tiếng Nhật!"
   },
   {
     "id": "boss-jpd123-3",
@@ -357,7 +385,9 @@
     "description": "Vị trí trên, dưới, trước, sau, trong, ngoài, giữa và biến đổi động từ thể Te.",
     "specialSkill": "Tam Muội Chân Hỏa",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_hong_hai_nhi.png",
+    "quote": "Tam Muội Chân Hỏa cháy đỏ trời Tây! Thể Te và các vị trí không gian của ngươi đã thuần thục chưa hỡi Tôn Hầu Tử?"
   },
   {
     "id": "boss-jpd123-final",
@@ -381,7 +411,9 @@
     "description": "TRÙM CUỐI TRUNG CẤP JPD2! Ghép hoàn chỉnh câu phức thể てから, なければなりません, たことがあります!",
     "specialSkill": "Bản Thể Cự Ngưu Giẫm Đạp (Ghép Câu)",
     "questionType": "sentence_scramble",
-    "isFinalBoss": true
+    "isFinalBoss": true,
+    "image": "/images/boss_nguu_ma_vuong.png",
+    "quote": "Hỗn Thiên Đại Thánh Ngưu Ma Vương ta đây! Gậy Như Ý của ngươi có đỡ nổi đòn búa ngàn cân của Ma Vương?"
   },
   {
     "id": "boss-jpd133-1",
@@ -405,7 +437,9 @@
     "description": "Từ vựng xưng hô gia đình mình và gia đình người khác: bố, mẹ, anh, chị, em, ông, bà...",
     "specialSkill": "Mê Hồn Yêu Trận",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_cuu_vi_linh_ho.png",
+    "quote": "Chín đuôi linh hồ mê hoặc chúng sinh. Hãy phân định tôn xưng đại từ xưng hô gia đình trong tiếng Nhật cho chuẩn xác!"
   },
   {
     "id": "boss-jpd133-2",
@@ -429,7 +463,9 @@
     "description": "Từ vựng chính trị, xã hội, ý kiến, tin tức và cấu trúc ~と思います.",
     "specialSkill": "Kính Hoa Thủy Nguyệt",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_luc_nhi_my_hau.png",
+    "quote": "Ngươi là Tôn Ngộ Không thật hay ta mới là thật? Muốn biết hãy đối đáp các câu nhận định xã hội cao cấp!"
   },
   {
     "id": "boss-jpd133-3",
@@ -453,7 +489,9 @@
     "description": "Kính ngữ (Sonkeigo) và Khiêm nhường ngữ (Kenjougo) doanh nghiệp: おっしゃる, いらっしゃる, 参る, 申す...",
     "specialSkill": "Cửu Thiên Thần Phong",
     "questionType": "vocab",
-    "isFinalBoss": false
+    "isFinalBoss": false,
+    "image": "/images/boss_kim_si_dieu.png",
+    "quote": "Kính ngữ Khiêm nhường ngữ doanh nghiệp Nhật Bản là cảnh giới tối thượng! Ngươi đã sẵn sàng chưa?"
   },
   {
     "id": "boss-jpd133-final",
@@ -477,6 +515,8 @@
     "description": "ĐẠI TRÙM CUỐI TOÀN HỌC PHẦN TIẾNG NHẬT JPD! Giải mã ma trận ghép câu Kính ngữ, Định ngữ và Điều kiện phức hợp để thành đạo!",
     "specialSkill": "Âm Dương Nhị Khí Bình Phá Diệt (Ghép Câu)",
     "questionType": "sentence_scramble",
-    "isFinalBoss": true
+    "isFinalBoss": true,
+    "image": "/images/boss_kim_si_dieu.png",
+    "quote": "Ta là Kim Sí Điểu bay một cánh chín vạn dặm! Vượt qua ma trận tổng kết JPD của ta, ngươi mới xứng đáng thỉnh chân kinh!"
   }
 ]

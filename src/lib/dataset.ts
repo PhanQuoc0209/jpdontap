@@ -113,6 +113,8 @@ export interface BossItem {
   title: string;
   location: string;
   avatar: string;
+  image?: string;
+  quote?: string;
   color: string;
   bgGradient: string;
   maxHp: number;

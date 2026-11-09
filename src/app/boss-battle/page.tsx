@@ -43,6 +43,7 @@ interface MCQQuestion {
 export default function BossBattlePage() {
   const [selectedTier, setSelectedTier] = useState<'sơ cấp' | 'trung cấp' | 'cao cấp'>('sơ cấp');
   const [selectedBossId, setSelectedBossId] = useState<string>('boss-jpd113-1');
+  const [showIntro, setShowIntro] = useState<boolean>(true);
 
   // Filter bosses by active tier
   const tierBosses = useMemo(() => {
@@ -57,6 +58,7 @@ export default function BossBattlePage() {
   useEffect(() => {
     if (tierBosses.length > 0 && !tierBosses.some(b => b.id === selectedBossId)) {
       setSelectedBossId(tierBosses[0].id);
+      setShowIntro(true);
     }
   }, [selectedTier, tierBosses, selectedBossId]);
 
@@ -500,19 +502,21 @@ export default function BossBattlePage() {
     setShowHint(false);
     setShowBossHelp(false);
     setBossWrongExplanation(null);
+    setShowIntro(true);
     if (isSentenceMode && sentenceQuestions[0]) {
       setSelectedTokens([]);
       setAvailableTokens([...sentenceQuestions[0].scrambled]);
     }
   };
 
-  // Seamless Instant Progression: "Qua ải 2 chơi luôn"
+  // Seamless Progression with Intro: "Bấm vào các ải có intro xuất chiến"
   const handleNextStage = () => {
     const currentIndex = tierBosses.findIndex(b => b.id === selectedBossId);
     if (currentIndex >= 0 && currentIndex + 1 < tierBosses.length) {
       const nextBoss = tierBosses[currentIndex + 1];
       setSelectedBossId(nextBoss.id);
       setBattleOutcome('playing');
+      setShowIntro(true);
       sound.playTap();
     } else {
       // Completed all bosses of this tier: advance to next tier!
@@ -525,12 +529,14 @@ export default function BossBattlePage() {
           setSelectedTier(nextTier);
           setSelectedBossId(nextTierBosses[0].id);
           setBattleOutcome('playing');
+          setShowIntro(true);
           sound.playVictory();
         }
       } else {
         // Grand victory over the entire game!
         setSelectedBossId(tierBosses[0].id);
         setBattleOutcome('playing');
+        setShowIntro(true);
         sound.playVictory();
       }
     }
@@ -576,14 +582,26 @@ export default function BossBattlePage() {
         {tierBosses.map(b => (
           <button
             key={b.id}
-            onClick={() => setSelectedBossId(b.id)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap flex items-center gap-1.5 transition-all ${
+            onClick={() => {
+              setSelectedBossId(b.id);
+              setShowIntro(true);
+              sound.playTap();
+            }}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap flex items-center gap-2 transition-all cursor-pointer ${
               selectedBossId === b.id
                 ? 'bg-stone-900 text-white shadow-md scale-102 ring-2 ring-emerald-500'
                 : 'bg-white text-stone-600 border border-[#e2ece0] hover:border-stone-400'
             }`}
           >
-            <span>{b.avatar}</span>
+            {b.image ? (
+              <img
+                src={b.image}
+                alt={b.name}
+                className="w-5 h-5 rounded-full object-cover border border-amber-400/60 shadow-xs shrink-0"
+              />
+            ) : (
+              <span className="text-sm shrink-0">{b.avatar}</span>
+            )}
             <span>{b.name}</span>
             {b.isFinalBoss && (
               <span className="px-1.5 py-0.2 rounded-full bg-red-600 text-white text-[9px] uppercase tracking-wider animate-pulse">
@@ -692,9 +710,19 @@ export default function BossBattlePage() {
             <div className={`relative transition-all duration-300 ${
               bossHurt ? 'translate-x-4 rotate-12 scale-85 filter brightness-150 drop-shadow-[0_0_30px_rgba(239,68,68,0.9)]' : 'animate-float'
             }`}>
-              <div className="text-7xl sm:text-8xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] filter select-none">
-                {boss.avatar}
-              </div>
+              {boss.image ? (
+                <div className="w-28 h-28 sm:w-36 sm:h-36 relative flex items-center justify-center">
+                  <img
+                    src={boss.image}
+                    alt={boss.name}
+                    className="w-full h-full object-contain filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)] select-none pointer-events-none"
+                  />
+                </div>
+              ) : (
+                <div className="text-7xl sm:text-8xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] filter select-none">
+                  {boss.avatar}
+                </div>
+              )}
 
               {/* Epic Golden Staff Slam Effect When Wukong Strikes */}
               {bossHurt && (
@@ -1156,6 +1184,186 @@ export default function BossBattlePage() {
             </div>
           ) : null}
         </>
+      )}
+
+      {/* CINEMATIC BOSS ENCOUNTER INTRO OVERLAY */}
+      {showIntro && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-950/85 backdrop-blur-md animate-fade-in overflow-y-auto">
+          <div className="relative w-full max-w-xl bg-gradient-to-b from-[#1c1514] via-[#141216] to-[#0c0a09] border-2 border-amber-500/50 rounded-3xl p-5 sm:p-7 shadow-[0_0_60px_rgba(245,158,11,0.3)] text-white space-y-4 my-auto overflow-hidden">
+            {/* Mythical Background Aura / Particles */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-rose-600/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,180,50,0.06)_0%,transparent_70%)] pointer-events-none" />
+
+            {/* Top Bar: Stage Badge & Close Button */}
+            <div className="relative z-10 flex items-center justify-between border-b border-amber-900/40 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full bg-gradient-to-r from-amber-600 to-red-600 text-stone-950 text-xs font-black uppercase tracking-wider shadow-sm">
+                  ẢI {boss.stageNumber || boss.level}
+                </span>
+                <span className="text-xs font-bold text-amber-200/90 uppercase tracking-wide">
+                  {boss.tier.toUpperCase()} ({boss.course.toUpperCase()})
+                </span>
+                {boss.isFinalBoss && (
+                  <span className="px-2 py-0.5 rounded-md bg-red-600 text-white text-[10px] font-black uppercase tracking-wider animate-pulse">
+                    ĐẠI TRÙM CUỐI
+                  </span>
+                )}
+              </div>
+              <button
+                onClick={() => setShowIntro(false)}
+                className="w-8 h-8 rounded-full bg-stone-800/80 hover:bg-stone-700 text-stone-400 hover:text-white flex items-center justify-center transition-colors text-sm font-bold cursor-pointer"
+                title="Bỏ qua Intro"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Stage Location & Title */}
+            <div className="relative z-10 text-center space-y-1">
+              <span className="text-[11px] font-semibold text-amber-400/90 tracking-widest uppercase flex items-center justify-center gap-1.5">
+                <span>❖</span>
+                <span>{boss.location}</span>
+                <span>❖</span>
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-100 to-amber-300 drop-shadow-sm">
+                {boss.name}
+              </h2>
+              <span className="text-xs text-stone-400 font-normal jp-font block">
+                {boss.japaneseName}
+              </span>
+            </div>
+
+            {/* Confrontation Visual: 3D Wukong vs 3D Boss */}
+            <div className="relative z-10 flex items-center justify-between px-2 sm:px-6 py-2">
+              {/* Left: 3D Wukong */}
+              <div className="flex flex-col items-center text-center space-y-1.5 w-32 sm:w-36">
+                <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full bg-amber-500/25 blur-xl animate-pulse" />
+                  <img
+                    src="/images/wukong_action.png"
+                    alt="Tôn Ngộ Không"
+                    className="w-full h-full object-contain filter drop-shadow-[0_8px_16px_rgba(245,158,11,0.5)] select-none animate-float"
+                  />
+                </div>
+                <div>
+                  <span className="text-xs sm:text-sm font-black text-emerald-400 block">
+                    TÔN NGỘ KHÔNG
+                  </span>
+                  <span className="text-[10px] text-stone-400 block leading-tight">
+                    Tề Thiên Đại Thánh
+                  </span>
+                  <span className="inline-block mt-0.5 px-2 py-0.5 rounded-full bg-emerald-950/70 border border-emerald-500/40 text-[10px] font-bold text-emerald-300">
+                    💚 100 HP
+                  </span>
+                </div>
+              </div>
+
+              {/* Center: Glowing VS Seal */}
+              <div className="flex flex-col items-center justify-center px-1">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-red-600 via-amber-600 to-yellow-500 flex items-center justify-center shadow-[0_0_25px_rgba(239,68,68,0.7)] border-2 border-yellow-200 animate-pulse">
+                  <span className="text-white font-black text-base sm:text-lg italic tracking-wider">
+                    VS
+                  </span>
+                </div>
+                <span className="text-[10px] font-black text-amber-400/90 mt-1 uppercase tracking-widest">
+                  QUYẾT ĐẤU
+                </span>
+              </div>
+
+              {/* Right: 3D Boss */}
+              <div className="flex flex-col items-center text-center space-y-1.5 w-32 sm:w-36">
+                <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full bg-rose-600/25 blur-xl animate-pulse" />
+                  {boss.image ? (
+                    <img
+                      src={boss.image}
+                      alt={boss.name}
+                      className="w-full h-full object-contain filter drop-shadow-[0_8px_20px_rgba(239,68,68,0.6)] select-none animate-float"
+                    />
+                  ) : (
+                    <div className="text-6xl sm:text-7xl filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)] select-none animate-float">
+                      {boss.avatar}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <span className="text-xs sm:text-sm font-black text-rose-300 block truncate max-w-[130px]">
+                    {boss.name.replace(/^Ải \d+:\s*/, '')}
+                  </span>
+                  <span className="text-[10px] text-stone-400 block leading-tight">
+                    {boss.title || 'Yêu Ma Trấn Thủ'}
+                  </span>
+                  <span className="inline-block mt-0.5 px-2 py-0.5 rounded-full bg-rose-950/70 border border-rose-500/40 text-[10px] font-bold text-rose-300">
+                    🩸 {boss.maxHp} HP
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Boss Quote Dialogue Scroll */}
+            <div className="relative z-10 bg-gradient-to-r from-stone-900/90 via-stone-900/95 to-stone-900/90 border border-amber-500/30 rounded-2xl p-3 sm:p-3.5 shadow-inner">
+              <div className="flex items-start gap-2.5">
+                <span className="text-amber-500 text-lg leading-none mt-0.5">❝</span>
+                <div className="flex-1 space-y-1">
+                  <p className="text-xs sm:text-[13px] text-amber-100/95 italic leading-relaxed">
+                    {boss.quote || `Muốn vượt qua ải ${boss.name}, hãy giải sạch các câu hỏi tiếng Nhật của ta nếu không muốn chôn xác tại đây!`}
+                  </p>
+                  <div className="flex items-center justify-between pt-1.5 text-[10px] text-stone-400 border-t border-stone-800">
+                    <span className="text-amber-400 font-semibold flex items-center gap-1">
+                      ⚡ Chiêu thức: {boss.specialSkill}
+                    </span>
+                    <span>Độ khó: Cấp {boss.level}</span>
+                  </div>
+                </div>
+                <span className="text-amber-500 text-lg leading-none self-end">❞</span>
+              </div>
+            </div>
+
+            {/* Mission Requirements & Rewards */}
+            <div className="relative z-10 grid grid-cols-2 gap-2 text-xs">
+              <div className="bg-stone-900/70 rounded-xl p-2.5 border border-stone-800 space-y-1">
+                <span className="text-[10px] text-stone-400 block font-semibold uppercase tracking-wider">
+                  🎯 Mục Tiêu Diệt Trùm
+                </span>
+                <span className="text-emerald-400 font-black block text-sm">
+                  Đúng {boss.requiredCorrect} / {boss.totalQuestions || 8} câu
+                </span>
+                <span className="text-[10px] text-stone-400 block">
+                  {isSentenceMode ? 'Ghép câu ma trận trùm cuối' : boss.questionType === 'kanji' ? 'Trắc nghiệm Hán tự Kanji' : 'Từ vựng & Đề thi thực tế'}
+                </span>
+              </div>
+
+              <div className="bg-stone-900/70 rounded-xl p-2.5 border border-stone-800 space-y-1">
+                <span className="text-[10px] text-stone-400 block font-semibold uppercase tracking-wider">
+                  🎁 Phần Thưởng Trảm Yêu
+                </span>
+                <div className="flex items-center gap-3 text-sm font-black">
+                  <span className="text-amber-400">+{boss.rewardXp} XP</span>
+                  <span className="text-pink-400">🍑 +{boss.rewardPeaches} Đào</span>
+                </div>
+                <span className="text-[10px] text-stone-400 block">
+                  Mở khóa ải kế tiếp
+                </span>
+              </div>
+            </div>
+
+            {/* Big Action Button */}
+            <div className="relative z-10 pt-1">
+              <button
+                onClick={() => {
+                  sound.playWukongStrike();
+                  setShowIntro(false);
+                }}
+                className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 hover:from-amber-400 hover:to-yellow-300 text-stone-950 font-black text-sm sm:text-base uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(245,158,11,0.6)] border-2 border-yellow-200 active:scale-98 transition-all cursor-pointer"
+              >
+                <Swords className="w-5 h-5 fill-current" />
+                <span>VÀO CHIẾN ĐẤU NGAY</span>
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
