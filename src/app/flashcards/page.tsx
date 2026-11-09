@@ -27,7 +27,8 @@ import {
   AlertCircle,
   HelpCircle,
   Settings,
-  Search
+  Search,
+  ArrowRight
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -37,7 +38,7 @@ type ActionFilter = 'all' | 'due' | 'typing' | 'exam';
 interface ExamQuestion {
   id: string;
   word: VocabWord;
-  type: 'meaning_to_word' | 'word_to_meaning' | 'audio_to_meaning';
+  type: 'kanji_to_kana' | 'kana_to_kanji' | 'audio_to_word';
   titleBadge: string;
   prompt: string;
   subPrompt?: string;
@@ -81,6 +82,15 @@ export default function FlashcardsPage() {
   const [examScore, setExamScore] = useState(0);
   const [examCorrectCount, setExamCorrectCount] = useState(0);
   const [selectedExamOption, setSelectedExamOption] = useState<string | null>(null);
+  const [examShowHelp, setExamShowHelp] = useState(false);
+  const [examWrongExplanation, setExamWrongExplanation] = useState<{
+    meaningVi: string;
+    correctChoice: string;
+    wordText: string;
+    kanaText: string;
+    romajiText: string;
+    unitTitle: string;
+  } | null>(null);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Active deck calculation based on chosen level & unit
@@ -208,14 +218,49 @@ export default function FlashcardsPage() {
       const shuffledOthers = [...otherWords].sort(() => 0.5 - Math.random());
       const distractors = shuffledOthers.slice(0, 3);
 
-      const qTypes: ('meaning_to_word' | 'word_to_meaning' | 'audio_to_meaning')[] = [
-        'meaning_to_word',
-        'word_to_meaning',
-        'audio_to_meaning'
+      const qTypes: ('kanji_to_kana' | 'kana_to_kanji' | 'audio_to_word')[] = [
+        'kanji_to_kana',
+        'kana_to_kanji',
+        'audio_to_word'
       ];
       const qType = qTypes[idx % qTypes.length];
 
-      if (qType === 'meaning_to_word') {
+      if (qType === 'kanji_to_kana') {
+        // Kanji -> Choose correct Hiragana reading (All Japanese!)
+        const options = [
+          { id: 'correct', text: word.kana, sub: word.romaji },
+          ...distractors.map((d, i) => ({ id: `d_${i}`, text: d.kana, sub: d.romaji }))
+        ].sort(() => 0.5 - Math.random());
+
+        return {
+          id: `q-${idx}`,
+          word,
+          type: qType,
+          titleBadge: '読み方 (CÁCH ĐỌC HIRAGANA)',
+          prompt: word.word,
+          subPrompt: `「${word.word}」の正しい読み方はどれですか？`,
+          options,
+          correctAnswer: word.kana
+        };
+      } else if (qType === 'kana_to_kanji') {
+        // Hiragana -> Choose Kanji/Word (All Japanese!)
+        const options = [
+          { id: 'correct', text: word.word },
+          ...distractors.map((d, i) => ({ id: `d_${i}`, text: d.word }))
+        ].sort(() => 0.5 - Math.random());
+
+        return {
+          id: `q-${idx}`,
+          word,
+          type: qType,
+          titleBadge: '漢字表記 (CHỌN CHỮ KANJI/TỪ)',
+          prompt: word.kana,
+          subPrompt: `「${word.kana}」の正しい漢字表記はどれですか？`,
+          options,
+          correctAnswer: word.word
+        };
+      } else {
+        // Audio listening -> Choose Word (All Japanese!)
         const options = [
           { id: 'correct', text: word.word, sub: word.kana },
           ...distractors.map((d, i) => ({ id: `d_${i}`, text: d.word, sub: d.kana }))
@@ -225,43 +270,11 @@ export default function FlashcardsPage() {
           id: `q-${idx}`,
           word,
           type: qType,
-          titleBadge: 'CHỌN TỪ TIẾNG NHẬT',
-          prompt: word.meaning,
-          subPrompt: 'Chọn chữ Kanji / cách viết tiếng Nhật tương ứng',
+          titleBadge: '聴解 (NGHE PHÁT ÂM CHỌN TỪ)',
+          prompt: '🔊 音声を聞いてください',
+          subPrompt: '発音を聞いて、正しい言葉を選んでください',
           options,
           correctAnswer: word.word
-        };
-      } else if (qType === 'word_to_meaning') {
-        const options = [
-          { id: 'correct', text: word.meaning },
-          ...distractors.map((d, i) => ({ id: `d_${i}`, text: d.meaning }))
-        ].sort(() => 0.5 - Math.random());
-
-        return {
-          id: `q-${idx}`,
-          word,
-          type: qType,
-          titleBadge: 'DỊCH NGHĨA TỪ VỰNG',
-          prompt: word.word,
-          subPrompt: `${word.kana} ${word.romaji ? `(${word.romaji})` : ''}`,
-          options,
-          correctAnswer: word.meaning
-        };
-      } else {
-        const options = [
-          { id: 'correct', text: word.meaning },
-          ...distractors.map((d, i) => ({ id: `d_${i}`, text: d.meaning }))
-        ].sort(() => 0.5 - Math.random());
-
-        return {
-          id: `q-${idx}`,
-          word,
-          type: qType,
-          titleBadge: 'NGHE PHÁT ÂM & CHỌN NGHĨA',
-          prompt: '🔊 Bấm nghe phát âm',
-          subPrompt: 'Lắng nghe phát âm và chọn nghĩa tiếng Việt chính xác',
-          options,
-          correctAnswer: word.meaning
         };
       }
     });
@@ -273,6 +286,8 @@ export default function FlashcardsPage() {
     setExamScore(0);
     setExamCorrectCount(0);
     setSelectedExamOption(null);
+    setExamShowHelp(false);
+    setExamWrongExplanation(null);
     setCurrentMode('exam');
   };
 
@@ -380,7 +395,7 @@ export default function FlashcardsPage() {
 
   // ===================== EXAM ACTIONS ================================
   const handleExamOptionClick = (optionText: string) => {
-    if (selectedExamOption !== null || !currentExamQuestion) return;
+    if (selectedExamOption !== null || !currentExamQuestion || examWrongExplanation !== null) return;
 
     setSelectedExamOption(optionText);
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
@@ -392,18 +407,21 @@ export default function FlashcardsPage() {
     if (isCorrect) {
       sound.playCorrect();
       setExamCorrectCount(prev => prev + 1);
+      setTimeout(() => {
+        handleAdvanceExamQuestion();
+      }, 1000);
     } else {
       sound.playWrong();
+      // SHOW EXPLANATION when wrong!
+      setExamWrongExplanation({
+        meaningVi: currentExamQuestion.word.meaning,
+        correctChoice: currentExamQuestion.correctAnswer,
+        wordText: currentExamQuestion.word.word,
+        kanaText: currentExamQuestion.word.kana,
+        romajiText: currentExamQuestion.word.romaji,
+        unitTitle: currentExamQuestion.word.unitTitle,
+      });
     }
-
-    setTimeout(() => {
-      if (examCurrentIndex + 1 < examQuestions.length) {
-        setExamCurrentIndex(prev => prev + 1);
-        setSelectedExamOption(null);
-      } else {
-        finishExam();
-      }
-    }, 1200);
   };
 
   const handleExamTimeout = () => {
@@ -414,14 +432,27 @@ export default function FlashcardsPage() {
     currentExamQuestion.isCorrect = false;
     setSelectedExamOption('(Hết giờ)');
 
-    setTimeout(() => {
-      if (examCurrentIndex + 1 < examQuestions.length) {
-        setExamCurrentIndex(prev => prev + 1);
-        setSelectedExamOption(null);
-      } else {
-        finishExam();
-      }
-    }, 1000);
+    // SHOW EXPLANATION when timed out!
+    setExamWrongExplanation({
+      meaningVi: currentExamQuestion.word.meaning,
+      correctChoice: currentExamQuestion.correctAnswer,
+      wordText: currentExamQuestion.word.word,
+      kanaText: currentExamQuestion.word.kana,
+      romajiText: currentExamQuestion.word.romaji,
+      unitTitle: currentExamQuestion.word.unitTitle,
+    });
+  };
+
+  const handleAdvanceExamQuestion = () => {
+    setExamWrongExplanation(null);
+    setExamShowHelp(false);
+    setSelectedExamOption(null);
+
+    if (examCurrentIndex + 1 < examQuestions.length) {
+      setExamCurrentIndex(prev => prev + 1);
+    } else {
+      finishExam();
+    }
   };
 
   const finishExam = () => {
@@ -1089,28 +1120,41 @@ export default function FlashcardsPage() {
                 </button>
               </div>
 
-              {/* Prompt Meaning */}
-              <div className="space-y-1 my-auto">
+              {/* Prompt Word (NO VIETNAMESE MEANING BY DEFAULT) */}
+              <div className="space-y-2 my-auto">
                 <span className="text-[11px] font-bold text-[#8c6753] uppercase tracking-wider block">
-                  Hãy gõ tiếng Nhật cho nghĩa này:
+                  Gõ cách đọc Hiragana hoặc Romaji cho từ này:
                 </span>
-                <h2 className="text-3xl sm:text-4xl font-black text-[#143521]">
-                  {currentTypingWord.meaning}
+                <h2 className="text-4xl sm:text-5xl font-black text-[#143521] jp-font">
+                  {currentTypingWord.word}
                 </h2>
+                <p className="text-xs text-[#718777]">
+                  (Ví dụ gõ: <code className="bg-white px-2 py-0.5 rounded border border-stone-200 text-stone-800 font-mono font-bold">{currentTypingWord.kana.slice(0, 1)}...</code> hoặc Romaji)
+                </p>
 
-                {/* Hint toggle */}
+                {/* Khi khó quá? Xem giải thích & Nghĩa */}
                 {typingShowHint ? (
-                  <div className="pt-2 animate-fade-in">
-                    <span className="px-3 py-1 rounded-xl bg-white border border-amber-200 text-xs font-mono font-bold text-amber-700">
-                      Gợi ý: {currentTypingWord.kana} ({currentTypingWord.romaji})
-                    </span>
+                  <div className="pt-2 animate-fade-in p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-left space-y-1.5 max-w-sm mx-auto shadow-2xs">
+                    <div className="text-xs font-black text-amber-900 flex items-center gap-1.5">
+                      <HelpCircle className="w-4 h-4 text-amber-600" />
+                      <span>Giải thích chi tiết (Trợ giúp):</span>
+                    </div>
+                    <p className="text-xs text-stone-700">
+                      🇻🇳 <strong>Nghĩa tiếng Việt:</strong> <span className="text-amber-950 font-black">{currentTypingWord.meaning}</span>
+                    </p>
+                    <p className="text-xs text-stone-700">
+                      📖 <strong>Cách gõ đúng:</strong> <span className="font-mono font-bold text-red-600">{currentTypingWord.kana}</span> ({currentTypingWord.romaji})
+                    </p>
+                    <p className="text-[11px] text-stone-600">
+                      📚 <strong>Bài học:</strong> {currentTypingWord.unitTitle}
+                    </p>
                   </div>
                 ) : (
                   <button
                     onClick={() => setTypingShowHint(true)}
-                    className="text-[11px] text-[#718777] hover:text-[#15803d] underline pt-1 inline-flex items-center gap-1 cursor-pointer"
+                    className="text-[11px] text-amber-800 hover:text-amber-900 bg-amber-50 hover:bg-amber-100 px-3 py-1 rounded-full border border-amber-200 inline-flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
                   >
-                    <HelpCircle className="w-3 h-3" /> Xem gợi ý
+                    <HelpCircle className="w-3.5 h-3.5 text-amber-600" /> Khó quá? Xem giải thích &amp; Nghĩa
                   </button>
                 )}
               </div>
@@ -1159,21 +1203,30 @@ export default function FlashcardsPage() {
                 )}
 
                 {typingFeedback === 'wrong' && (
-                  <div className="space-y-1 p-2.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 animate-shake">
-                    <div className="font-bold flex items-center justify-center gap-1">
-                      <AlertCircle className="w-4 h-4" /> Chưa chính xác!
+                  <div className="space-y-2 p-3.5 rounded-2xl bg-red-50 border-2 border-red-200 text-xs text-red-700 animate-shake text-left shadow-xs">
+                    <div className="font-bold flex items-center gap-1.5 text-red-800">
+                      <AlertCircle className="w-4 h-4 text-red-600" />
+                      <span>Chưa chính xác! Xem giải thích chi tiết:</span>
                     </div>
-                    <div>
-                      Đáp án đúng:{' '}
-                      <span className="font-black text-red-800">
-                        {currentTypingWord.word} ({currentTypingWord.kana} - {currentTypingWord.romaji})
-                      </span>
+                    <div className="space-y-1 bg-white/90 p-2.5 rounded-xl border border-red-200">
+                      <p>
+                        🇻🇳 <strong>Nghĩa tiếng Việt:</strong>{' '}
+                        <span className="font-black text-red-800">{currentTypingWord.meaning}</span>
+                      </p>
+                      <p>
+                        ✅ <strong>Cách gõ chuẩn:</strong>{' '}
+                        <span className="font-black font-mono text-emerald-700">{currentTypingWord.kana}</span> ({currentTypingWord.romaji})
+                      </p>
+                      <p>
+                        📚 <strong>Từ vựng:</strong> {currentTypingWord.word} • {currentTypingWord.unitTitle}
+                      </p>
                     </div>
                     <button
                       onClick={handleNextTypingWord}
-                      className="mt-1 px-3 py-1 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700 cursor-pointer"
+                      className="w-full mt-1 py-2.5 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 cursor-pointer flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-transform"
                     >
-                      Đã hiểu, sang từ tiếp theo &gt;
+                      <span>Đã hiểu, sang từ tiếp theo</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 )}
@@ -1290,7 +1343,7 @@ export default function FlashcardsPage() {
 
             {/* Prompt */}
             <div className="text-center py-2 space-y-1">
-              {currentExamQuestion.type === 'audio_to_meaning' ? (
+              {currentExamQuestion.type === 'audio_to_word' ? (
                 <div className="space-y-2">
                   <button
                     onClick={() => sound.speakJapanese(currentExamQuestion.word.word)}
@@ -1312,9 +1365,40 @@ export default function FlashcardsPage() {
                   )}
                 </>
               )}
+
+              {/* Nút "Khó quá? Xem giải thích & Nghĩa tiếng Việt" */}
+              <div className="pt-2">
+                {examShowHelp ? (
+                  <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-left space-y-1.5 animate-in fade-in duration-200 shadow-2xs max-w-md mx-auto">
+                    <div className="flex items-center gap-1.5 text-xs font-black text-amber-900">
+                      <HelpCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                      <span>Giải thích chi tiết (Trợ giúp):</span>
+                    </div>
+                    <div className="text-xs text-stone-700 space-y-1 pl-5">
+                      <p>
+                        🇻🇳 <strong>Nghĩa tiếng Việt:</strong>{' '}
+                        <span className="text-amber-900 font-black">{currentExamQuestion.word.meaning}</span>
+                      </p>
+                      <p>
+                        📖 <strong>Cách đọc:</strong> {currentExamQuestion.word.kana} ({currentExamQuestion.word.romaji})
+                      </p>
+                      <p>
+                        📚 <strong>Bài học:</strong> {currentExamQuestion.word.unitTitle} ({currentExamQuestion.word.unitTag})
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setExamShowHelp(true)}
+                    className="text-[11px] text-amber-800 hover:text-amber-900 bg-amber-50 hover:bg-amber-100 px-3 py-1 rounded-full border border-amber-200 inline-flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
+                  >
+                    <HelpCircle className="w-3.5 h-3.5 text-amber-600" /> Khó quá? Xem giải thích &amp; Nghĩa
+                  </button>
+                )}
+              </div>
             </div>
 
-            {/* Multiple Choice Options */}
+            {/* Multiple Choice Options (ALL JAPANESE) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
               {currentExamQuestion.options.map((opt, idx) => {
                 const label = ['A', 'B', 'C', 'D'][idx];
@@ -1335,14 +1419,14 @@ export default function FlashcardsPage() {
                   <button
                     key={opt.id}
                     onClick={() => handleExamOptionClick(opt.text)}
-                    disabled={selectedExamOption !== null}
+                    disabled={selectedExamOption !== null || examWrongExplanation !== null}
                     className={`p-3.5 rounded-2xl border-2 text-left font-bold transition-all shadow-xs flex items-center gap-3 cursor-pointer ${btnStyle}`}
                   >
                     <span className="w-7 h-7 rounded-xl bg-stone-100 text-[#143521] flex items-center justify-center text-xs font-black shrink-0">
                       {label}
                     </span>
                     <div className="min-w-0">
-                      <span className="text-sm block truncate">{opt.text}</span>
+                      <span className="text-sm block truncate jp-font">{opt.text}</span>
                       {opt.sub && (
                         <span className="text-[10px] text-[#718777] block font-mono">
                           {opt.sub}
@@ -1353,6 +1437,39 @@ export default function FlashcardsPage() {
                 );
               })}
             </div>
+
+            {/* BẢNG GIẢI THÍCH SHOW LÊN KHI TRẢ LỜI SAI HOẶC HẾT GIỜ */}
+            {examWrongExplanation && (
+              <div className="p-4 rounded-2xl bg-red-50 border-2 border-red-300 text-left space-y-2.5 animate-in fade-in duration-200 shadow-sm">
+                <div className="flex items-center gap-2 text-sm font-black text-red-700">
+                  <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
+                  <span>Chưa chính xác! Xem giải thích bên dưới:</span>
+                </div>
+                <div className="text-xs text-stone-800 space-y-1.5 pl-3 sm:pl-5 bg-white/90 p-3 rounded-xl border border-red-200">
+                  <p>
+                    🇻🇳 <strong>Nghĩa tiếng Việt:</strong>{' '}
+                    <span className="text-red-700 font-black text-sm">{examWrongExplanation.meaningVi}</span>
+                  </p>
+                  <p>
+                    ✅ <strong>Đáp án đúng:</strong>{' '}
+                    <span className="text-emerald-700 font-black text-sm">{examWrongExplanation.correctChoice}</span>
+                  </p>
+                  <p>
+                    📖 <strong>Từ vựng:</strong> {examWrongExplanation.wordText} • {examWrongExplanation.kanaText} ({examWrongExplanation.romajiText})
+                  </p>
+                  <p>
+                    📚 <strong>Bài học:</strong> {examWrongExplanation.unitTitle}
+                  </p>
+                </div>
+                <button
+                  onClick={handleAdvanceExamQuestion}
+                  className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                >
+                  <span>Đã hiểu, sang câu tiếp theo</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -36,6 +36,8 @@ interface MCQQuestion {
   picId?: string;
   trap?: string;
   options: { id: string; main: string; sub?: string }[];
+  explanation?: string;
+  meaningVi?: string;
 }
 
 export default function BossBattlePage() {
@@ -74,6 +76,12 @@ export default function BossBattlePage() {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswerChecking, setIsAnswerChecking] = useState(false);
   const [showTrapHint, setShowTrapHint] = useState(false);
+  const [showBossHelp, setShowBossHelp] = useState(false);
+  const [bossWrongExplanation, setBossWrongExplanation] = useState<{
+    meaningVi: string;
+    correctAnswer: string;
+    explanation: string;
+  } | null>(null);
 
   // Sentence Scramble state for final bosses
   const [sentenceQuestions, setSentenceQuestions] = useState<SentenceItem[]>([]);
@@ -116,17 +124,19 @@ export default function BossBattlePage() {
         const wrongs = pool.filter(k => k.kanji !== correct.kanji).sort(() => 0.5 - Math.random()).slice(0, 3);
         const options = [correct, ...wrongs].sort(() => 0.5 - Math.random()).map(k => ({
           id: k.kanji,
-          main: k.kanji,
-          sub: `${k.hanViet} (${k.kunyomi || k.onyomi})`
+          main: k.kunyomi || k.onyomi,
+          sub: k.kanji
         }));
 
         generated.push({
           type: 'kanji',
           titleBadge: 'CHỮ HÁN KANJI',
-          prompt: `Chữ Hán nào có nghĩa là: "${correct.meaning}"?`,
-          subPrompt: `Hán-Việt: ${correct.hanViet}`,
+          prompt: `「${correct.kanji}」の正しい読み方はどれですか？`,
+          subPrompt: '正しいひらがな・読み方を選んでください',
           correctAnswer: correct.kanji,
-          correctWord: correct.kanji,
+          correctWord: `${correct.kanji} (${correct.kunyomi || correct.onyomi})`,
+          meaningVi: correct.meaning,
+          explanation: `Chữ Hán 「${correct.kanji}」 (Hán-Việt: ${correct.hanViet}) có nghĩa là: "${correct.meaning}". Cách đọc chuẩn: ${correct.kunyomi || correct.onyomi}.`,
           options
         });
       }
@@ -179,9 +189,9 @@ export default function BossBattlePage() {
         const correctAns = sanitizeAnswer(eq.correctAnswer);
         const correctMeaning = eq.correctMeaning || 'Câu trả lời chính xác';
 
-        // Distractors from other exam questions
+        // Distractors from other exam questions (No Vietnamese leak in options!)
         const seen = new Set([correctAns]);
-        const distractors: { id: string; main: string; sub?: string }[] = [];
+        const distractors: { id: string; main: string }[] = [];
         const candidatePool = [...courseExam].sort(() => 0.5 - Math.random());
 
         for (const c of candidatePool) {
@@ -190,15 +200,14 @@ export default function BossBattlePage() {
             seen.add(ansClean);
             distractors.push({
               id: ansClean,
-              main: ansClean,
-              sub: c.correctMeaning || ''
+              main: ansClean
             });
             if (distractors.length >= 3) break;
           }
         }
 
         const options = [
-          { id: correctAns, main: correctAns, sub: correctMeaning },
+          { id: correctAns, main: correctAns },
           ...distractors
         ].sort(() => 0.5 - Math.random());
 
@@ -206,11 +215,13 @@ export default function BossBattlePage() {
           type: 'image',
           titleBadge: `ẢI THỰC CHIẾN • HỎI ĐÁP HÌNH ẢNH (BÀI ${eq.bai})`,
           prompt: eq.questionJp,
-          subPrompt: eq.meaningVi,
+          subPrompt: '画像を見て、最も適切な日本語を選んでください',
           correctAnswer: correctAns,
           correctWord: eq.questionJp,
           picId: eq.picId,
           trap: eq.trap,
+          meaningVi: eq.meaningVi,
+          explanation: `Câu hỏi tiếng Nhật: ${eq.questionJp}\n🇻🇳 Nghĩa: "${eq.meaningVi}"\n✅ Đáp án chuẩn: ${correctAns} (${correctMeaning})${eq.hint ? `\n💡 Gợi ý: ${eq.hint}` : ''}`,
           options
         });
       }
@@ -223,7 +234,7 @@ export default function BossBattlePage() {
         const correctMeaning = eq.correctMeaning || 'Câu trả lời chuẩn';
 
         const seen = new Set([correctAns]);
-        const distractors: { id: string; main: string; sub?: string }[] = [];
+        const distractors: { id: string; main: string }[] = [];
         const candidatePool = [...courseExam].sort(() => 0.5 - Math.random());
 
         for (const c of candidatePool) {
@@ -232,15 +243,14 @@ export default function BossBattlePage() {
             seen.add(ansClean);
             distractors.push({
               id: ansClean,
-              main: ansClean,
-              sub: c.correctMeaning || ''
+              main: ansClean
             });
             if (distractors.length >= 3) break;
           }
         }
 
         const options = [
-          { id: correctAns, main: correctAns, sub: correctMeaning },
+          { id: correctAns, main: correctAns },
           ...distractors
         ].sort(() => 0.5 - Math.random());
 
@@ -248,10 +258,12 @@ export default function BossBattlePage() {
           type: 'listening_oral',
           titleBadge: `ẢI THỰC CHIẾN • PHẢN XẠ VẤN ĐÁP (BÀI ${eq.bai})`,
           prompt: eq.questionJp,
-          subPrompt: eq.meaningVi,
+          subPrompt: '音声を聞いて、最も適切な返答を選んでください',
           correctAnswer: correctAns,
           correctWord: eq.questionJp,
           trap: eq.hint || eq.trap,
+          meaningVi: eq.meaningVi,
+          explanation: `Câu hỏi phản xạ: ${eq.questionJp}\n🇻🇳 Nghĩa: "${eq.meaningVi}"\n✅ Đáp án chuẩn: ${correctAns} (${correctMeaning})${eq.hint ? `\n💡 Ngữ cảnh: ${eq.hint}` : ''}`,
           options
         });
       }
@@ -263,23 +275,52 @@ export default function BossBattlePage() {
       for (let i = 0; i < vocabNeeded; i++) {
         const correct = shuffledUnitPool[i % shuffledUnitPool.length];
         const wrongs = courseWords
-          .filter(w => w.id !== correct.id && w.word !== correct.word)
+          .filter(w => w.id !== correct.id && w.word !== correct.word && w.kana !== correct.kana)
           .sort(() => 0.5 - Math.random())
           .slice(0, 3);
 
-        const options = [correct, ...wrongs].sort(() => 0.5 - Math.random()).map(w => ({
-          id: w.id,
-          main: w.word,
-          sub: `${w.kana} (${w.romaji})`
-        }));
+        const hasKanji = Boolean(correct.kana && correct.kana !== correct.word);
+        const isKanjiToKana = hasKanji && i % 2 === 0;
+
+        let prompt = '';
+        let subPrompt = '';
+        let options: { id: string; main: string; sub?: string }[] = [];
+
+        if (isKanjiToKana) {
+          // Kanji -> Hiragana reading
+          prompt = `「${correct.word}」の正しい読み方はどれですか？`;
+          subPrompt = '正しいひらがな・読み方を選んでください';
+          options = [correct, ...wrongs].sort(() => 0.5 - Math.random()).map(w => ({
+            id: w.id,
+            main: w.kana
+          }));
+        } else if (hasKanji) {
+          // Hiragana -> Kanji representation
+          prompt = `「${correct.kana}」の正しい表記・漢字はどれですか？`;
+          subPrompt = '正しい漢字・表記を選んでください';
+          options = [correct, ...wrongs].sort(() => 0.5 - Math.random()).map(w => ({
+            id: w.id,
+            main: w.word
+          }));
+        } else {
+          // Kana-only word -> Word recognition
+          prompt = `「${correct.word}」`;
+          subPrompt = '正しい単語を選んでください';
+          options = [correct, ...wrongs].sort(() => 0.5 - Math.random()).map(w => ({
+            id: w.id,
+            main: w.word
+          }));
+        }
 
         generated.push({
           type: 'vocab',
           titleBadge: correct.unitTitle ? `TỪ VỰNG: ${correct.unitTitle.toUpperCase()}` : 'TỪ VỰNG TIẾNG NHẬT',
-          prompt: correct.meaning,
-          subPrompt: `Độ chính xác: ${correct.unitTag || 'JPD'}`,
+          prompt,
+          subPrompt,
           correctAnswer: correct.id,
           correctWord: correct.word,
+          meaningVi: correct.meaning,
+          explanation: `Từ vựng: 「${correct.word}」 【${correct.kana}】 (${correct.romaji})\n🇻🇳 Nghĩa tiếng Việt: "${correct.meaning}"\nBài học: ${correct.unitTitle || 'JPD'} (${correct.unitTag || 'JPD'})`,
           options
         });
       }
@@ -411,14 +452,21 @@ export default function BossBattlePage() {
         setPlayerHurt(false);
       }, 700);
 
-      if (newPlayerHp <= 0) {
-        setTimeout(() => {
-          setBattleOutcome('defeat');
-        }, 900);
-      } else {
-        setTimeout(() => {
-          advanceNextQuestion();
-        }, 1600);
+      // Stop & Display comprehensive explanation card for user to review
+      if (!isSentenceMode && currentMcq) {
+        const correctOpt = currentMcq.options.find(o => o.id === currentMcq.correctAnswer);
+        const correctText = correctOpt ? correctOpt.main : currentMcq.correctWord;
+        setBossWrongExplanation({
+          meaningVi: currentMcq.meaningVi || 'Xem giải thích chi tiết bên dưới',
+          correctAnswer: correctText,
+          explanation: currentMcq.explanation || `Đáp án chính xác là: ${correctText}`
+        });
+      } else if (isSentenceMode && currentSentence) {
+        setBossWrongExplanation({
+          meaningVi: currentSentence.vi,
+          correctAnswer: currentSentence.jp,
+          explanation: `Cấu trúc câu đúng: 「${currentSentence.jp}」\nCách đọc: ${currentSentence.kana} (${currentSentence.romaji})${currentSentence.hint ? `\n💡 Gợi ý: ${currentSentence.hint}` : ''}`
+        });
       }
     }
   };
@@ -427,6 +475,8 @@ export default function BossBattlePage() {
     setIsAnswerChecking(false);
     setSelectedAnswer(null);
     setShowTrapHint(false);
+    setShowBossHelp(false);
+    setBossWrongExplanation(null);
     const maxQ = isSentenceMode ? sentenceQuestions.length : boss.totalQuestions;
     if (questionIndex + 1 < maxQ) {
       setQuestionIndex(prev => prev + 1);
@@ -445,6 +495,9 @@ export default function BossBattlePage() {
     setSelectedAnswer(null);
     setIsAnswerChecking(false);
     setShowTrapHint(false);
+    setShowHint(false);
+    setShowBossHelp(false);
+    setBossWrongExplanation(null);
     if (isSentenceMode && sentenceQuestions[0]) {
       setSelectedTokens([]);
       setAvailableTokens([...sentenceQuestions[0].scrambled]);
@@ -806,13 +859,52 @@ export default function BossBattlePage() {
                 </button>
 
                 <button
-                  disabled={selectedTokens.length === 0 || isAnswerChecking}
+                  disabled={selectedTokens.length === 0 || isAnswerChecking || !!bossWrongExplanation}
                   onClick={handleSubmitSentence}
                   className="btn-3d-green flex-1 py-3 rounded-2xl text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-50 shadow-md"
                 >
                   <Sparkles className="w-4 h-4" /> Tung Chiêu Gậy Như Ý
                 </button>
               </div>
+
+              {/* COMPREHENSIVE EXPLANATION CARD FOR SENTENCE */}
+              {bossWrongExplanation && (
+                <div className="p-4 rounded-2xl bg-red-50 border-2 border-red-300 space-y-3 animate-fade-in shadow-md">
+                  <div className="flex items-center gap-2 text-red-700 font-black text-sm">
+                    <AlertTriangle className="w-5 h-5 shrink-0" />
+                    <span>Chưa chính xác! Xem câu mẫu hoàn chỉnh:</span>
+                  </div>
+
+                  <div className="bg-white/90 p-3.5 rounded-xl border border-red-200 space-y-2 text-xs text-stone-800">
+                    <div>
+                      🇻🇳 <strong>Nghĩa câu:</strong> <span className="text-red-700 font-bold">{bossWrongExplanation.meaningVi}</span>
+                    </div>
+                    <div>
+                      ✅ <strong>Câu chuẩn tiếng Nhật:</strong> <span className="text-emerald-700 font-black jp-font text-sm">{bossWrongExplanation.correctAnswer}</span>
+                    </div>
+                    {bossWrongExplanation.explanation && (
+                      <div className="pt-2 text-stone-700 whitespace-pre-line border-t border-red-100 leading-relaxed">
+                        📖 {bossWrongExplanation.explanation}
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setBossWrongExplanation(null);
+                      setShowHint(false);
+                      if (playerHp <= 0) {
+                        setBattleOutcome('defeat');
+                      } else {
+                        advanceNextQuestion();
+                      }
+                    }}
+                    className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all cursor-pointer"
+                  >
+                    <span>Đã hiểu, tiếp tục chiến đấu ➔</span>
+                  </button>
+                </div>
+              )}
             </div>
           ) : currentMcq ? (
             /* MODE B: DYNAMIC INTERWOVEN CONSOLE (VOCAB + REAL EXAM IMAGE + REAL ORAL/LISTENING) */
@@ -855,15 +947,44 @@ export default function BossBattlePage() {
                   )}
                 </div>
 
-                {/* Speaker Button */}
-                <button
-                  onClick={handleListenQuestion}
-                  className="w-11 h-11 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white flex items-center justify-center shadow-md active:scale-95 transition-all shrink-0"
-                  title="Nghe câu hỏi"
-                >
-                  <Volume2 className="w-5 h-5 text-emerald-400" />
-                </button>
+                {/* Help button & Speaker Button */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => setShowBossHelp(!showBossHelp)}
+                    className="px-3 py-1.5 rounded-xl bg-amber-100/90 hover:bg-amber-200 border border-amber-300 text-amber-900 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                    title="Khó quá? Bấm để xem giải thích & gợi ý"
+                  >
+                    <span>💡 Khó quá?</span>
+                  </button>
+
+                  <button
+                    onClick={handleListenQuestion}
+                    className="w-10 h-10 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white flex items-center justify-center shadow-md active:scale-95 transition-all shrink-0 cursor-pointer"
+                    title="Nghe câu hỏi"
+                  >
+                    <Volume2 className="w-5 h-5 text-emerald-400" />
+                  </button>
+                </div>
               </div>
+
+              {/* HELP & EXPLANATION ACCORDION */}
+              {showBossHelp && (
+                <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 text-xs animate-fade-in space-y-1.5 shadow-sm">
+                  <div className="font-bold flex items-center gap-1.5 text-amber-900">
+                    <span>💡 Trợ giúp giải thích &amp; gợi ý:</span>
+                  </div>
+                  {currentMcq.meaningVi && (
+                    <div className="text-stone-800">
+                      🇻🇳 <strong>Nghĩa tiếng Việt:</strong> <span className="text-amber-900 font-semibold">{currentMcq.meaningVi}</span>
+                    </div>
+                  )}
+                  {currentMcq.explanation && (
+                    <div className="whitespace-pre-line text-stone-700 leading-relaxed border-t border-amber-200/80 pt-1.5">
+                      📖 {currentMcq.explanation}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* SPECIFIC DISPLAY: REAL EXAM IMAGE */}
               {currentMcq.type === 'image' && currentMcq.picId && (
@@ -940,7 +1061,7 @@ export default function BossBattlePage() {
                   return (
                     <button
                       key={opt.id}
-                      disabled={isAnswerChecking}
+                      disabled={isAnswerChecking || !!bossWrongExplanation}
                       onClick={() => handleSelectMcq(opt.id)}
                       className={`p-3 rounded-2xl border text-center transition-all flex flex-col justify-between items-center relative active:scale-95 min-h-[92px] ${btnStyle}`}
                     >
@@ -961,6 +1082,45 @@ export default function BossBattlePage() {
                   );
                 })}
               </div>
+
+              {/* COMPREHENSIVE EXPLANATION CARD FOR MCQ */}
+              {bossWrongExplanation && (
+                <div className="p-4 rounded-2xl bg-red-50 border-2 border-red-300 space-y-3 animate-fade-in shadow-md">
+                  <div className="flex items-center gap-2 text-red-700 font-black text-sm">
+                    <AlertTriangle className="w-5 h-5 shrink-0" />
+                    <span>Chưa chính xác! Xem giải thích chi tiết:</span>
+                  </div>
+
+                  <div className="bg-white/90 p-3.5 rounded-xl border border-red-200 space-y-2 text-xs text-stone-800">
+                    <div>
+                      🇻🇳 <strong>Nghĩa tiếng Việt:</strong> <span className="text-red-700 font-bold">{bossWrongExplanation.meaningVi}</span>
+                    </div>
+                    <div>
+                      ✅ <strong>Đáp án chuẩn xác:</strong> <span className="text-emerald-700 font-black jp-font text-sm">{bossWrongExplanation.correctAnswer}</span>
+                    </div>
+                    {bossWrongExplanation.explanation && (
+                      <div className="pt-2 text-stone-700 whitespace-pre-line border-t border-red-100 leading-relaxed">
+                        📖 {bossWrongExplanation.explanation}
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setBossWrongExplanation(null);
+                      setShowBossHelp(false);
+                      if (playerHp <= 0) {
+                        setBattleOutcome('defeat');
+                      } else {
+                        advanceNextQuestion();
+                      }
+                    }}
+                    className="w-full py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all cursor-pointer"
+                  >
+                    <span>Đã hiểu, tiếp tục chiến đấu ➔</span>
+                  </button>
+                </div>
+              )}
             </div>
           ) : null}
         </>
