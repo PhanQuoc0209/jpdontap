@@ -1,14 +1,11 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { TopHeader } from '@/components/TopHeader';
-import { Navbar } from '@/components/Navbar';
-import { DesktopSidebar } from '@/components/DesktopSidebar';
-import { DesktopRightPanel } from '@/components/DesktopRightPanel';
 import { AntiInspect } from '@/components/AntiInspect';
+import { AppLayout } from '@/components/AppLayout';
 
 export const metadata: Metadata = {
   title: 'Manabi Wukong - Học Tiếng Nhật JPD & Game Vượt Ải Cùng Tôn Ngộ Không',
-  description: 'Giao diện chuẩn Pandarin kết hợp Game Đánh Boss Vượt ải cùng Linh thú Tôn Ngộ Không và toàn bộ giáo trình tiếng Nhật Manabiman.',
+  description: 'Giao diện chuẩn Pandarin kết hợp Game Đánh Boss Vượt Ải cùng Linh thú Tôn Ngộ Không và toàn bộ giáo trình tiếng Nhật Manabiman.',
 };
 
 export default function RootLayout({
@@ -18,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi" className="light">
-      <body className="min-h-screen bg-[#eef6eb] text-[#143521] antialiased selection:bg-emerald-500 selection:text-white flex justify-center">
+      <body className="min-h-screen bg-[#eef6eb] text-[#143521] antialiased selection:bg-emerald-500 selection:text-white">
         {/* Anti-Inspect Security Protection (Blocks F12, DevTools, Right Click, Source Clone) */}
         <AntiInspect />
 
@@ -29,26 +26,10 @@ export default function RootLayout({
           <div className="absolute -bottom-12 -right-8 w-44 h-80 bg-gradient-to-tl from-emerald-600/20 to-transparent rounded-tl-full blur-xl" />
         </div>
 
-        {/* Desktop Wrapper Layout (Sidebar Left + Center Stage + Dashboard Right) */}
-        <div className="relative z-10 w-full flex justify-center min-h-screen">
-          {/* Left Desktop Sidebar (Visible on >= 1024px) */}
-          <DesktopSidebar />
-
-          {/* Main App Canvas (Responsive: 440px on mobile, expands to 680px on desktop) */}
-          <div className="w-full max-w-[440px] lg:max-w-[620px] xl:max-w-[680px] min-h-screen bg-[#f3f9f1] border-x border-[#dce8d8] shadow-2xl flex flex-col transition-all">
-            <TopHeader />
-            <main className="flex-1 pb-24 lg:pb-12 px-4 pt-2">
-              {children}
-            </main>
-            {/* Bottom Navbar (Visible only on mobile/tablet < 1024px) */}
-            <div className="lg:hidden">
-              <Navbar />
-            </div>
-          </div>
-
-          {/* Right Desktop Dashboard (Visible on >= 1280px) */}
-          <DesktopRightPanel />
-        </div>
+        {/* Responsive App Layout Shell with Collapsible Left Navbar & Right Points Bar */}
+        <AppLayout>
+          {children}
+        </AppLayout>
       </body>
     </html>
   );
