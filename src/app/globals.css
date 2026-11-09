@@ -160,3 +160,80 @@ body {
 .animate-float-damage {
   animation: floatDamage 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Wukong Somersault Cloud Flying Loop Around Forest Banner */
+@keyframes wukongFlyLoop {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  12% {
+    transform: translate3d(-50px, -45px, 0) scale(1.14) rotate(-16deg);
+  }
+  28% {
+    transform: translate3d(-190px, -65px, 0) scale(0.92) rotate(-22deg);
+  }
+  46% {
+    transform: translate3d(-340px, 12px, 0) scale(1.08) rotate(14deg);
+  }
+  62% {
+    transform: translate3d(-230px, -70px, 0) scale(0.85) rotate(-26deg);
+  }
+  80% {
+    transform: translate3d(-70px, -30px, 0) scale(1.16) rotate(12deg);
+  }
+  92% {
+    transform: translate3d(12px, -8px, 0) scale(1.04) rotate(-4deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes wukongFlyLoopMobile {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  15% {
+    transform: translate3d(-25px, -30px, 0) scale(1.08) rotate(-12deg);
+  }
+  38% {
+    transform: translate3d(-95px, -45px, 0) scale(0.92) rotate(-18deg);
+  }
+  58% {
+    transform: translate3d(-160px, 10px, 0) scale(1.06) rotate(12deg);
+  }
+  78% {
+    transform: translate3d(-85px, -40px, 0) scale(0.88) rotate(-16deg);
+  }
+  92% {
+    transform: translate3d(-12px, -8px, 0) scale(1.03) rotate(4deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+.animate-wukong-fly {
+  animation: wukongFlyLoop 3.2s cubic-bezier(0.34, 1.15, 0.64, 1) forwards;
+}
+
+@media (max-width: 640px) {
+  .animate-wukong-fly {
+    animation-name: wukongFlyLoopMobile;
+  }
+}
+
+@keyframes goldenCloudTrail {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.6) translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.2) translate(-40px, 20px);
+  }
+}
+
+.animate-cloud-trail {
+  animation: goldenCloudTrail 0.8s ease-out infinite;
+}

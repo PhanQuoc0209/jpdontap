@@ -124,6 +124,49 @@ class SoundManager {
     osc.stop(now + 0.4);
   }
 
+  // Sound Effect: Flying on Somersault Cloud (Cân Đẩu Vân du ngoạn)
+  playCloudFly() {
+    this.initCtx();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+
+    // Atmospheric wind / cloud swoosh
+    const osc1 = this.ctx.createOscillator();
+    const gain1 = this.ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(320, now);
+    osc1.frequency.exponentialRampToValueAtTime(950, now + 0.35);
+    osc1.frequency.exponentialRampToValueAtTime(450, now + 0.9);
+    osc1.frequency.exponentialRampToValueAtTime(800, now + 1.4);
+    osc1.frequency.exponentialRampToValueAtTime(260, now + 2.0);
+
+    gain1.gain.setValueAtTime(0.01, now);
+    gain1.gain.linearRampToValueAtTime(0.22, now + 0.2);
+    gain1.gain.linearRampToValueAtTime(0.18, now + 1.2);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 2.0);
+
+    osc1.connect(gain1);
+    gain1.connect(this.ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 2.0);
+
+    // Magical golden sparkle chimes during flight
+    const sparkleNotes = [659.25, 783.99, 1046.5, 1318.51, 1567.98];
+    sparkleNotes.forEach((freq, idx) => {
+      const osc = this.ctx!.createOscillator();
+      const gain = this.ctx!.createGain();
+      osc.type = 'triangle';
+      const t = now + 0.15 + idx * 0.18;
+      osc.frequency.setValueAtTime(freq, t);
+      gain.gain.setValueAtTime(0.15, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+      osc.connect(gain);
+      gain.connect(this.ctx!.destination);
+      osc.start(t);
+      osc.stop(t + 0.35);
+    });
+  }
+
   // Sound Effect: Victory / Level Clear
   playVictory() {
     this.initCtx();

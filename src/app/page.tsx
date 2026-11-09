@@ -2,45 +2,84 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { WukongMascot } from '@/components/WukongMascot';
 import { sound } from '@/lib/sound';
-import { Play, ArrowRight, ChevronRight, Volume2 } from 'lucide-react';
+import { Play, ArrowRight, ChevronRight, Volume2, Sparkles } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 export default function HomePage() {
-  const [wukongMood, setWukongMood] = useState<'idle' | 'happy'>('idle');
+  const [isFlying, setIsFlying] = useState(false);
+  const [flyingBubbleText, setFlyingBubbleText] = useState('Bấm để ta lượn tiên cảnh! 🐵');
 
-  const handleWukongClick = () => {
-    sound.playCorrect();
-    setWukongMood('happy');
-    setTimeout(() => setWukongMood('idle'), 1500);
+  const handleWukongFly = () => {
+    if (isFlying) return;
+    setIsFlying(true);
+    sound.playCloudFly();
+
+    // Trigger golden sparkles confetti burst
+    try {
+      confetti({
+        particleCount: 25,
+        spread: 55,
+        colors: ['#f59e0b', '#fbbf24', '#fef08a', '#ffffff'],
+        origin: { x: 0.75, y: 0.35 }
+      });
+    } catch {}
+
+    const flightQuotes = [
+      'Cân Đẩu Vân... Vút bay! 🚀💨',
+      'Lượn qua đỉnh núi tiên giới! ☁️✨',
+      'Tiên cảnh bao la! Lão Tôn đây rồi! 🐵⛰️',
+      'Du ngoạn 10 vạn 8 ngàn dặm! ⚡'
+    ];
+    const randomQuote = flightQuotes[Math.floor(Math.random() * flightQuotes.length)];
+    setFlyingBubbleText(randomQuote);
+
+    // After 2.5s approaching landing
+    setTimeout(() => {
+      setFlyingBubbleText('Lão Tôn đã hạ cánh! Cùng ta ôn bài nào! 🌟');
+      sound.playVictory();
+    }, 2600);
+
+    // End flight animation at 3.2s
+    setTimeout(() => {
+      setIsFlying(false);
+    }, 3300);
+
+    // Reset speech bubble to prompt after 6.5s
+    setTimeout(() => {
+      setFlyingBubbleText('Bấm để ta lượn tiên cảnh! 🐵');
+    }, 6500);
   };
 
   return (
     <div className="space-y-4 pb-6">
-      {/* Hero Banner: Full-Bleed 3D Wukong Landscape + Interactive Floating Card (Ô Nổi) */}
-      <div className="relative overflow-hidden rounded-[2rem] border border-[#e0d6c0] shadow-[0_12px_28px_rgba(20,53,33,0.09)] min-h-[220px] sm:min-h-[240px] flex items-center p-4 sm:p-6 w-full">
-        {/* Background Image: Full Bleed 3D Wukong + Landscape */}
+      {/* Hero Banner: Full-Bleed Mythical Forest Landscape + Real Floating Card (Ô Nổi) + Flying Wukong */}
+      <div className="relative overflow-hidden rounded-[2rem] border border-amber-900/20 shadow-[0_16px_36px_rgba(20,53,33,0.12)] min-h-[250px] sm:min-h-[280px] flex items-center justify-between p-4 sm:p-7 w-full">
+        {/* Background Image: Pure Mythical Pagoda Forest (Edge to edge full-bleed, NO baked Wukong) */}
         <img
-          src="/images/banner_clean_bg.jpg"
-          alt="Ngộ Không nhiệm vụ tiếp theo"
-          className="absolute inset-0 w-full h-full object-cover object-right pointer-events-none select-none"
+          src="/images/home_forest_bg.jpg"
+          alt="Rừng núi tiên cảnh Ngộ Không"
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none"
         />
 
+        {/* Subtle Sunlight & Atmospheric Depth Gradients */}
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-950/15 via-transparent to-amber-900/10 pointer-events-none" />
+
         {/* Floating Content Card (Ô Nổi Thật, không phải ảnh phẳng) */}
-        <div className="relative z-10 rounded-2xl bg-white/90 backdrop-blur-md p-4 sm:p-5 border border-white/90 shadow-[0_8px_24px_rgba(46,29,15,0.12)] max-w-[270px] sm:max-w-sm space-y-2.5 animate-fade-in">
+        <div className="relative z-10 rounded-2xl bg-white/95 backdrop-blur-md p-4 sm:p-5 border border-white/90 shadow-[0_12px_30px_rgba(20,53,33,0.18)] max-w-[250px] sm:max-w-xs space-y-2.5 animate-fade-in shrink-0">
           {/* Badge */}
-          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#e78b3e] text-white text-[10px] font-black uppercase tracking-wider shadow-xs">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white text-[10px] sm:text-[11px] font-black uppercase tracking-wider shadow-sm">
             <span>NHIỆM VỤ TIẾP THEO</span>
             <span className="text-amber-200">✦</span>
           </div>
 
           {/* Heading */}
-          <h1 className="text-base sm:text-lg font-black text-[#2e1d0f] leading-snug">
+          <h1 className="text-base sm:text-xl font-black text-[#2e1d0f] leading-snug">
             Ôn lại 4 mục đến hạn<br />cùng Ngộ Không
           </h1>
 
           {/* Subtitle */}
-          <p className="text-[11px] text-[#6d5b4b] leading-relaxed font-medium">
+          <p className="text-[11px] sm:text-xs text-[#6d5b4b] leading-relaxed font-medium">
             Những mục đến hạn có nguy cơ bị quên cao nhất.
           </p>
 
@@ -49,12 +88,75 @@ export default function HomePage() {
             <Link
               href="/flashcards"
               onClick={() => sound.playCorrect()}
-              className="btn-3d-green inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-white text-xs font-black tracking-wide shadow-md active:scale-95 transition-transform"
+              className="btn-3d-green inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-xs sm:text-sm font-black tracking-wide shadow-md active:scale-95 transition-transform"
             >
-              <Play className="w-3.5 h-3.5 fill-white" />
+              <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-white" />
               <span>Ôn ngay</span>
             </Link>
           </div>
+        </div>
+
+        {/* Interactive 3D Wukong Flying around the Forest Banner */}
+        <div
+          onClick={handleWukongFly}
+          className={`
+            relative z-20 cursor-pointer select-none
+            flex flex-col items-center justify-center shrink-0
+            transition-transform duration-300
+            ${isFlying ? 'animate-wukong-fly pointer-events-none' : 'hover:scale-105 active:scale-95'}
+          `}
+          title="Bấm vào Ngộ Không để cưỡi Cân Đẩu Vân bay lượn quanh khu rừng!"
+        >
+          {/* Flying Speech Bubble */}
+          <div className="relative mb-1.5 max-w-[170px] sm:max-w-[210px] rounded-2xl bg-amber-50/95 backdrop-blur-xs border-2 border-amber-300 px-3 py-1.5 text-center shadow-lg transition-all animate-bounce">
+            <p className="text-[10px] sm:text-xs font-black text-amber-950">
+              {flyingBubbleText}
+            </p>
+            <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-amber-50 border-b-2 border-r-2 border-amber-300 rotate-45" />
+          </div>
+
+          {/* 3D Wukong Character with Cloud and Glow */}
+          <div className="relative w-32 h-32 sm:w-44 sm:h-44 md:w-48 md:h-48 flex items-center justify-center">
+            {/* Ambient Golden Cloud Aura */}
+            <div
+              className={`absolute inset-0 rounded-full bg-gradient-to-r from-amber-400/35 via-yellow-300/40 to-orange-400/35 blur-2xl pointer-events-none transition-all duration-300 ${
+                isFlying ? 'opacity-100 scale-125 animate-pulse' : 'opacity-60'
+              }`}
+            />
+
+            {/* Golden Cloud Trail when Flying */}
+            {isFlying && (
+              <div className="absolute -bottom-3 -left-4 w-12 h-12 bg-amber-300/80 rounded-full blur-md animate-cloud-trail pointer-events-none" />
+            )}
+
+            {/* Wukong 3D Sprite (User's Original 3D Wukong on Cân Đẩu Vân) */}
+            <img
+              src="/images/wukong_action.png"
+              alt="Tôn Ngộ Không Cưỡi Cân Đẩu Vân"
+              className={`
+                w-full h-full object-contain filter drop-shadow-[0_10px_22px_rgba(245,158,11,0.5)]
+                ${isFlying ? 'brightness-110 drop-shadow-[0_0_32px_rgba(245,158,11,0.95)]' : 'animate-float'}
+              `}
+            />
+
+            {/* Dynamic Flying Effects */}
+            {isFlying && (
+              <>
+                <span className="absolute -top-3 -right-2 text-2xl animate-ping select-none">✨</span>
+                <span className="absolute bottom-1 -left-3 text-2xl animate-bounce select-none">💨</span>
+                <span className="absolute -top-1 left-2 text-xl animate-pulse select-none">☁️</span>
+              </>
+            )}
+          </div>
+
+          {/* Interactive Hint Pill below Wukong (visible when idle) */}
+          {!isFlying && (
+            <div className="mt-1 px-2.5 py-0.5 rounded-full bg-stone-900/80 backdrop-blur-xs text-[10px] sm:text-[11px] font-bold text-amber-200 shadow-md flex items-center gap-1 border border-amber-400/50 hover:bg-stone-900">
+              <span>☁️</span>
+              <span>Bấm để Ngộ Không bay</span>
+              <span>➔</span>
+            </div>
+          )}
         </div>
       </div>
 
