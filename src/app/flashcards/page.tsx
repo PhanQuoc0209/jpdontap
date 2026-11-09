@@ -56,6 +56,7 @@ export default function FlashcardsPage() {
   const [isShuffled, setIsShuffled] = useState(false);
   const [selectedUnitForAction, setSelectedUnitForAction] = useState<UnitMeta | null>(null);
   const [modalSearchQuery, setModalSearchQuery] = useState('');
+  const [modalView, setModalView] = useState<'modes' | 'vocab_list'>('modes');
 
   // ===================== 1. FLASHCARD SRS STATE =====================
   const [flashcardIndex, setFlashcardIndex] = useState(0);
@@ -183,10 +184,10 @@ export default function FlashcardsPage() {
     setCurrentMode('flashcard');
   };
 
-  const handleStartTyping = (unitId: string | 'all' = 'all') => {
+  const handleStartTyping = (unitId: string | 'all' = 'all', startIndex: number = 0) => {
     sound.playTap();
     setSelectedUnitId(unitId);
-    setTypingIndex(0);
+    setTypingIndex(startIndex);
     setTypingInput('');
     setTypingFeedback('none');
     setTypingShowHint(false);
@@ -301,6 +302,8 @@ export default function FlashcardsPage() {
     } else {
       // By default open the quick mode selector modal for this unit!
       setSelectedUnitForAction(unit);
+      setModalView('modes');
+      setModalSearchQuery('');
     }
   };
 
@@ -747,207 +750,288 @@ export default function FlashcardsPage() {
                 onClick={() => {
                   setSelectedUnitForAction(null);
                   setModalSearchQuery('');
+                  setModalView('modes');
                 }}
               />
 
               {/* Modal Card */}
               <div className="relative w-full max-w-md sm:max-w-lg max-h-[90vh] bg-white rounded-3xl shadow-2xl border border-[#e2ece0] z-10 animate-in fade-in zoom-in duration-200 flex flex-col overflow-hidden">
-                {/* Modal Header (Sticky) */}
-                <div className="p-4 sm:p-5 pb-3 border-b border-[#e2ece0] flex items-center justify-between bg-[#fbfdf9] shrink-0">
-                  <div className="min-w-0 pr-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
-                        Bài {selectedUnitForAction.tag}
-                      </span>
-                      <span className="text-[10px] font-bold text-[#718777]">
-                        {dataset.words.filter(w => w.unitId === selectedUnitForAction.id).length} từ vựng
-                      </span>
-                    </div>
-                    <h3 className="text-base font-black text-[#143521] mt-1 truncate">
-                      {selectedUnitForAction.title}
-                    </h3>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      setSelectedUnitForAction(null);
-                      setModalSearchQuery('');
-                    }}
-                    className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer shrink-0"
-                    title="Đóng"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-
-                {/* Modal Scrollable Body */}
-                <div className="p-4 sm:p-5 overflow-y-auto space-y-4">
-                  {/* Section 1: 3 Study Modes */}
-                  <div className="space-y-2">
-                    <span className="text-[11px] font-bold text-[#597361] block">
-                      Chọn phương thức ôn tập cho bài học này:
-                    </span>
-
-                    <div className="space-y-2">
-                      {/* Mode 1: Flashcard SRS */}
-                      <button
-                        onClick={() => {
-                          const id = selectedUnitForAction.id;
-                          setSelectedUnitForAction(null);
-                          setModalSearchQuery('');
-                          handleStartFlashcard(id);
-                        }}
-                        className="w-full p-3 rounded-2xl border-2 border-emerald-300 hover:border-emerald-500 bg-emerald-50/50 hover:bg-emerald-50 text-left flex items-center justify-between transition-all group cursor-pointer"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg shrink-0">
-                            🎴
-                          </div>
-                          <div className="min-w-0">
-                            <span className="text-xs sm:text-sm font-black text-[#143521] block">
-                              Thẻ Lật SRS
-                            </span>
-                            <span className="text-[10px] text-[#718777] block truncate">
-                              Lật thẻ ghi nhớ Spaced Repetition
-                            </span>
-                          </div>
+                {modalView === 'modes' ? (
+                  <>
+                    {/* Modal Header for Mode Selection */}
+                    <div className="p-4 sm:p-5 pb-3 border-b border-[#e2ece0] flex items-center justify-between bg-[#fbfdf9] shrink-0">
+                      <div className="min-w-0 pr-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                            Bài {selectedUnitForAction.tag}
+                          </span>
+                          <span className="text-[10px] font-bold text-[#718777]">
+                            {dataset.words.filter(w => w.unitId === selectedUnitForAction.id).length} từ vựng
+                          </span>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-1 transition-transform shrink-0" />
-                      </button>
-
-                      {/* Mode 2: Typing Practice */}
-                      <button
-                        onClick={() => {
-                          const id = selectedUnitForAction.id;
-                          setSelectedUnitForAction(null);
-                          setModalSearchQuery('');
-                          handleStartTyping(id);
-                        }}
-                        className="w-full p-3 rounded-2xl border-2 border-amber-300 hover:border-amber-500 bg-amber-50/50 hover:bg-amber-50 text-left flex items-center justify-between transition-all group cursor-pointer"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-lg shrink-0">
-                            ⌨️
-                          </div>
-                          <div className="min-w-0">
-                            <span className="text-xs sm:text-sm font-black text-[#143521] block">
-                              Luyện Gõ Từ Vựng
-                            </span>
-                            <span className="text-[10px] text-[#718777] block truncate">
-                              Gõ Romaji &amp; Kana tăng tốc phản xạ
-                            </span>
-                          </div>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-amber-600 group-hover:translate-x-1 transition-transform shrink-0" />
-                      </button>
-
-                      {/* Mode 3: Exam Test */}
-                      <button
-                        onClick={() => {
-                          const id = selectedUnitForAction.id;
-                          setSelectedUnitForAction(null);
-                          setModalSearchQuery('');
-                          handleStartExam(id);
-                        }}
-                        className="w-full p-3 rounded-2xl border-2 border-rose-300 hover:border-rose-500 bg-rose-50/50 hover:bg-rose-50 text-left flex items-center justify-between transition-all group cursor-pointer"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-lg shrink-0">
-                            📝
-                          </div>
-                          <div className="min-w-0">
-                            <span className="text-xs sm:text-sm font-black text-[#143521] block">
-                              Mục Thi Sát Hạch
-                            </span>
-                            <span className="text-[10px] text-[#718777] block truncate">
-                              15 câu trắc nghiệm &amp; nghe có tính giờ
-                            </span>
-                          </div>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-rose-600 group-hover:translate-x-1 transition-transform shrink-0" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Section 2: Vocabulary List of This Unit */}
-                  <div className="space-y-2.5 pt-3 border-t border-[#e2ece0]">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <BookOpen className="w-4 h-4 text-emerald-600" />
-                        <span className="text-xs font-black text-[#143521]">
-                          Danh sách từ vựng bài này ({modalUnitWords.length} từ)
-                        </span>
+                        <h3 className="text-base font-black text-[#143521] mt-1 truncate">
+                          {selectedUnitForAction.title}
+                        </h3>
                       </div>
-                      <span className="text-[10px] text-[#718777] font-semibold">
-                        Chạm loa 🔊 để nghe phát âm
+
+                      <button
+                        onClick={() => {
+                          setSelectedUnitForAction(null);
+                          setModalSearchQuery('');
+                          setModalView('modes');
+                        }}
+                        className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer shrink-0"
+                        title="Đóng"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* Modal Body: 3 Main Choices */}
+                    <div className="p-4 sm:p-5 space-y-3">
+                      <span className="text-[11px] font-bold text-[#597361] block">
+                        Chọn phương thức ôn tập cho bài học này:
                       </span>
-                    </div>
 
-                    {/* Search inside unit */}
-                    <div className="relative">
-                      <input
-                        type="text"
-                        value={modalSearchQuery}
-                        onChange={(e) => setModalSearchQuery(e.target.value)}
-                        placeholder="Tìm từ trong bài (Kanji, Kana, Nghĩa)..."
-                        className="w-full py-2 pl-8 pr-3 rounded-xl bg-[#f4f8f3] border border-[#d8e5d6] text-xs font-medium text-[#143521] placeholder-[#889e8f] outline-none focus:border-emerald-500 focus:bg-white transition-all"
-                      />
-                      <Search className="w-3.5 h-3.5 text-[#718777] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    </div>
-
-                    {/* Word Items */}
-                    <div className="space-y-1.5 max-h-64 sm:max-h-80 overflow-y-auto pr-1">
-                      {modalUnitWords.length === 0 ? (
-                        <p className="text-xs text-center py-4 text-[#718777]">
-                          Không tìm thấy từ vựng nào phù hợp.
-                        </p>
-                      ) : (
-                        modalUnitWords.map((w, idx) => (
-                          <div
-                            key={w.id}
-                            className="p-2.5 rounded-2xl bg-[#f8faf6] border border-[#e4ede2] hover:border-emerald-400 hover:bg-emerald-50/40 transition-all flex items-center justify-between gap-2"
-                          >
-                            <div className="flex items-center gap-2.5 min-w-0">
-                              <span className="w-5 text-center text-[10px] font-mono font-bold text-[#889e8f] shrink-0">
-                                {idx + 1}
+                      <div className="space-y-2.5">
+                        {/* Option 1: Flashcard SRS */}
+                        <button
+                          onClick={() => {
+                            const id = selectedUnitForAction.id;
+                            setSelectedUnitForAction(null);
+                            setModalSearchQuery('');
+                            setModalView('modes');
+                            handleStartFlashcard(id);
+                          }}
+                          className="w-full p-3.5 rounded-2xl border-2 border-emerald-300 hover:border-emerald-500 bg-emerald-50/50 hover:bg-emerald-50 text-left flex items-center justify-between transition-all group cursor-pointer shadow-2xs hover:shadow-sm"
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl shrink-0 shadow-inner">
+                              🎴
+                            </div>
+                            <div className="min-w-0">
+                              <span className="text-sm font-black text-[#143521] block">
+                                Thẻ Lật SRS
                               </span>
-                              <div className="min-w-0">
-                                <div className="flex items-baseline gap-1.5 flex-wrap">
-                                  <span className="text-sm font-black text-[#143521] jp-font">
-                                    {w.word}
-                                  </span>
-                                  <span className="text-xs font-bold text-red-600 font-mono">
-                                    {w.kana}
-                                  </span>
-                                  {w.romaji && (
-                                    <span className="text-[10px] text-[#718777] font-mono">
-                                      ({w.romaji})
-                                    </span>
-                                  )}
-                                </div>
-                                <span className="text-xs font-bold text-[#b45309] block truncate">
-                                  {w.meaning}
+                              <span className="text-[11px] text-[#718777] block truncate">
+                                Lật thẻ ghi nhớ Spaced Repetition
+                              </span>
+                            </div>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-1 transition-transform shrink-0" />
+                        </button>
+
+                        {/* Option 2: DANH SÁCH TỪ VỰNG (Thay thế vị trí Luyện Gõ Từ Vựng!) */}
+                        <button
+                          onClick={() => {
+                            sound.playTap();
+                            setModalView('vocab_list');
+                          }}
+                          className="w-full p-3.5 rounded-2xl border-2 border-amber-300 hover:border-amber-500 bg-amber-50/50 hover:bg-amber-50 text-left flex items-center justify-between transition-all group cursor-pointer shadow-2xs hover:shadow-sm"
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-11 h-11 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl shrink-0 shadow-inner">
+                              📖
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-black text-[#143521] block">
+                                  Danh Sách Từ Vựng
+                                </span>
+                                <span className="px-2 py-0.5 rounded-full bg-amber-200/80 text-amber-900 text-[9px] font-black uppercase tracking-wider">
+                                  Có Luyện Gõ ⌨️
                                 </span>
                               </div>
+                              <span className="text-[11px] text-[#718777] block truncate">
+                                Xem {dataset.words.filter(w => w.unitId === selectedUnitForAction.id).length} từ vựng, nghe phát âm &amp; có chỗ luyện gõ
+                              </span>
                             </div>
-
-                            {/* Speaker button */}
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                sound.speakJapanese(w.word);
-                              }}
-                              className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] hover:bg-emerald-50 hover:border-emerald-400 text-[#15803d] flex items-center justify-center shrink-0 shadow-2xs active:scale-90 transition-transform cursor-pointer"
-                              title="Nghe phát âm chuẩn"
-                            >
-                              <Volume2 className="w-4 h-4" />
-                            </button>
                           </div>
-                        ))
-                      )}
+                          <div className="flex items-center gap-1 text-amber-700 font-bold text-xs shrink-0">
+                            <span>Mở xem</span>
+                            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        </button>
+
+                        {/* Option 3: Exam Test */}
+                        <button
+                          onClick={() => {
+                            const id = selectedUnitForAction.id;
+                            setSelectedUnitForAction(null);
+                            setModalSearchQuery('');
+                            setModalView('modes');
+                            handleStartExam(id);
+                          }}
+                          className="w-full p-3.5 rounded-2xl border-2 border-rose-300 hover:border-rose-500 bg-rose-50/50 hover:bg-rose-50 text-left flex items-center justify-between transition-all group cursor-pointer shadow-2xs hover:shadow-sm"
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="w-11 h-11 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-xl shrink-0 shadow-inner">
+                              📝
+                            </div>
+                            <div className="min-w-0">
+                              <span className="text-sm font-black text-[#143521] block">
+                                Mục Thi Sát Hạch
+                              </span>
+                              <span className="text-[11px] text-[#718777] block truncate">
+                                15 câu trắc nghiệm &amp; nghe có tính giờ
+                              </span>
+                            </div>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-rose-600 group-hover:translate-x-1 transition-transform shrink-0" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Header for Vocabulary List View */}
+                    <div className="p-4 sm:p-5 pb-3 border-b border-[#e2ece0] flex items-center justify-between bg-[#fbfdf9] shrink-0">
+                      <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                        <button
+                          onClick={() => setModalView('modes')}
+                          className="w-8 h-8 rounded-full bg-stone-100 hover:bg-stone-200 text-stone-700 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                          title="Quay lại"
+                        >
+                          <ArrowLeft className="w-4 h-4" />
+                        </button>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                              Bài {selectedUnitForAction.tag}
+                            </span>
+                            <span className="text-[10px] font-bold text-[#718777]">
+                              {dataset.words.filter(w => w.unitId === selectedUnitForAction.id).length} từ vựng
+                            </span>
+                          </div>
+                          <h3 className="text-base font-black text-[#143521] mt-0.5 truncate">
+                            {selectedUnitForAction.title}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          setSelectedUnitForAction(null);
+                          setModalSearchQuery('');
+                          setModalView('modes');
+                        }}
+                        className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer shrink-0"
+                        title="Đóng"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* Vocabulary List Scrollable Body */}
+                    <div className="p-4 sm:p-5 overflow-y-auto space-y-3.5">
+                      {/* --- CHỖ LUYỆN GÕ TỪ VỰNG NỔI BẬT TRÊN CÙNG --- */}
+                      <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white shadow-md flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5 font-black text-xs uppercase tracking-wider">
+                            <Keyboard className="w-4 h-4" />
+                            <span>Chế Độ Luyện Gõ Bài Này</span>
+                          </div>
+                          <p className="text-[11px] text-amber-100 mt-0.5 leading-snug">
+                            Gõ Romaji / Kana phản xạ nhanh toàn bộ {dataset.words.filter(w => w.unitId === selectedUnitForAction.id).length} từ vựng
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            const id = selectedUnitForAction.id;
+                            setSelectedUnitForAction(null);
+                            setModalView('modes');
+                            handleStartTyping(id);
+                          }}
+                          className="px-3.5 py-2 rounded-xl bg-white hover:bg-amber-50 text-amber-900 font-black text-xs uppercase tracking-wider shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer flex items-center gap-1.5"
+                        >
+                          <Play className="w-3.5 h-3.5 fill-amber-900" />
+                          <span>Luyện gõ</span>
+                        </button>
+                      </div>
+
+                      {/* Search inside unit */}
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={modalSearchQuery}
+                          onChange={(e) => setModalSearchQuery(e.target.value)}
+                          placeholder="Tìm từ (Kanji, Kana, Romaji, Nghĩa)..."
+                          className="w-full py-2.5 pl-8 pr-3 rounded-xl bg-[#f4f8f3] border border-[#d8e5d6] text-xs font-medium text-[#143521] placeholder-[#889e8f] outline-none focus:border-emerald-500 focus:bg-white transition-all shadow-inner"
+                        />
+                        <Search className="w-3.5 h-3.5 text-[#718777] absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+
+                      {/* Word Items */}
+                      <div className="space-y-2 max-h-80 sm:max-h-96 overflow-y-auto pr-1">
+                        {modalUnitWords.length === 0 ? (
+                          <p className="text-xs text-center py-6 text-[#718777]">
+                            Không tìm thấy từ vựng nào phù hợp.
+                          </p>
+                        ) : (
+                          modalUnitWords.map((w, idx) => (
+                            <div
+                              key={w.id}
+                              className="p-3 rounded-2xl bg-[#f8faf6] border border-[#e4ede2] hover:border-amber-400 hover:bg-amber-50/20 transition-all flex items-center justify-between gap-2.5 shadow-2xs"
+                            >
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <span className="w-6 h-6 rounded-full bg-[#eef4ec] text-[#597361] text-[10px] font-mono font-bold flex items-center justify-center shrink-0">
+                                  {idx + 1}
+                                </span>
+                                <div className="min-w-0">
+                                  <div className="flex items-baseline gap-1.5 flex-wrap">
+                                    <span className="text-base font-black text-[#143521] jp-font">
+                                      {w.word}
+                                    </span>
+                                    <span className="text-xs font-bold text-red-600 font-mono">
+                                      {w.kana}
+                                    </span>
+                                    {w.romaji && (
+                                      <span className="text-[10px] text-[#718777] font-mono">
+                                        ({w.romaji})
+                                      </span>
+                                    )}
+                                  </div>
+                                  <span className="text-xs font-bold text-[#b45309] block truncate mt-0.5">
+                                    {w.meaning}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Action Buttons: Audio & Typing Practice for this word */}
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    sound.speakJapanese(w.word);
+                                  }}
+                                  className="w-8 h-8 rounded-xl bg-white border border-[#cbd5e1] hover:bg-emerald-50 hover:border-emerald-400 text-[#15803d] flex items-center justify-center shadow-2xs active:scale-90 transition-transform cursor-pointer"
+                                  title="Nghe phát âm chuẩn"
+                                >
+                                  <Volume2 className="w-4 h-4" />
+                                </button>
+
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const id = selectedUnitForAction.id;
+                                    setSelectedUnitForAction(null);
+                                    setModalView('modes');
+                                    handleStartTyping(id, idx);
+                                  }}
+                                  className="px-2.5 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-900 text-[10px] font-bold flex items-center gap-1 shadow-2xs active:scale-95 transition-transform cursor-pointer"
+                                  title="Bắt đầu luyện gõ từ này"
+                                >
+                                  <Keyboard className="w-3.5 h-3.5 text-amber-700" />
+                                  <span>Gõ</span>
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           )}
