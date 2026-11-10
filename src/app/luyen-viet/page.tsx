@@ -16,9 +16,13 @@ import {
   Undo2,
   Eye,
   EyeOff,
-  BookOpen
+  BookOpen,
+  Play,
+  Square,
+  ListOrdered
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { getStrokeGuide, CharacterStrokeData } from '@/lib/strokeOrderData';
 
 type WritingCategory = 'hiragana' | 'katakana' | 'kanji';
 
@@ -30,9 +34,13 @@ export default function LuyenVietPage() {
   const [drawnStrokeCount, setDrawnStrokeCount] = useState(0);
   const [showGhostGuide, setShowGhostGuide] = useState(true);
   const [compoundMode, setCompoundMode] = useState<'both' | 'primary' | 'small'>('both');
+  const [showStrokeOrder, setShowStrokeOrder] = useState(true);
+  const [isDemoPlaying, setIsDemoPlaying] = useState(false);
+  const [activeDemoStroke, setActiveDemoStroke] = useState<number | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const undoHistoryRef = useRef<ImageData[]>([]);
+  const animationTimerRef = useRef<any>(null);
 
   // 3 Distinct Datasets for Hiragana, Katakana, and Kanji
   const hiraganaList = useMemo(() => {
@@ -87,11 +95,122 @@ export default function LuyenVietPage() {
   const primaryChar = isCompound ? displayGlyph[0] : displayGlyph;
   const smallChar = isCompound ? displayGlyph.slice(1) : '';
 
+  // Stroke guide data for active glyph
+  const strokeGuide: CharacterStrokeData = useMemo(() => {
+    const totalFallback = category === 'kanji' ? (activeItem as KanjiItem)?.strokes || 4 : 3;
+    const targetChar = isCompound && compoundMode === 'primary' ? primaryChar : isCompound && compoundMode === 'small' ? smallChar : displayGlyph;
+    return getStrokeGuide(targetChar, totalFallback);
+  }, [category, activeItem, displayGlyph, isCompound, compoundMode, primaryChar, smallChar]);
+
+  const stopStrokeDemo = () => {
+    setIsDemoPlaying(false);
+    setActiveDemoStroke(null);
+    if (animationTimerRef.current) {
+      clearTimeout(animationTimerRef.current);
+      animationTimerRef.current = null;
+    }
+  };
+
+  const handlePlayStrokeDemo = () => {
+    if (isDemoPlaying) {
+      stopStrokeDemo();
+      return;
+    }
+
+    clearCanvas();
+    setIsDemoPlaying(true);
+    setActiveDemoStroke(1);
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    sound.playTap();
+
+    let strokeIdx = 0;
+    const strokes = strokeGuide.strokes;
+
+    const drawNextStroke = () => {
+      if (strokeIdx >= strokes.length) {
+        setIsDemoPlaying(false);
+        setActiveDemoStroke(null);
+        sound.playVictory();
+        return;
+      }
+
+      const currentStroke = strokes[strokeIdx];
+      setActiveDemoStroke(currentStroke.strokeNumber);
+
+      const pts = currentStroke.points;
+      if (pts.length < 2) {
+        strokeIdx++;
+        drawNextStroke();
+        return;
+      }
+
+      const scaleX = canvas.width / 100;
+      const scaleY = canvas.height / 100;
+
+      let pointIdx = 0;
+      let curX = pts[0].x * scaleX;
+      let curY = pts[0].y * scaleY;
+
+      ctx.beginPath();
+      ctx.moveTo(curX, curY);
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = isCompound && compoundMode === 'both' ? 10 : 14;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      let stepCount = 0;
+      const totalSteps = 14;
+      let startP = pts[0];
+      let endP = pts[1];
+
+      const interval = setInterval(() => {
+        stepCount++;
+        const t = stepCount / totalSteps;
+        const x = (startP.x + (endP.x - startP.x) * t) * scaleX;
+        const y = (startP.y + (endP.y - startP.y) * t) * scaleY;
+
+        ctx.lineTo(x, y);
+        ctx.stroke();
+
+        if (stepCount >= totalSteps) {
+          stepCount = 0;
+          pointIdx++;
+          if (pointIdx < pts.length - 1) {
+            startP = pts[pointIdx];
+            endP = pts[pointIdx + 1];
+          } else {
+            clearInterval(interval);
+            setDrawnStrokeCount(strokeIdx + 1);
+            setHasDrawn(true);
+            strokeIdx++;
+            animationTimerRef.current = setTimeout(drawNextStroke, 280);
+          }
+        }
+      }, 25);
+    };
+
+    drawNextStroke();
+  };
+
   // Clear canvas whenever character or category changes
   useEffect(() => {
+    stopStrokeDemo();
     clearCanvas();
     setCompoundMode('both');
   }, [category, charIndex]);
+
+  useEffect(() => {
+    return () => {
+      if (animationTimerRef.current) {
+        clearTimeout(animationTimerRef.current);
+      }
+    };
+  }, []);
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -326,19 +445,62 @@ export default function LuyenVietPage() {
           )}
         </div>
 
-        {/* Toggle ghost guide */}
-        <div className="pt-1 flex items-center justify-between border-t border-[#e4dac3]/80">
-          <span className="text-[11px] text-stone-500 font-semibold">
+        {/* Toggle ghost guide & stroke order demo */}
+        <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-[#e4dac3]/80">
+          <span className="text-[11px] text-stone-500 font-semibold hidden sm:inline">
             Viết xong là qua ngay hoặc luyện lại tùy ý
           </span>
-          <button
-            onClick={() => setShowGhostGuide(!showGhostGuide)}
-            className="px-2.5 py-1 rounded-full bg-white hover:bg-stone-50 border border-[#e4dac3] text-stone-600 text-[10px] font-bold flex items-center gap-1 shadow-xs cursor-pointer"
-            title="Bật/tắt chữ mờ hướng dẫn"
-          >
-            {showGhostGuide ? <Eye className="w-3 h-3 text-emerald-600" /> : <EyeOff className="w-3 h-3 text-stone-400" />}
-            <span>{showGhostGuide ? 'Nét mờ: Bật' : 'Nét mờ: Tắt'}</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto justify-end">
+            {/* Play Stroke Demo Button */}
+            <button
+              type="button"
+              onClick={handlePlayStrokeDemo}
+              className={`px-3 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 shadow-xs transition-all cursor-pointer ${
+                isDemoPlaying
+                  ? 'bg-amber-600 text-white animate-pulse ring-2 ring-amber-300'
+                  : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white active:scale-95'
+              }`}
+              title="Xem hoạt họa mẫu thứ tự nét viết"
+            >
+              {isDemoPlaying ? (
+                <>
+                  <Square className="w-3.5 h-3.5 fill-current" />
+                  <span>Dừng mẫu ({activeDemoStroke}/{strokeGuide.strokes.length})</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-3.5 h-3.5 fill-current text-amber-100" />
+                  <span>Xem mẫu thứ tự viết</span>
+                </>
+              )}
+            </button>
+
+            {/* Toggle Numbered Stroke Order Badges */}
+            <button
+              type="button"
+              onClick={() => setShowStrokeOrder(!showStrokeOrder)}
+              className={`px-2.5 py-1.5 rounded-full border text-xs font-bold flex items-center gap-1 shadow-xs transition-all cursor-pointer ${
+                showStrokeOrder
+                  ? 'bg-amber-50 border-amber-300 text-amber-900'
+                  : 'bg-white border-[#e4dac3] text-stone-500 hover:bg-stone-50'
+              }`}
+              title="Bật/tắt số thứ tự nét 1, 2, 3"
+            >
+              <ListOrdered className="w-3.5 h-3.5 text-amber-600" />
+              <span>{showStrokeOrder ? 'Số nét: Bật' : 'Số nét: Tắt'}</span>
+            </button>
+
+            {/* Toggle Ghost Guide */}
+            <button
+              type="button"
+              onClick={() => setShowGhostGuide(!showGhostGuide)}
+              className="px-2.5 py-1.5 rounded-full bg-white hover:bg-stone-50 border border-[#e4dac3] text-stone-600 text-xs font-bold flex items-center gap-1 shadow-xs cursor-pointer"
+              title="Bật/tắt chữ mờ hướng dẫn"
+            >
+              {showGhostGuide ? <Eye className="w-3.5 h-3.5 text-emerald-600" /> : <EyeOff className="w-3.5 h-3.5 text-stone-400" />}
+              <span>{showGhostGuide ? 'Nét mờ: Bật' : 'Nét mờ: Tắt'}</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -439,6 +601,45 @@ export default function LuyenVietPage() {
             </div>
           )}
 
+          {/* Numbered Stroke Order Badges (①, ②, ③...) with Arrows */}
+          {showStrokeOrder && (
+            <div className="absolute inset-0 pointer-events-none select-none z-20">
+              {strokeGuide.strokes.map((s, idx) => {
+                const colorPalette = [
+                  'bg-red-600 border-red-200 text-white',
+                  'bg-amber-600 border-amber-200 text-white',
+                  'bg-emerald-600 border-emerald-200 text-white',
+                  'bg-blue-600 border-blue-200 text-white',
+                  'bg-purple-600 border-purple-200 text-white',
+                  'bg-pink-600 border-pink-200 text-white',
+                  'bg-teal-600 border-teal-200 text-white',
+                  'bg-stone-800 border-stone-300 text-white'
+                ];
+                const badgeColor = colorPalette[idx % colorPalette.length];
+                const isActive = activeDemoStroke === s.strokeNumber;
+
+                return (
+                  <div
+                    key={s.strokeNumber}
+                    style={{ left: `${s.startPercent.x}%`, top: `${s.startPercent.y}%` }}
+                    className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-0.5 transition-all duration-200 ${
+                      isActive ? 'scale-125 z-30 ring-4 ring-amber-300 shadow-xl' : 'scale-100 shadow-md'
+                    }`}
+                  >
+                    <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-1.5 flex items-center justify-center text-[10px] sm:text-xs font-black ${badgeColor}`}>
+                      {s.strokeNumber}
+                    </div>
+                    {s.direction && (
+                      <span className="text-[10px] font-black text-amber-900 bg-white/95 px-1 py-0.2 rounded-md shadow-xs border border-amber-300/80">
+                        {s.direction}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
           {/* Interactive HTML5 Drawing Canvas */}
           <canvas
             ref={canvasRef}
@@ -453,6 +654,46 @@ export default function LuyenVietPage() {
             onTouchEnd={stopDrawing}
             className="absolute inset-0 w-full h-full cursor-crosshair touch-none z-10"
           />
+        </div>
+      </div>
+
+      {/* Step-by-Step Stroke Order Sequence (Danh sách thứ tự từng nét) */}
+      <div className="rounded-2xl bg-gradient-to-r from-amber-50/80 via-white to-emerald-50/80 border border-amber-200 p-3 shadow-xs space-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
+          <span className="font-black text-[#143521] flex items-center gap-1.5">
+            <Sparkles className="w-4 h-4 text-amber-500" />
+            <span>Mẫu thứ tự viết ({strokeGuide.strokes.length} nét):</span>
+          </span>
+          <span className="text-[10px] text-amber-800 font-bold bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200">
+            {strokeGuide.ruleHint}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+          {strokeGuide.strokes.map((s, idx) => {
+            const isActive = activeDemoStroke === s.strokeNumber;
+            return (
+              <div
+                key={s.strokeNumber}
+                className={`shrink-0 px-3 py-1.5 rounded-xl border flex items-center gap-2 text-xs transition-all ${
+                  isActive
+                    ? 'bg-amber-500 text-white border-amber-600 shadow-md scale-102 font-black ring-2 ring-amber-300'
+                    : 'bg-white text-stone-700 border-stone-200 shadow-2xs hover:border-amber-400'
+                }`}
+              >
+                <span className="w-5 h-5 rounded-full bg-stone-900 text-white flex items-center justify-center text-[10px] font-black shrink-0">
+                  {s.strokeNumber}
+                </span>
+                <div className="leading-tight">
+                  <div className="font-bold flex items-center gap-1">
+                    <span>{s.name}</span>
+                    <span className="text-amber-600 font-black">{s.direction}</span>
+                  </div>
+                  <div className="text-[10px] opacity-75">{s.description}</div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
