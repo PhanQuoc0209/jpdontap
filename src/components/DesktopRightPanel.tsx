@@ -60,13 +60,20 @@ export const DesktopRightPanel: React.FC<DesktopRightPanelProps> = ({ isMobileDr
             <X className="w-5 h-5" />
           </button>
         ) : (
-          <button
-            onClick={toggleRightPanel}
-            className="p-1.5 rounded-xl text-[#718777] hover:bg-[#eaf4e8] hover:text-[#143521] transition-all cursor-pointer"
-            title="Thu gọn bảng điểm bên phải"
-          >
-            <PanelRightClose className="w-4 h-4" />
-          </button>
+          <div className="group relative">
+            <button
+              onClick={toggleRightPanel}
+              className="p-1.5 rounded-xl text-[#718777] hover:bg-[#eaf4e8] hover:text-[#143521] transition-all cursor-pointer"
+              aria-label="Thu gọn bảng điểm bên phải"
+            >
+              <PanelRightClose className="w-4 h-4" />
+            </button>
+            {/* Tooltip */}
+            <div className="pointer-events-none absolute right-0 top-full mt-2 z-[110] whitespace-nowrap rounded-xl bg-[#0e2917] border border-emerald-500/40 px-3 py-1 text-xs text-white opacity-0 shadow-2xl translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-150">
+              <span className="absolute right-3 -top-1 w-2 h-2 bg-[#0e2917] border-l border-t border-emerald-500/40 rotate-45" />
+              <div className="font-bold text-amber-200">Thu gọn Bảng Điểm &amp; Tu Vi</div>
+            </div>
+          </div>
         )}
       </div>
 

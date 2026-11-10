@@ -36,15 +36,15 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
   const collapsed = isMobileDrawer ? false : isSidebarCollapsed;
 
   const navLinks = [
-    { href: '/', label: 'Trang chủ', icon: Home },
-    { href: '/boss-battle', label: 'Đấu Boss Vượt Ải', icon: Swords, badge: 'Chiến' },
-    { href: '/kham-pha', label: 'Khám phá từ mới', icon: BookOpen },
-    { href: '/luyen-viet', label: 'Luyện viết chữ Hán', icon: PenTool },
-    { href: '/phat-am', label: 'Luyện phát âm', icon: Mic },
-    { href: '/flashcards', label: 'Flashcards SRS', icon: Layers },
-    { href: '/tien-do', label: 'Tiến độ & Năng lực', icon: BarChart2 },
-    { href: '/mua-chu', label: 'Mưa Chữ Minigame', icon: Sparkles, badge: 'Game' },
-    { href: '/ca-nhan', label: 'Cá nhân & Cài đặt', icon: User }
+    { href: '/', label: 'Trang chủ', desc: 'Bản đồ & Lộ trình tu học hàng ngày', icon: Home },
+    { href: '/boss-battle', label: 'Đấu Boss Vượt Ải', desc: 'Khiêu chiến 10 Ải Trùm Yêu Ma', icon: Swords, badge: 'Chiến' },
+    { href: '/kham-pha', label: 'Khám phá từ mới', desc: 'Tra cứu & Học kho từ vựng JPD', icon: BookOpen },
+    { href: '/luyen-viet', label: 'Luyện viết chữ Hán', desc: 'Bảng Hiragana, Katakana & Kanji', icon: PenTool },
+    { href: '/phat-am', label: 'Luyện phát âm AI', desc: 'Thu âm đối thoại & Nghe lại tức thì', icon: Mic },
+    { href: '/flashcards', label: 'Flashcards SRS', desc: 'Ôn tập lặp lại ngắt quãng thông minh', icon: Layers },
+    { href: '/tien-do', label: 'Tiến độ & Năng lực', desc: 'Báo cáo cảnh giới & Năng lực tu học', icon: BarChart2 },
+    { href: '/mua-chu', label: 'Mưa Chữ Minigame', desc: 'Game luyện phản xạ gõ chữ Nhật', icon: Sparkles, badge: 'Game' },
+    { href: '/ca-nhan', label: 'Cá nhân & Cài đặt', desc: 'Hồ sơ sinh viên, MSSV & Tùy chọn', icon: User }
   ];
 
   const handleLinkClick = () => {
@@ -58,74 +58,94 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
       className={`
         ${isMobileDrawer ? 'flex w-full h-full' : 'hidden lg:flex'}
         flex-col h-screen sticky top-0 bg-[#f7faf5] border-r border-[#e1ede0] select-none shadow-xs
-        transition-[width] duration-300 ease-in-out z-40
-        ${collapsed ? 'w-[72px] min-w-[72px] p-2.5 items-center' : 'w-64 xl:w-72 min-w-64 xl:min-w-72 p-4'}
-        pb-6 overflow-y-auto overflow-x-hidden
+        transition-[width] duration-300 ease-in-out z-50
+        ${collapsed ? 'w-[72px] min-w-[72px] p-2 items-center overflow-visible' : 'w-64 xl:w-72 min-w-64 xl:min-w-72 p-4 pb-6 overflow-y-auto overflow-x-hidden'}
       `}
     >
       {/* Brand Header */}
-      <div className={`w-full flex items-center ${collapsed ? 'flex-col gap-3 pb-3' : 'justify-between pb-4'} border-b border-[#e1ede0]`}>
-        <Link
-          href="/"
-          onClick={handleLinkClick}
-          className={`flex items-center gap-2.5 group ${collapsed ? 'justify-center' : ''}`}
-        >
-          <div className="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-[#22c55e] to-[#15803d] text-white flex items-center justify-center text-xl shadow-md group-hover:scale-105 transition-transform">
-            ⛩️
-          </div>
+      <div className={`w-full flex items-center ${collapsed ? 'flex-col gap-2 pb-2' : 'justify-between pb-4'} border-b border-[#e1ede0]`}>
+        <div className="group relative">
+          <Link
+            href="/"
+            onClick={handleLinkClick}
+            className={`flex items-center gap-2.5 ${collapsed ? 'justify-center' : ''}`}
+          >
+            <div className="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-[#22c55e] to-[#15803d] text-white flex items-center justify-center text-xl shadow-md group-hover:scale-105 transition-transform">
+              ⛩️
+            </div>
 
-          {!collapsed && (
-            <div className="min-w-0 transition-opacity duration-200">
-              <h1 className="text-sm font-black text-[#143521] tracking-tight truncate">
-                MANABI WUKONG
-              </h1>
-              <p className="text-[10px] text-[#718777] font-semibold truncate">
-                Tiếng Nhật JPD • Game RPG
-              </p>
+            {!collapsed && (
+              <div className="min-w-0 transition-opacity duration-200">
+                <h1 className="text-sm font-black text-[#143521] tracking-tight truncate">
+                  MANABI WUKONG
+                </h1>
+                <p className="text-[10px] text-[#718777] font-semibold truncate">
+                  Tiếng Nhật JPD • Game RPG
+                </p>
+              </div>
+            )}
+          </Link>
+
+          {collapsed && (
+            <div className="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-[110] whitespace-nowrap rounded-xl bg-[#0e2917] border border-emerald-500/40 px-3 py-1.5 text-xs text-white opacity-0 shadow-2xl translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150">
+              <span className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#0e2917] border-l border-b border-emerald-500/40 rotate-45" />
+              <div className="font-black text-amber-300">MANABI WUKONG</div>
+              <div className="text-[10px] text-emerald-200/80">Trang chủ Tu học Tiếng Nhật JPD</div>
             </div>
           )}
-        </Link>
+        </div>
 
         {/* Toggle Collapse/Expand Button (Desktop) or Close Button (Mobile) */}
         {isMobileDrawer ? (
           <button
             onClick={closeAllMobileDrawers}
-            className="p-1.5 rounded-xl text-[#718777] hover:bg-[#eaf4e8] hover:text-[#143521] transition-all"
+            className="p-1.5 rounded-xl text-[#718777] hover:bg-[#eaf4e8] hover:text-[#143521] transition-all cursor-pointer"
             title="Đóng menu"
           >
             <X className="w-5 h-5" />
           </button>
         ) : (
-          <button
-            onClick={toggleSidebar}
-            className="p-1.5 rounded-xl text-[#718777] hover:bg-[#eaf4e8] hover:text-[#15803d] transition-all cursor-pointer"
-            title={collapsed ? 'Mở rộng thanh menu (Ctrl+B)' : 'Thu gọn thanh menu (Ctrl+B)'}
-          >
-            {collapsed ? (
-              <PanelLeftOpen className="w-5 h-5 text-[#15803d]" />
-            ) : (
-              <PanelLeftClose className="w-5 h-5" />
+          <div className="group relative">
+            <button
+              onClick={toggleSidebar}
+              className="p-1.5 rounded-xl text-[#718777] hover:bg-[#eaf4e8] hover:text-[#15803d] transition-all cursor-pointer"
+              aria-label={collapsed ? 'Mở rộng thanh menu' : 'Thu gọn thanh menu'}
+            >
+              {collapsed ? (
+                <PanelLeftOpen className="w-5 h-5 text-[#15803d]" />
+              ) : (
+                <PanelLeftClose className="w-5 h-5" />
+              )}
+            </button>
+            {collapsed && (
+              <div className="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-[110] whitespace-nowrap rounded-xl bg-[#0e2917] border border-emerald-500/40 px-3 py-1.5 text-xs text-white opacity-0 shadow-2xl translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150">
+                <span className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#0e2917] border-l border-b border-emerald-500/40 rotate-45" />
+                <div className="font-black text-white">Mở rộng thanh menu</div>
+                <div className="text-[10px] text-emerald-200/80">Phím tắt: Ctrl + B</div>
+              </div>
             )}
-          </button>
+          </div>
         )}
       </div>
 
       {/* Mascot Profile Widget */}
       {collapsed ? (
         // Compact Mascot Badge when Collapsed
-        <div className="my-3 group relative flex flex-col items-center">
+        <div className="my-2.5 group relative flex flex-col items-center">
           <Link
-            href="/tien-do"
+            href="/ca-nhan"
             className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#fef3c7] to-[#fed7aa] border border-amber-300 flex items-center justify-center shadow-xs hover:scale-105 transition-transform"
-            title="Ngộ Không Học Giả - Tu Vi: Cấp 3 (65%)"
           >
             <span className="text-xl">🐒</span>
             <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white" />
           </Link>
           {/* Tooltip */}
-          <div className="pointer-events-none absolute left-full ml-3 z-50 whitespace-nowrap rounded-xl bg-[#143521] px-3 py-1.5 text-xs text-white opacity-0 shadow-xl group-hover:opacity-100 transition-opacity">
-            <span className="font-bold text-amber-300 block">Ngộ Không Học Giả</span>
-            <span className="text-[10px] text-stone-300">Tu Vi Cấp 3 (Đột phá 65%)</span>
+          <div className="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-[110] whitespace-nowrap rounded-xl bg-[#0e2917] border border-emerald-500/40 px-3 py-1.5 text-xs text-white opacity-0 shadow-2xl translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150">
+            <span className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#0e2917] border-l border-b border-emerald-500/40 rotate-45" />
+            <span className="font-black text-amber-300 block">{user ? user.name : 'Ngộ Không Học Giả'}</span>
+            <span className="text-[10px] text-emerald-200/80">
+              {user ? `MSSV: ${user.mssv || 'SE18001'} • Lớp ${user.lop || 'JPD113'}` : 'Tu Vi Cấp 3 (Đột phá 65%)'}
+            </span>
           </div>
         </div>
       ) : (
@@ -205,15 +225,17 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
                 </Link>
 
                 {/* Floating Tooltip */}
-                <div className="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 whitespace-nowrap rounded-xl bg-[#143521] px-3 py-1.5 text-xs font-bold text-white opacity-0 shadow-xl group-hover:opacity-100 transition-opacity">
+                <div className="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-[110] whitespace-nowrap rounded-xl bg-[#0e2917] border border-emerald-500/40 px-3 py-1.5 text-xs text-white opacity-0 shadow-2xl translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150">
+                  <span className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#0e2917] border-l border-b border-emerald-500/40 rotate-45" />
                   <div className="flex items-center gap-1.5">
-                    <span>{item.label}</span>
+                    <span className="font-black text-amber-200">{item.label}</span>
                     {item.badge && (
                       <span className="px-1.5 py-0.2 rounded bg-red-600 text-white text-[9px] font-black uppercase">
                         {item.badge}
                       </span>
                     )}
                   </div>
+                  <div className="text-[10px] text-emerald-200/80">{item.desc}</div>
                 </div>
               </div>
             );
@@ -258,9 +280,9 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
           // Collapsed Course Switcher: Compact Pills with Tooltips
           <div className="flex flex-col gap-1 w-full items-center">
             {[
-              { id: '113', name: 'JPD113', sub: 'Nhật 1' },
-              { id: '123', name: 'JPD123', sub: 'Nhật 2' },
-              { id: '133', name: 'JPD133', sub: 'Nhật 3' },
+              { id: '113', name: 'Khóa học JPD113', sub: 'Tiếng Nhật 1 (Sơ cấp A1)' },
+              { id: '123', name: 'Khóa học JPD123', sub: 'Tiếng Nhật 2 (Sơ trung cấp A2)' },
+              { id: '133', name: 'Khóa học JPD133', sub: 'Tiếng Nhật 3 (Trung cấp B1)' },
             ].map(c => (
               <div key={c.id} className="group relative">
                 <Link
@@ -270,8 +292,10 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
                 >
                   {c.id}
                 </Link>
-                <div className="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 whitespace-nowrap rounded-xl bg-[#143521] px-2.5 py-1 text-[11px] font-bold text-white opacity-0 shadow-lg group-hover:opacity-100 transition-opacity">
-                  {c.name} ({c.sub})
+                <div className="pointer-events-none absolute left-full ml-3 top-1/2 -translate-y-1/2 z-[110] whitespace-nowrap rounded-xl bg-[#0e2917] border border-emerald-500/40 px-3 py-1.5 text-xs text-white opacity-0 shadow-2xl translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150">
+                  <span className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-[#0e2917] border-l border-b border-emerald-500/40 rotate-45" />
+                  <div className="font-black text-amber-300">{c.name}</div>
+                  <div className="text-[10px] text-emerald-200/80">{c.sub}</div>
                 </div>
               </div>
             ))}

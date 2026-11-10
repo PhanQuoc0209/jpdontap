@@ -83,15 +83,23 @@ const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
       {/* Floating Re-open Button for Right Points Panel when hidden on desktop */}
       {!isRightPanelVisible && (
-        <button
-          onClick={toggleRightPanel}
-          className="hidden lg:flex fixed right-4 bottom-6 z-40 items-center gap-2 px-3.5 py-2 rounded-2xl bg-white border border-[#fed7aa] shadow-lg hover:shadow-xl hover:bg-amber-50 active:scale-95 transition-all text-xs font-black text-amber-800 cursor-pointer animate-bounce"
-          title="Mở bảng điểm & nhiệm vụ"
-        >
-          <span className="text-base">⚡</span>
-          <span>Bảng Điểm &amp; Tu Vi</span>
-          <PanelRightOpen className="w-4 h-4 text-amber-600" />
-        </button>
+        <div className="group hidden lg:block fixed right-4 bottom-6 z-40">
+          <button
+            onClick={toggleRightPanel}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white border border-[#fed7aa] shadow-lg hover:shadow-xl hover:bg-amber-50 active:scale-95 transition-all text-xs font-black text-amber-800 cursor-pointer animate-bounce group-hover:animate-none"
+            aria-label="Mở Bảng Điểm & Tu Vi"
+          >
+            <span className="text-base">⚡</span>
+            <span>Bảng Điểm &amp; Tu Vi</span>
+            <PanelRightOpen className="w-4 h-4 text-amber-600" />
+          </button>
+          {/* Tooltip */}
+          <div className="pointer-events-none absolute right-0 bottom-full mb-2 z-[110] whitespace-nowrap rounded-xl bg-[#0e2917] border border-emerald-500/40 px-3 py-1.5 text-xs text-white opacity-0 shadow-2xl -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-150">
+            <span className="absolute right-6 -bottom-1 w-2 h-2 bg-[#0e2917] border-r border-b border-emerald-500/40 rotate-45" />
+            <div className="font-black text-amber-300">Bảng Điểm &amp; Tu Vi Bên Phải</div>
+            <div className="text-[10px] text-emerald-200/80">Xem nhiệm vụ nhận điểm, chỉ số tu vi &amp; bảng vàng xếp hạng</div>
+          </div>
+        </div>
       )}
 
       {/* 4. Mobile Left Navigation Drawer (< 1024px) */}

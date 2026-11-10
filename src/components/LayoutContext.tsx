@@ -24,21 +24,25 @@ interface LayoutContextType {
 const LayoutContext = createContext<LayoutContextType | undefined>(undefined);
 
 export const LayoutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(false);
-  const [isRightPanelVisible, setIsRightPanelVisible] = useState<boolean>(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(true);
+  const [isRightPanelVisible, setIsRightPanelVisible] = useState<boolean>(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
   const [isMobilePointsOpen, setIsMobilePointsOpen] = useState<boolean>(false);
 
-  // Load user layout preferences from localStorage
+  // Load user layout preferences from localStorage (defaults to collapsed sidebar & hidden right panel)
   useEffect(() => {
     try {
       const savedCollapsed = localStorage.getItem('mw_sidebar_collapsed');
       if (savedCollapsed !== null) {
         setIsSidebarCollapsed(savedCollapsed === 'true');
+      } else {
+        setIsSidebarCollapsed(true);
       }
       const savedRight = localStorage.getItem('mw_right_panel_visible');
       if (savedRight !== null) {
         setIsRightPanelVisible(savedRight === 'true');
+      } else {
+        setIsRightPanelVisible(false);
       }
     } catch {
       // Handle environments without localStorage access
