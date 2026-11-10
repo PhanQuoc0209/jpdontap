@@ -29,6 +29,7 @@ export default function LuyenVietPage() {
   const [hasDrawn, setHasDrawn] = useState(false);
   const [drawnStrokeCount, setDrawnStrokeCount] = useState(0);
   const [showGhostGuide, setShowGhostGuide] = useState(true);
+  const [compoundMode, setCompoundMode] = useState<'both' | 'primary' | 'small'>('both');
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const undoHistoryRef = useRef<ImageData[]>([]);
@@ -81,9 +82,15 @@ export default function LuyenVietPage() {
     hintText = `Số nét chuẩn: ${kj?.strokes || 1} nét • Cấp độ: ${kj?.level || 'N5'}`;
   }
 
+  // Âm ghép (yōon - e.g. きゃ, キャ, etc.)
+  const isCompound = displayGlyph.length > 1;
+  const primaryChar = isCompound ? displayGlyph[0] : displayGlyph;
+  const smallChar = isCompound ? displayGlyph.slice(1) : '';
+
   // Clear canvas whenever character or category changes
   useEffect(() => {
     clearCanvas();
+    setCompoundMode('both');
   }, [category, charIndex]);
 
   const clearCanvas = () => {
@@ -116,7 +123,7 @@ export default function LuyenVietPage() {
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.strokeStyle = '#f59e0b';
-    ctx.lineWidth = 14;
+    ctx.lineWidth = isCompound && compoundMode === 'both' ? 10 : 14;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
   };
@@ -335,9 +342,57 @@ export default function LuyenVietPage() {
         </div>
       </div>
 
+      {/* Âm ghép (Combination kana) Sub-selector */}
+      {isCompound && (
+        <div className="flex flex-wrap items-center justify-center gap-1.5 p-1.5 bg-amber-50/90 border border-amber-200 rounded-2xl shadow-xs animate-fade-in">
+          <span className="text-[11px] font-bold text-amber-900 px-1">Luyện âm ghép:</span>
+          <button
+            type="button"
+            onClick={() => { setCompoundMode('both'); clearCanvas(); }}
+            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              compoundMode === 'both'
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-white text-stone-700 hover:bg-emerald-50 border border-stone-200'
+            }`}
+          >
+            Cả cặp: {displayGlyph}
+          </button>
+          <button
+            type="button"
+            onClick={() => { setCompoundMode('primary'); clearCanvas(); }}
+            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              compoundMode === 'primary'
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-white text-stone-700 hover:bg-emerald-50 border border-stone-200'
+            }`}
+          >
+            Chữ chính: {primaryChar}
+          </button>
+          <button
+            type="button"
+            onClick={() => { setCompoundMode('small'); clearCanvas(); }}
+            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              compoundMode === 'small'
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-white text-stone-700 hover:bg-emerald-50 border border-stone-200'
+            }`}
+          >
+            Chữ nhỏ: {smallChar}
+          </button>
+        </div>
+      )}
+
       {/* Instructional text below card */}
       <div className="flex items-center justify-between px-2 text-xs font-bold text-[#718777]">
-        <span>✍️ Viết toàn bộ chữ vào ô chữ Mễ bên dưới.</span>
+        <span>
+          {isCompound && compoundMode === 'both'
+            ? `✍️ Viết cả 2 chữ âm ghép: ${primaryChar} + ${smallChar} (nhỏ ở góc phải).`
+            : isCompound && compoundMode === 'primary'
+            ? `✍️ Luyện nét chữ chính ${primaryChar} vào ô chữ Mễ.`
+            : isCompound && compoundMode === 'small'
+            ? `✍️ Luyện nét chữ nhỏ ${smallChar} vào ô chữ Mễ.`
+            : '✍️ Viết toàn bộ chữ vào ô chữ Mễ bên dưới.'}
+        </span>
         <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
           Đã vẽ: {drawnStrokeCount} nét
         </span>
@@ -356,10 +411,31 @@ export default function LuyenVietPage() {
 
           {/* Light Gray Ghost Stroke in Background (Can toggle) */}
           {showGhostGuide && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none transition-opacity duration-300">
-              <span className="text-[200px] sm:text-[220px] font-black text-stone-200/90 jp-font leading-none select-none">
-                {displayGlyph}
-              </span>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none transition-opacity duration-300 px-3">
+              {isCompound && compoundMode === 'both' ? (
+                <div className="flex items-center justify-center gap-1.5 leading-none">
+                  {/* Primary Kana (e.g. き / キ) */}
+                  <span className="text-[120px] sm:text-[135px] font-black text-stone-200/90 jp-font select-none">
+                    {primaryChar}
+                  </span>
+                  {/* Small Kana (e.g. ゃ / ャ) positioned lower-right */}
+                  <span className="text-[80px] sm:text-[90px] font-black text-stone-200/90 jp-font select-none self-end pb-3 sm:pb-4">
+                    {smallChar}
+                  </span>
+                </div>
+              ) : isCompound && compoundMode === 'primary' ? (
+                <span className="text-[200px] sm:text-[220px] font-black text-stone-200/90 jp-font leading-none select-none">
+                  {primaryChar}
+                </span>
+              ) : isCompound && compoundMode === 'small' ? (
+                <span className="text-[160px] sm:text-[180px] font-black text-stone-200/90 jp-font leading-none select-none">
+                  {smallChar}
+                </span>
+              ) : (
+                <span className="text-[200px] sm:text-[220px] font-black text-stone-200/90 jp-font leading-none select-none">
+                  {displayGlyph}
+                </span>
+              )}
             </div>
           )}
 

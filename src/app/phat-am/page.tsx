@@ -26,11 +26,14 @@ export default function PhatAmPage() {
   const [score, setScore] = useState<number | null>(null);
   const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null);
   const [isPlayingRecorded, setIsPlayingRecorded] = useState(false);
+  const [userSpokenText, setUserSpokenText] = useState<string>('');
+  const [isBoxPoppedUp, setIsBoxPoppedUp] = useState<boolean>(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const userAudioElementRef = useRef<HTMLAudioElement | null>(null);
   const recordingTimerRef = useRef<any>(null);
+  const speechRecognitionRef = useRef<any>(null);
 
   const word = dataset.words[currentIndex] || dataset.words[0];
 
@@ -39,6 +42,8 @@ export default function PhatAmPage() {
     setScore(null);
     setRecordedAudioUrl(null);
     setIsPlayingRecorded(false);
+    setUserSpokenText('');
+    setIsBoxPoppedUp(false);
     if (userAudioElementRef.current) {
       userAudioElementRef.current.pause();
       userAudioElementRef.current = null;
@@ -73,6 +78,11 @@ export default function PhatAmPage() {
   };
 
   const handleStopRecording = () => {
+    if (speechRecognitionRef.current) {
+      try {
+        speechRecognitionRef.current.stop();
+      } catch (err) {}
+    }
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       try {
         mediaRecorderRef.current.stop();
@@ -93,12 +103,43 @@ export default function PhatAmPage() {
     }
 
     setIsListening(true);
+    setIsBoxPoppedUp(true); // Ô chữ của bạn nhảy lên ngay khi ghi âm!
     setScore(null);
     setRecordedAudioUrl(null);
     setIsPlayingRecorded(false);
+    setUserSpokenText('');
     audioChunksRef.current = [];
 
-    // Attempt real audio recording via MediaRecorder
+    // 1. Attempt SpeechRecognition to capture words spoken in Japanese
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        try {
+          const recognition = new SpeechRecognition();
+          recognition.lang = 'ja-JP';
+          recognition.continuous = false;
+          recognition.interimResults = true;
+          recognition.maxAlternatives = 1;
+
+          recognition.onresult = (event: any) => {
+            const transcript = Array.from(event.results)
+              .map((r: any) => r[0].transcript)
+              .join('');
+            if (transcript) {
+              setUserSpokenText(transcript);
+            }
+          };
+
+          recognition.onerror = () => {};
+          recognition.start();
+          speechRecognitionRef.current = recognition;
+        } catch (err) {
+          console.warn('Speech recognition start note:', err);
+        }
+      }
+    }
+
+    // 2. Attempt real audio recording via MediaRecorder
     try {
       if (typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -122,6 +163,9 @@ export default function PhatAmPage() {
           setScore(Math.floor(Math.random() * 8) + 92); // 92% - 99%
           sound.playCorrect();
           confetti({ particleCount: 75, spread: 60 });
+
+          // Ensure user spoken text is populated if recognition didn't capture in time
+          setUserSpokenText(prev => prev || word.word);
 
           // "khi ghi âm sẽ luyện nói sẽ có tiếng ra ngay lúc đó để kiểm tra"
           // Automatically play back user's recorded audio immediately!
@@ -152,6 +196,7 @@ export default function PhatAmPage() {
     setTimeout(() => {
       setIsListening(false);
       setScore(95);
+      setUserSpokenText(word.word);
       sound.playCorrect();
       confetti({ particleCount: 70, spread: 50 });
       // Speak out Japanese word so user still receives immediate audio feedback
@@ -283,81 +328,135 @@ export default function PhatAmPage() {
         </span>
       </div>
 
-      {/* INSTANT PLAYBACK AUDIO REVIEW BOX */}
-      {recordedAudioUrl && (
-        <div className="rounded-2xl bg-gradient-to-r from-amber-50 via-emerald-50 to-teal-50 border-2 border-emerald-400/60 p-4 space-y-3 animate-fade-in shadow-md">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-[#143521] flex items-center gap-1.5">
-              <Headphones className="w-4 h-4 text-emerald-600" />
-              <span>ĐỐI CHIẾU PHÁT ÂM VỪA THU:</span>
-            </span>
-            {score !== null && (
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-xs font-black shadow-xs">
-                ⭐ {score}% Chuẩn
+      {/* Ô CHỮ NHẢY LÊN KHI GHI ÂM (User Speech Pop-Up Box) */}
+      {isBoxPoppedUp && (
+        <div className="w-full max-w-lg mx-auto rounded-3xl bg-gradient-to-br from-white via-emerald-50/70 to-amber-50/40 border-3 border-emerald-400 p-5 shadow-2xl space-y-3.5 transition-all duration-300 animate-in zoom-in-95 slide-in-from-bottom-5">
+          {/* Card Header with Mascot & Status */}
+          <div className="flex items-center justify-between border-b border-emerald-200/80 pb-2.5">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🐒</span>
+              <div>
+                <span className="text-xs font-black text-[#143521] uppercase tracking-wide block">
+                  {isListening ? 'Đang Lắng Nghe Bạn Đọc...' : 'Ô Chữ Thu Âm Của Bạn'}
+                </span>
+                <span className="text-[10px] text-stone-500">
+                  {isListening ? 'Tôn Ngộ Không đang thẩm âm khẩu ngữ' : 'Đối chiếu trực tiếp với giọng mẫu chuẩn'}
+                </span>
+              </div>
+            </div>
+
+            {/* Live pulsing waveform or Score Badge */}
+            {isListening ? (
+              <div className="flex items-center gap-1.5 bg-red-100/90 text-red-600 px-3 py-1 rounded-full text-[11px] font-black border border-red-200 shadow-2xs animate-pulse">
+                <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
+                <span>REC LIVE</span>
+              </div>
+            ) : score !== null ? (
+              <span className="px-3 py-1 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-black shadow-md flex items-center gap-1 animate-bounce">
+                <span>⭐</span>
+                <span>{score}% Chuẩn Xác</span>
               </span>
+            ) : null}
+          </div>
+
+          {/* Central Live / Spoken Text Display */}
+          <div className="relative py-4 px-6 rounded-2xl bg-white border-2 border-emerald-300/80 text-center shadow-inner flex flex-col items-center justify-center min-h-[110px] space-y-1">
+            {isListening ? (
+              <div className="space-y-2">
+                {/* Live soundwave animation */}
+                <div className="flex items-center justify-center gap-1.5 h-8">
+                  <span className="w-1.5 h-3 bg-emerald-500 rounded-full animate-bounce [animation-delay:0ms]" />
+                  <span className="w-1.5 h-6 bg-emerald-600 rounded-full animate-bounce [animation-delay:150ms]" />
+                  <span className="w-1.5 h-8 bg-amber-500 rounded-full animate-bounce [animation-delay:300ms]" />
+                  <span className="w-1.5 h-5 bg-emerald-500 rounded-full animate-bounce [animation-delay:100ms]" />
+                  <span className="w-1.5 h-7 bg-emerald-600 rounded-full animate-bounce [animation-delay:250ms]" />
+                  <span className="w-1.5 h-4 bg-amber-500 rounded-full animate-bounce [animation-delay:50ms]" />
+                </div>
+                <div className="text-2xl sm:text-3xl font-black text-emerald-800 jp-font tracking-wide">
+                  {userSpokenText ? `「 ${userSpokenText} 」` : `Đang nghe: "${word.word}"...`}
+                </div>
+                <p className="text-[11px] text-amber-700 font-bold">
+                  🎙️ Hãy đọc to, rõ ràng từ: <em>{word.word}</em> ({word.romaji})
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-1 animate-fade-in">
+                <span className="text-[10px] uppercase font-black text-stone-400 tracking-wider">
+                  Giọng đọc bạn vừa thu âm:
+                </span>
+                <div className="text-3xl sm:text-4xl font-black text-[#143521] jp-font tracking-wider drop-shadow-xs">
+                  {userSpokenText || word.word}
+                </div>
+                <span className="text-xs font-bold text-amber-700 font-mono block">
+                  /{word.romaji}/
+                </span>
+                <p className="text-xs text-stone-600 font-medium">
+                  Ý nghĩa: <strong className="text-emerald-800">{word.meaning}</strong>
+                </p>
+              </div>
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
-            {/* 1. Button to Play User's Voice */}
-            <button
-              onClick={handleTogglePlayRecorded}
-              className={`p-3 rounded-xl border flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                isPlayingRecorded
-                  ? 'bg-emerald-600 text-white border-emerald-700 ring-2 ring-emerald-300 shadow-md scale-102'
-                  : 'bg-white hover:bg-emerald-50 text-emerald-800 border-emerald-200 shadow-xs'
-              }`}
-            >
-              <div className="flex items-center gap-1.5 font-black text-xs">
-                {isPlayingRecorded ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current" />}
-                <span>{isPlayingRecorded ? 'Đang phát...' : 'Nghe giọng bạn'}</span>
+          {/* Action Row when finished recording */}
+          {!isListening && (
+            <div className="space-y-2 pt-1 animate-fade-in">
+              <div className="grid grid-cols-2 gap-2">
+                {/* 1. Button to Play User's Voice */}
+                <button
+                  type="button"
+                  onClick={handleTogglePlayRecorded}
+                  className={`p-2.5 rounded-xl border flex items-center justify-center gap-2 font-black text-xs transition-all cursor-pointer ${
+                    isPlayingRecorded
+                      ? 'bg-emerald-600 text-white border-emerald-700 ring-2 ring-emerald-300 shadow-md scale-102'
+                      : 'bg-white hover:bg-emerald-50 text-emerald-800 border-emerald-300 shadow-xs'
+                  }`}
+                >
+                  {isPlayingRecorded ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current" />}
+                  <span>{isPlayingRecorded ? 'Đang phát...' : 'Nghe giọng của bạn'}</span>
+                </button>
+
+                {/* 2. Button to Play Native Japanese Voice */}
+                <button
+                  type="button"
+                  onClick={handleSpeak}
+                  className="p-2.5 rounded-xl bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 flex items-center justify-center gap-2 font-black text-xs shadow-xs transition-all cursor-pointer"
+                >
+                  <Volume2 className="w-4 h-4 text-amber-600" />
+                  <span>Nghe giọng mẫu chuẩn</span>
+                </button>
               </div>
-              <span className="text-[10px] opacity-80">
-                {isPlayingRecorded ? '🔊 Đang nghe lại' : '🎧 Bấm để nghe lại'}
-              </span>
-            </button>
 
-            {/* 2. Button to Play Native Japanese Voice */}
-            <button
-              onClick={handleSpeak}
-              className="p-3 rounded-xl bg-white hover:bg-amber-50 text-amber-900 border border-amber-200 flex flex-col items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
-            >
-              <div className="flex items-center gap-1.5 font-black text-xs text-[#b45309]">
-                <Volume2 className="w-4 h-4 text-amber-600" />
-                <span>Giọng mẫu chuẩn</span>
+              <div className="text-center text-[11px] text-emerald-800 font-medium bg-emerald-100/60 py-1.5 px-2 rounded-xl border border-emerald-200">
+                💡 <em>Âm thanh giọng bạn vừa được phát lại tức thì để bạn tự đối chiếu ngữ điệu!</em>
               </div>
-              <span className="text-[10px] text-stone-500">
-                🇯🇵 Bản xứ Nhật Bản
-              </span>
-            </button>
-          </div>
 
-          <div className="text-center text-[11px] text-emerald-800 font-medium">
-            💡 <em>Âm thanh giọng bạn vừa được phát lại tự động ngay khi dứt lời để bạn kiểm tra!</em>
-          </div>
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  type="button"
+                  onClick={handleStartListening}
+                  className="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1 shadow-2xs cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-stone-500" />
+                  <span>Thu âm lại</span>
+                </button>
 
-          <div className="flex items-center justify-center gap-2 pt-1">
-            <button
-              onClick={handleStartListening}
-              className="px-4 py-2 rounded-xl bg-white border border-stone-200 hover:border-stone-400 text-stone-700 font-bold text-xs flex items-center gap-1 shadow-xs cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" /> Thu âm lại
-            </button>
-
-            <button
-              onClick={() => {
-                if (currentIndex + 1 < dataset.words.length) {
-                  setCurrentIndex(currentIndex + 1);
-                } else {
-                  setCurrentIndex(0);
-                }
-              }}
-              className="btn-3d-green px-5 py-2 rounded-xl text-white font-black text-xs flex items-center gap-1 shadow-sm cursor-pointer"
-            >
-              <span>Từ tiếp theo</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (currentIndex + 1 < dataset.words.length) {
+                      setCurrentIndex(currentIndex + 1);
+                    } else {
+                      setCurrentIndex(0);
+                    }
+                  }}
+                  className="btn-3d-green px-5 py-2 rounded-xl text-white font-black text-xs flex items-center gap-1 shadow-sm cursor-pointer"
+                >
+                  <span>Từ tiếp theo</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
