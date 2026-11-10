@@ -73,6 +73,16 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           <span className="text-xs text-amber-700 sm:hidden">250</span>
         </button>
 
+        {/* Quick Sign-In Button */}
+        <Link
+          href="/dang-nhap"
+          className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-black shadow-xs hover:scale-105 active:scale-95 transition-all"
+          title="Đăng nhập tài khoản tu học"
+        >
+          <span>🔑</span>
+          <span className="hidden xs:inline">Đăng nhập</span>
+        </Link>
+
         {/* Desktop Toggle Button for Right Points Panel */}
         <button
           onClick={toggleRightPanel}

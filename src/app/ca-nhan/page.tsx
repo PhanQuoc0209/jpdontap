@@ -3,11 +3,14 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { WukongMascot } from '@/components/WukongMascot';
-import { User, Trophy, Flame, Star, Shield, Award, Settings, Bell, Volume2, Sparkles, ChevronRight, ArrowLeft } from 'lucide-react';
+import { SocialSignIn066 } from '@/components/SocialSignIn066';
+import { User, Trophy, Flame, Star, Shield, Award, Settings, Bell, Volume2, Sparkles, ChevronRight, ArrowLeft, LogIn, CheckCircle2 } from 'lucide-react';
+import { sound } from '@/lib/sound';
 
 export default function CaNhanPage() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [connectedUser, setConnectedUser] = useState<{ provider: string; account: string } | null>(null);
 
   const achievements = [
     { id: 1, title: 'Nhập Môn Tây Du', desc: 'Học trọn vẹn bảng chữ cái Hiragana', icon: '📜', completed: true },
@@ -23,17 +26,18 @@ export default function CaNhanPage() {
       <div className="flex items-center justify-between">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-400 hover:text-stone-200 transition-colors"
+          onClick={() => sound.playTap()}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-600 hover:text-stone-900 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Về trang chủ
         </Link>
-        <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+        <span className="text-xs font-bold text-amber-700 uppercase tracking-wider bg-amber-100/70 px-2.5 py-1 rounded-full border border-amber-300/60">
           Hồ Sơ Tu Hành
         </span>
       </div>
 
       {/* Hero Profile Card */}
-      <div className="rounded-3xl bg-gradient-to-br from-amber-950/60 via-stone-900 to-amber-900/40 border border-amber-600/30 p-5 shadow-2xl flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+      <div className="rounded-3xl bg-gradient-to-br from-amber-950/70 via-stone-900 to-amber-900/50 border border-amber-600/30 p-5 shadow-2xl flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left text-white">
         <div className="relative">
           <WukongMascot size="lg" mood="happy" showCloud={false} />
           <span className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full bg-amber-500 text-stone-950 font-black text-[10px] uppercase shadow">
@@ -46,10 +50,16 @@ export default function CaNhanPage() {
             <Sparkles className="w-3.5 h-3.5" /> Danh hiệu: Mỹ Hầu Vương
           </div>
           <h2 className="text-2xl font-black text-amber-100">
-            Học Viên Tu Học Tiếng Nhật
+            {connectedUser ? `Học Viên: ${connectedUser.account}` : 'Học Viên Tu Học Tiếng Nhật'}
           </h2>
-          <p className="text-xs text-stone-400">
-            Tiếp theo: <strong className="text-amber-300">Tề Thiên Đại Thánh</strong> (Cần thêm 260 XP)
+          <p className="text-xs text-stone-300">
+            {connectedUser ? (
+              <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Đã kết nối với {connectedUser.provider}
+              </span>
+            ) : (
+              <>Tiếp theo: <strong className="text-amber-300">Tề Thiên Đại Thánh</strong> (Cần thêm 260 XP)</>
+            )}
           </p>
 
           {/* Level Progress bar */}
@@ -139,6 +149,36 @@ export default function CaNhanPage() {
               )}
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Social Sign-in (Prompt #066) Account Connection Section */}
+      <div className="space-y-3 pt-2">
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-bold text-stone-200 flex items-center gap-2">
+            <User className="w-4 h-4 text-emerald-400" /> Tài Khoản &amp; Đăng Nhập Mạng Xã Hội
+          </h3>
+          <Link
+            href="/dang-nhap"
+            className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+          >
+            <span>Trang đăng nhập riêng</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="rounded-3xl bg-stone-900/80 border border-stone-800 p-4 sm:p-6 flex flex-col items-center shadow-lg">
+          <p className="text-xs text-stone-400 mb-4 text-center max-w-sm">
+            Kết nối tài khoản mạng xã hội để bảo vệ điểm kinh nghiệm XP, chuỗi ngày học và trang bị tu vi của Tôn Ngộ Không.
+          </p>
+
+          <SocialSignIn066
+            title="Đăng nhập tài khoản"
+            subtitle="Chọn phương thức liên kết tài khoản"
+            onSuccess={(provider, account) => {
+              setConnectedUser({ provider, account });
+            }}
+          />
         </div>
       </div>
 
