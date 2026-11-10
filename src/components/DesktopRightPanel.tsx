@@ -13,12 +13,14 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useLayout } from '@/components/LayoutContext';
+import { useAuth } from '@/components/AuthContext';
 
 interface DesktopRightPanelProps {
   isMobileDrawer?: boolean;
 }
 
 export const DesktopRightPanel: React.FC<DesktopRightPanelProps> = ({ isMobileDrawer = false }) => {
+  const { user } = useAuth();
   const { isRightPanelVisible, toggleRightPanel, closeAllMobileDrawers } = useLayout();
 
   // If in desktop and not visible (and not in mobile drawer), do not render
@@ -68,27 +70,21 @@ export const DesktopRightPanel: React.FC<DesktopRightPanelProps> = ({ isMobileDr
         )}
       </div>
 
-      {/* Account Login Gateway Banner */}
-      <div className="rounded-2xl bg-gradient-to-br from-emerald-950 via-stone-900 to-emerald-950 border border-emerald-500/30 p-3 text-white shadow-xs space-y-1.5 animate-fade-in">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <span className="text-sm">🔑</span>
-            <span className="text-[11px] font-black text-amber-200">Tài khoản tu học</span>
+      {/* Student Cultivation ID Card (Hiển thị thông tin sinh viên đã đăng nhập) */}
+      {user && (
+        <div className="rounded-2xl bg-gradient-to-br from-emerald-950 via-stone-900 to-emerald-950 border border-emerald-500/30 p-3 text-white shadow-xs space-y-1 animate-fade-in">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-black text-amber-200">Thẻ Sinh Viên Tu Học</span>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-600/90 text-white text-[9px] font-black uppercase">
+              {user.lop || 'JPD113'}
+            </span>
           </div>
-          <span className="px-1.5 py-0.2 rounded bg-emerald-600/80 text-white text-[9px] font-bold">
-            Chưa đăng nhập
-          </span>
+          <div className="text-xs font-bold text-stone-100">{user.name}</div>
+          <div className="text-[10px] text-stone-400">
+            MSSV: <strong className="text-amber-300 font-mono">{user.mssv || 'SE18001'}</strong>
+          </div>
         </div>
-        <p className="text-[10px] text-stone-300 leading-snug">
-          Đăng nhập qua Google/Apple/Kakao để lưu tiến độ tu vi &amp; bảng xếp hạng.
-        </p>
-        <Link
-          href="/dang-nhap"
-          className="w-full mt-1 py-1.5 px-2 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white text-[11px] font-bold text-center block shadow-xs transition-colors"
-        >
-          Cổng Đăng Nhập (Prompt #066) ➔
-        </Link>
-      </div>
+      )}
 
       {/* 4 Quick Points & Stats Cards */}
       <div className="space-y-2">

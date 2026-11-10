@@ -160,50 +160,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Cổng Đăng Nhập Tu Học (Prompt #066 - Social Sign-In Portal) */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#143521] via-[#1b432b] to-[#143521] border border-emerald-500/40 p-3 sm:p-4 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-3 animate-fade-in">
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="w-11 h-11 rounded-2xl bg-amber-400/20 border border-amber-400/50 text-amber-300 flex items-center justify-center text-2xl shrink-0 shadow-inner">
-            🔑
-          </div>
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <h2 className="text-xs sm:text-sm font-black text-amber-100 uppercase tracking-wide truncate">
-                Cổng Đăng Nhập Tu Học
-              </h2>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-black uppercase shadow-xs shrink-0">
-                PROMPT #066
-              </span>
-            </div>
-            <p className="text-[11px] text-emerald-200/90 mt-0.5 font-medium line-clamp-1 sm:line-clamp-none">
-              Đăng nhập qua Google, Kakao, Apple hoặc Email để lưu điểm tu vi &amp; bảo vệ dữ liệu.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-          <button
-            type="button"
-            onClick={() => {
-              sound.playTap();
-              setShowLoginGate(true);
-            }}
-            className="btn-3d-green px-4 py-2 rounded-full text-white text-xs font-black uppercase tracking-wider shrink-0 shadow-md flex items-center gap-1.5 active:scale-95 cursor-pointer"
-          >
-            <LogIn className="w-3.5 h-3.5" />
-            <span>Mở Cổng</span>
-          </button>
-
-          <Link
-            href="/dang-nhap"
-            onClick={() => sound.playTap()}
-            className="px-3 py-2 rounded-full bg-white/10 hover:bg-white/20 text-emerald-200 text-xs font-bold border border-white/20 transition-all shrink-0 active:scale-95 text-center"
-          >
-            Trang riêng ➔
-          </Link>
-        </div>
-      </div>
-
       {/* 3 Stat Cards (Matching Pandarin's soft pastel pagoda cards) */}
       <div className="grid grid-cols-3 gap-2.5">
         {/* Flame: Ngày học */}
@@ -373,88 +329,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-
-      {/* ⛩️ CỔNG ĐĂNG NHẬP TU HỌC BAN ĐẦU (Login Interface Shown First) */}
-      {showLoginGate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md overflow-y-auto animate-fade-in">
-          {/* Ambient Glow */}
-          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-emerald-950/40 via-transparent to-amber-950/40" />
-
-          <div className="relative w-full max-w-[400px] flex flex-col items-center my-auto py-4">
-            {/* Mascot & Gate Header */}
-            <div className="text-center mb-3 flex flex-col items-center">
-              <div className="relative mb-2">
-                <WukongMascot size="sm" mood={connectedUser ? 'happy' : 'idle'} showCloud={false} />
-                <span className="absolute -top-1 -right-2 text-xl animate-bounce select-none">
-                  ⛩️
-                </span>
-              </div>
-
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[11px] font-black uppercase tracking-wider border border-amber-500/40 mb-1">
-                <span>MANABI WUKONG • CỔNG NHẬP MÔN</span>
-              </div>
-
-              <h1 className="text-xl sm:text-2xl font-black text-amber-100 tracking-tight">
-                Đăng Nhập Tu Học
-              </h1>
-              <p className="text-xs text-stone-300 max-w-[310px] mt-0.5 font-medium">
-                Chọn phương thức đăng nhập để khởi tạo pháp hiệu và đồng bộ tiến độ vượt ải
-              </p>
-            </div>
-
-            {/* Prompt #066 Social Sign-in Component */}
-            <div className="w-full flex justify-center">
-              <SocialSignIn066
-                title="Sẵn sàng tu học?"
-                subtitle="Sử dụng tài khoản bạn đã có"
-                onSuccess={(provider, account) => {
-                  setConnectedUser({ provider, account });
-                  try {
-                    confetti({
-                      particleCount: 70,
-                      spread: 70,
-                      origin: { y: 0.6 }
-                    });
-                  } catch {}
-                  // Auto transition after connected
-                  setTimeout(() => {
-                    setShowLoginGate(false);
-                  }, 2000);
-                }}
-              />
-            </div>
-
-            {/* Actions Below Sign-In */}
-            <div className="mt-4 w-full flex flex-col items-center gap-2">
-              {connectedUser ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    sound.playVictory();
-                    setShowLoginGate(false);
-                  }}
-                  className="btn-3d-green w-full max-w-[340px] py-3 rounded-2xl text-white font-black text-sm uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 active:scale-95 cursor-pointer animate-pulse"
-                >
-                  <span>🚀 Vào Tu Học Ngay</span>
-                  <span>➔</span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    sound.playTap();
-                    setShowLoginGate(false);
-                  }}
-                  className="text-xs font-bold text-stone-300 hover:text-white hover:underline transition-colors flex items-center gap-1 py-1 px-3 rounded-full bg-white/10 hover:bg-white/15 border border-white/10 cursor-pointer"
-                >
-                  <span>Bỏ qua &amp; Khám phá ngay với tư cách Khách</span>
-                  <span>➔</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -7,13 +7,15 @@ export interface AuthUser {
   provider: string;
   account: string;
   name: string;
+  mssv?: string;
+  lop?: string;
 }
 
 interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (provider: string, account: string, name?: string) => void;
+  login: (provider: string, account: string, name?: string, extra?: { mssv?: string; lop?: string }) => void;
   logout: () => void;
 }
 
@@ -47,11 +49,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = (provider: string, account: string, name?: string) => {
+  const login = (
+    provider: string,
+    account: string,
+    name?: string,
+    extra?: { mssv?: string; lop?: string }
+  ) => {
     const newUser: AuthUser = {
       provider,
       account,
       name: name || (provider === 'Google' ? 'Tề Thiên Học Giả' : provider === 'Apple' ? 'Mỹ Hầu Vương' : 'Học Viên Tôn Ngộ Không'),
+      mssv: extra?.mssv || (provider === 'MSSV' ? account : 'SE18001'),
+      lop: extra?.lop || 'JPD113',
     };
     setUser(newUser);
     try {

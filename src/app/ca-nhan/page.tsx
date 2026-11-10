@@ -4,13 +4,14 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { WukongMascot } from '@/components/WukongMascot';
 import { SocialSignIn066 } from '@/components/SocialSignIn066';
-import { User, Trophy, Flame, Star, Shield, Award, Settings, Bell, Volume2, Sparkles, ChevronRight, ArrowLeft, LogIn, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '@/components/AuthContext';
+import { User, Trophy, Flame, Star, Shield, Award, Settings, Bell, Volume2, Sparkles, ChevronRight, ArrowLeft, LogOut, CheckCircle2 } from 'lucide-react';
 import { sound } from '@/lib/sound';
 
 export default function CaNhanPage() {
+  const { user, logout, login } = useAuth();
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [connectedUser, setConnectedUser] = useState<{ provider: string; account: string } | null>(null);
 
   const achievements = [
     { id: 1, title: 'Nhập Môn Tây Du', desc: 'Học trọn vẹn bảng chữ cái Hiragana', icon: '📜', completed: true },
@@ -46,16 +47,27 @@ export default function CaNhanPage() {
         </div>
 
         <div className="flex-1 space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/30">
-            <Sparkles className="w-3.5 h-3.5" /> Danh hiệu: Mỹ Hầu Vương
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/30">
+              <Sparkles className="w-3.5 h-3.5" /> Danh hiệu: {user?.name || 'Mỹ Hầu Vương'}
+            </div>
+            <button
+              onClick={logout}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-600/80 hover:bg-rose-500 text-white text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer"
+              title="Đăng xuất khỏi tài khoản này"
+            >
+              <LogOut className="w-3 h-3" />
+              <span>Đăng xuất</span>
+            </button>
           </div>
-          <h2 className="text-2xl font-black text-amber-100">
-            {connectedUser ? `Học Viên: ${connectedUser.account}` : 'Học Viên Tu Học Tiếng Nhật'}
+
+          <h2 className="text-xl sm:text-2xl font-black text-amber-100">
+            {user ? user.name : 'Học Viên Tu Học Tiếng Nhật'}
           </h2>
           <p className="text-xs text-stone-300">
-            {connectedUser ? (
+            {user ? (
               <span className="inline-flex items-center gap-1 text-emerald-400 font-semibold">
-                <CheckCircle2 className="w-3.5 h-3.5" /> Đã kết nối với {connectedUser.provider}
+                <CheckCircle2 className="w-3.5 h-3.5" /> Đã kết nối với {user.provider} ({user.account})
               </span>
             ) : (
               <>Tiếp theo: <strong className="text-amber-300">Tề Thiên Đại Thánh</strong> (Cần thêm 260 XP)</>
@@ -173,10 +185,10 @@ export default function CaNhanPage() {
           </p>
 
           <SocialSignIn066
-            title="Đăng nhập tài khoản"
-            subtitle="Chọn phương thức liên kết tài khoản"
+            title="Đổi phương thức liên kết"
+            subtitle="Chọn tài khoản để cập nhật liên kết"
             onSuccess={(provider, account) => {
-              setConnectedUser({ provider, account });
+              login(provider, account);
             }}
           />
         </div>

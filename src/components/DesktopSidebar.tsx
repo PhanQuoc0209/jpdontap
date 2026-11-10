@@ -37,7 +37,6 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
 
   const navLinks = [
     { href: '/', label: 'Trang chủ', icon: Home },
-    { href: '/dang-nhap', label: 'Cổng Đăng Nhập', icon: LogIn, badge: 'MỚI' },
     { href: '/boss-battle', label: 'Đấu Boss Vượt Ải', icon: Swords, badge: 'Chiến' },
     { href: '/kham-pha', label: 'Khám phá từ mới', icon: BookOpen },
     { href: '/luyen-viet', label: 'Luyện viết chữ Hán', icon: PenTool },
@@ -144,7 +143,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
                 <span className="text-[10px]">🔥</span>
               </div>
               <span className="text-[10px] font-bold text-[#b45309] block truncate">
-                {user ? `${user.provider} (${user.account.split('@')[0]})` : 'Tu Vi: Cấp 3 (JPD1 Sơ Khởi)'}
+                {user ? `${user.mssv || 'SE18001'} • Lớp ${user.lop || 'JPD113'}` : 'Tu Vi: Cấp 3 (JPD1 Sơ Khởi)'}
               </span>
             </div>
           </div>
