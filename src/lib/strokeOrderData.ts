@@ -405,6 +405,114 @@ export const STROKE_DATA_MAP: Record<string, CharacterStrokeData> = {
     ]
   },
 
+  // === T-ROW (TA, CHI, TSU, TE, TO) ===
+  'た': {
+    char: 'た',
+    totalStrokes: 4,
+    ruleHint: 'Nét ngang trước, nét sổ cắt qua bên trái, nét ngang trên và nét cong dưới bên phải.',
+    strokes: [
+      { strokeNumber: 1, name: 'Nét ngang trên', description: 'Kéo ngang từ trái qua phải ở nửa trên bên trái', direction: '→', startPercent: { x: 20, y: 34 }, points: [{ x: 20, y: 34 }, { x: 50, y: 34 }] },
+      { strokeNumber: 2, name: 'Nét xiên chéo', description: 'Kéo xiên chéo cắt qua nét 1', direction: '↙', startPercent: { x: 38, y: 18 }, points: [{ x: 38, y: 18 }, { x: 28, y: 74 }] },
+      { strokeNumber: 3, name: 'Nét ngang ngắn phải', description: 'Nét ngang ngắn phía trên bên phải', direction: '→', startPercent: { x: 54, y: 40 }, points: [{ x: 54, y: 40 }, { x: 78, y: 40 }] },
+      { strokeNumber: 4, name: 'Nét cong ngửa đáy', description: 'Nét cong ngửa hình đáy thuyền bên dưới', direction: '→⤵', startPercent: { x: 52, y: 64 }, points: [{ x: 52, y: 64 }, { x: 74, y: 64 }] }
+    ]
+  },
+  'ち': {
+    char: 'ち',
+    totalStrokes: 2,
+    ruleHint: 'Nét ngang trên trước, nét sổ gập uốn tròn bụng lớn sau.',
+    strokes: [
+      { strokeNumber: 1, name: 'Nét ngang', description: 'Kéo ngang từ trái sang phải hơi chếch lên', direction: '→', startPercent: { x: 26, y: 30 }, points: [{ x: 26, y: 30 }, { x: 74, y: 30 }] },
+      { strokeNumber: 2, name: 'Nét sổ gập lượn cung', description: 'Sổ chéo xuống rồi uốn vòng cung tròn lớn như số 5', direction: '↙⤵', startPercent: { x: 50, y: 16 }, points: [{ x: 50, y: 16 }, { x: 42, y: 48 }, { x: 68, y: 48 }, { x: 72, y: 72 }, { x: 44, y: 84 }, { x: 30, y: 76 }] }
+    ]
+  },
+  'つ': {
+    char: 'つ',
+    totalStrokes: 1,
+    ruleHint: 'Một nét sóng lượn duy nhất: kéo chếch lên sang phải rồi uốn vòng cung lớn xuống đáy.',
+    strokes: [
+      { strokeNumber: 1, name: 'Nét sóng cong', description: 'Ngang xiên lên rồi lượn vòng cung tròn lớn sang trái', direction: '↗⤵', startPercent: { x: 26, y: 36 }, points: [{ x: 26, y: 36 }, { x: 68, y: 30 }, { x: 74, y: 56 }, { x: 54, y: 78 }, { x: 28, y: 76 }] }
+    ]
+  },
+  'て': {
+    char: 'て',
+    totalStrokes: 1,
+    ruleHint: 'Một nét liền: ngang từ trái sang phải rồi uốn vòng cung ngửa sang trái.',
+    strokes: [
+      { strokeNumber: 1, name: 'Nét ngang lượn cong', description: 'Kéo ngang sang phải rồi uốn vòng cung hình bán nguyệt', direction: '→⤵', startPercent: { x: 28, y: 30 }, points: [{ x: 28, y: 30 }, { x: 70, y: 30 }, { x: 62, y: 56 }, { x: 38, y: 74 }, { x: 58, y: 78 }] }
+    ]
+  },
+  'と': {
+    char: 'と',
+    totalStrokes: 2,
+    ruleHint: 'Nét sổ xiên ngắn trước, nét uốn cong ôm lấy sau.',
+    strokes: [
+      { strokeNumber: 1, name: 'Nét xiên ngắn', description: 'Kéo nét xiên chéo từ trên xuống sang phải', direction: '↘', startPercent: { x: 38, y: 22 }, points: [{ x: 38, y: 22 }, { x: 48, y: 44 }] },
+      { strokeNumber: 2, name: 'Nét uốn cong ngửa', description: 'Kéo từ trên chạm nét 1 rồi lượn vòng cung ngửa lớn', direction: '⤵', startPercent: { x: 64, y: 38 }, points: [{ x: 64, y: 38 }, { x: 44, y: 48 }, { x: 44, y: 72 }, { x: 72, y: 72 }] }
+    ]
+  },
+
+  // === N-ROW (NA, NI, NU, NE, NO) ===
+  'な': {
+    char: 'な',
+    totalStrokes: 4,
+    ruleHint: 'Ngang trước, sổ xiên móc, dấu chấm phải, nét sổ xoắn thắt nút sau cùng.',
+    strokes: [
+      { strokeNumber: 1, name: 'Nét ngang', description: 'Kéo ngang ngắn ở góc trên trái', direction: '→', startPercent: { x: 24, y: 34 }, points: [{ x: 24, y: 34 }, { x: 52, y: 34 }] },
+      { strokeNumber: 2, name: 'Nét sổ xiên móc', description: 'Xiên chéo cắt nét ngang rồi móc nhẹ', direction: '↙⤴', startPercent: { x: 42, y: 20 }, points: [{ x: 42, y: 20 }, { x: 34, y: 64 }] },
+      { strokeNumber: 3, name: 'Dấu phẩy phải', description: 'Chấm phẩy ở nửa trên bên phải', direction: '↘', startPercent: { x: 64, y: 32 }, points: [{ x: 64, y: 32 }, { x: 74, y: 40 }] },
+      { strokeNumber: 4, name: 'Nét sổ có nút thắt', description: 'Sổ dọc bên phải tạo nút thắt tròn rồi vuốt nhọn', direction: '↓🔄', startPercent: { x: 60, y: 48 }, points: [{ x: 60, y: 48 }, { x: 60, y: 72 }, { x: 48, y: 76 }, { x: 64, y: 76 }] }
+    ]
+  },
+  'に': {
+    char: 'に',
+    totalStrokes: 3,
+    ruleHint: 'Nét sổ móc trái trước, 2 nét ngang song song bên phải sau.',
+    strokes: [
+      { strokeNumber: 1, name: 'Nét sổ móc trái', description: 'Sổ dọc bên trái rồi móc nhẹ lên', direction: '↓⤴', startPercent: { x: 30, y: 22 }, points: [{ x: 30, y: 22 }, { x: 28, y: 74 }, { x: 34, y: 70 }] },
+      { strokeNumber: 2, name: 'Nét ngang trên', description: 'Kéo ngang ngắn ở nửa trên bên phải', direction: '→', startPercent: { x: 52, y: 36 }, points: [{ x: 52, y: 36 }, { x: 76, y: 36 }] },
+      { strokeNumber: 3, name: 'Nét ngang dưới', description: 'Kéo ngang hơi cong ngửa ở dưới', direction: '→', startPercent: { x: 50, y: 66 }, points: [{ x: 50, y: 66 }, { x: 78, y: 66 }] }
+    ]
+  },
+  'の': {
+    char: 'の',
+    totalStrokes: 1,
+    ruleHint: 'Một nét cuộn tròn duy nhất: sổ chéo xuống rồi cuộn vòng cung lớn bao quanh.',
+    strokes: [
+      { strokeNumber: 1, name: 'Nét cuộn tròn', description: 'Xiên chéo xuống từ tâm rồi lượn vòng cung tròn lớn như vỏ ốc', direction: '↙⤴⤵', startPercent: { x: 54, y: 28 }, points: [{ x: 54, y: 28 }, { x: 38, y: 66 }, { x: 56, y: 82 }, { x: 74, y: 64 }, { x: 66, y: 36 }, { x: 42, y: 48 }] }
+    ]
+  },
+
+  // === R-ROW (RA, RI, RU, RE, RO) ===
+  'り': {
+    char: 'り',
+    totalStrokes: 2,
+    ruleHint: 'Chuẩn chữ viết tay: Hai nét TÁCH RỜI nhau, nét trái ngắn có móc, nét phải dài cong nhẹ.',
+    strokes: [
+      { strokeNumber: 1, name: 'Nét sổ móc trái', description: 'Sổ dọc bên trái hơi cong rồi hất móc nhẹ (tách rời với nét 2)', direction: '↓⤴', startPercent: { x: 32, y: 28 }, points: [{ x: 32, y: 28 }, { x: 30, y: 56 }, { x: 36, y: 52 }] },
+      { strokeNumber: 2, name: 'Nét sổ cong phải dài', description: 'Bắt đầu từ đỉnh bên phải, kéo dài xuống đáy uốn cong nhẹ sang trái', direction: '↓↙', startPercent: { x: 68, y: 18 }, points: [{ x: 68, y: 18 }, { x: 70, y: 54 }, { x: 62, y: 82 }, { x: 52, y: 80 }] }
+    ]
+  },
+  'ふ': {
+    char: 'ふ',
+    totalStrokes: 4,
+    ruleHint: 'Dấu phẩy đỉnh trước, nét sổ cong giữa, dấu phẩy trái, dấu mác phải sau cùng.',
+    strokes: [
+      { strokeNumber: 1, name: 'Dấu chấm đỉnh', description: 'Chấm nét ngắn ở đỉnh đầu', direction: '↘', startPercent: { x: 48, y: 18 }, points: [{ x: 48, y: 18 }, { x: 54, y: 26 }] },
+      { strokeNumber: 2, name: 'Nét sổ cong móc giữa', description: 'Kéo từ trên xuống rồi uốn cong móc sang trái', direction: '↓⤴', startPercent: { x: 50, y: 34 }, points: [{ x: 50, y: 34 }, { x: 46, y: 58 }, { x: 38, y: 64 }] },
+      { strokeNumber: 3, name: 'Dấu phẩy trái', description: 'Chấm xiên bên trái', direction: '↙', startPercent: { x: 26, y: 52 }, points: [{ x: 26, y: 52 }, { x: 20, y: 64 }] },
+      { strokeNumber: 4, name: 'Dấu mác phải', description: 'Chấm xiên bên phải', direction: '↘', startPercent: { x: 72, y: 50 }, points: [{ x: 72, y: 50 }, { x: 80, y: 62 }] }
+    ]
+  },
+  'ん': {
+    char: 'ん',
+    totalStrokes: 1,
+    ruleHint: 'Một nét liền: Sổ xiên xuống, hất lên sang phải rồi uốn lượn hất đuôi.',
+    strokes: [
+      { strokeNumber: 1, name: 'Nét chữ N mềm mại', description: 'Xiên chéo xuống từ trái, hất chéo lên rồi uốn lượn hất đuôi lên trên', direction: '↙↗⤵⤴', startPercent: { x: 36, y: 24 }, points: [{ x: 36, y: 24 }, { x: 28, y: 72 }, { x: 46, y: 46 }, { x: 66, y: 46 }, { x: 62, y: 74 }, { x: 76, y: 72 }] }
+    ]
+  },
+
   // === CORE KANJI EXAMPLES ===
   '一': {
     char: '一',

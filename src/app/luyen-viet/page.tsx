@@ -324,7 +324,7 @@ export default function LuyenVietPage() {
         </Link>
         <h1 className="text-base font-black text-[#143521] flex items-center gap-1.5">
           <span>Tập viết chữ:</span>
-          <span className="jp-font text-2xl font-black text-[#15803d]">{displayGlyph}</span>
+          <span className="jp-font jp-textbook text-2xl font-bold text-[#15803d]">{displayGlyph}</span>
         </h1>
         <div className="flex items-center gap-1">
           <button
@@ -390,7 +390,7 @@ export default function LuyenVietPage() {
                 setCharIndex(idx);
                 sound.playTap();
               }}
-              className={`min-w-[40px] h-9 rounded-xl font-black jp-font text-sm flex items-center justify-center transition-all cursor-pointer shrink-0 ${
+              className={`min-w-[40px] h-9 rounded-xl font-bold jp-font jp-textbook text-sm flex items-center justify-center transition-all cursor-pointer shrink-0 ${
                 isSelected
                   ? 'bg-emerald-600 text-white shadow-md scale-110 ring-2 ring-emerald-300'
                   : 'bg-white text-stone-700 hover:bg-emerald-50 border border-stone-200'
@@ -577,24 +577,24 @@ export default function LuyenVietPage() {
               {isCompound && compoundMode === 'both' ? (
                 <div className="flex items-center justify-center gap-1.5 leading-none">
                   {/* Primary Kana (e.g. き / キ) */}
-                  <span className="text-[120px] sm:text-[135px] font-black text-stone-200/90 jp-font select-none">
+                  <span className="text-[120px] sm:text-[135px] font-semibold text-stone-300/90 jp-font jp-textbook select-none">
                     {primaryChar}
                   </span>
                   {/* Small Kana (e.g. ゃ / ャ) positioned lower-right */}
-                  <span className="text-[80px] sm:text-[90px] font-black text-stone-200/90 jp-font select-none self-end pb-3 sm:pb-4">
+                  <span className="text-[80px] sm:text-[90px] font-semibold text-stone-300/90 jp-font jp-textbook select-none self-end pb-3 sm:pb-4">
                     {smallChar}
                   </span>
                 </div>
               ) : isCompound && compoundMode === 'primary' ? (
-                <span className="text-[200px] sm:text-[220px] font-black text-stone-200/90 jp-font leading-none select-none">
+                <span className="text-[200px] sm:text-[220px] font-semibold text-stone-300/90 jp-font jp-textbook leading-none select-none">
                   {primaryChar}
                 </span>
               ) : isCompound && compoundMode === 'small' ? (
-                <span className="text-[160px] sm:text-[180px] font-black text-stone-200/90 jp-font leading-none select-none">
+                <span className="text-[160px] sm:text-[180px] font-semibold text-stone-300/90 jp-font jp-textbook leading-none select-none">
                   {smallChar}
                 </span>
               ) : (
-                <span className="text-[200px] sm:text-[220px] font-black text-stone-200/90 jp-font leading-none select-none">
+                <span className="text-[200px] sm:text-[220px] font-semibold text-stone-300/90 jp-font jp-textbook leading-none select-none">
                   {displayGlyph}
                 </span>
               )}

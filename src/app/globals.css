@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -27,9 +28,23 @@ body {
   background-attachment: fixed;
 }
 
-/* Japanese typography */
-.jp-font {
-  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP", sans-serif;
+/* Japanese typography - Priority to Textbook & Handwriting Style (Kyōkashotai - 教科書体 chuẩn mẫu luyện viết) */
+.jp-font, .jp-textbook {
+  font-family: 
+    "UD Digi Kyokasho N-R",
+    "UD Digi Kyokasho NP-R",
+    "UD Digi Kyokasho NK-R",
+    "UD Digi Kyokasho N-B",
+    "UD Digi Kyokasho",
+    "Klee One",
+    "Yu Kyokasho Yoko",
+    "YuKyokasho",
+    "Yu Kyokasho",
+    "Toppan Bunkyu Kyokasho",
+    "Hiragino Maru Gothic ProN",
+    "BIZ UDPGothic",
+    sans-serif;
+  font-feature-settings: "palt" 1;
 }
 
 /* Custom scrollbar */
