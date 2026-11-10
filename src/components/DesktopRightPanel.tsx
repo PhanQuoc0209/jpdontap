@@ -68,6 +68,28 @@ export const DesktopRightPanel: React.FC<DesktopRightPanelProps> = ({ isMobileDr
         )}
       </div>
 
+      {/* Account Login Gateway Banner */}
+      <div className="rounded-2xl bg-gradient-to-br from-emerald-950 via-stone-900 to-emerald-950 border border-emerald-500/30 p-3 text-white shadow-xs space-y-1.5 animate-fade-in">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm">🔑</span>
+            <span className="text-[11px] font-black text-amber-200">Tài khoản tu học</span>
+          </div>
+          <span className="px-1.5 py-0.2 rounded bg-emerald-600/80 text-white text-[9px] font-bold">
+            Chưa đăng nhập
+          </span>
+        </div>
+        <p className="text-[10px] text-stone-300 leading-snug">
+          Đăng nhập qua Google/Apple/Kakao để lưu tiến độ tu vi &amp; bảng xếp hạng.
+        </p>
+        <Link
+          href="/dang-nhap"
+          className="w-full mt-1 py-1.5 px-2 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white text-[11px] font-bold text-center block shadow-xs transition-colors"
+        >
+          Cổng Đăng Nhập (Prompt #066) ➔
+        </Link>
+      </div>
+
       {/* 4 Quick Points & Stats Cards */}
       <div className="space-y-2">
         <div className="flex items-center justify-between px-1">

@@ -2,8 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Menu, PanelRightClose, PanelRightOpen, Zap } from 'lucide-react';
+import { Menu, PanelRightClose, PanelRightOpen, Zap, LogOut } from 'lucide-react';
 import { useLayout } from '@/components/LayoutContext';
+import { useAuth } from '@/components/AuthContext';
 
 interface TopHeaderProps {
   streak?: number;
@@ -12,6 +13,7 @@ interface TopHeaderProps {
 export const TopHeader: React.FC<TopHeaderProps> = ({
   streak = 7
 }) => {
+  const { user, logout } = useAuth();
   const {
     isRightPanelVisible,
     toggleRightPanel,
@@ -41,11 +43,13 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           </div>
           <div className="leading-tight">
             <div className="flex items-center gap-1">
-              <span className="text-xs sm:text-sm font-black text-[#143521]">Xin chào!</span>
+              <span className="text-xs sm:text-sm font-black text-[#143521]">
+                {user ? user.name : 'Xin chào!'}
+              </span>
               <span className="text-xs">👋</span>
             </div>
             <p className="text-[10px] sm:text-[11px] text-[#597361] font-medium hidden xs:block truncate">
-              Hôm nay cùng học tiếng Nhật nào!
+              {user ? `${user.account} (${user.provider})` : 'Hôm nay cùng học tiếng Nhật nào!'}
             </p>
           </div>
         </Link>
@@ -73,15 +77,15 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           <span className="text-xs text-amber-700 sm:hidden">250</span>
         </button>
 
-        {/* Quick Sign-In Button */}
-        <Link
-          href="/dang-nhap"
-          className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-black shadow-xs hover:scale-105 active:scale-95 transition-all"
-          title="Đăng nhập tài khoản tu học"
+        {/* Logout Button (Khóa cổng tu học) */}
+        <button
+          onClick={logout}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold border border-rose-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
+          title="Đăng xuất tài khoản (Khóa cổng tu học)"
         >
-          <span>🔑</span>
-          <span className="hidden xs:inline">Đăng nhập</span>
-        </Link>
+          <LogOut className="w-3.5 h-3.5 text-rose-600" />
+          <span className="hidden xs:inline">Đăng xuất</span>
+        </button>
 
         {/* Desktop Toggle Button for Right Points Panel */}
         <button

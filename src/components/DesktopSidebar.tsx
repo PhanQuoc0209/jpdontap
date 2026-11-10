@@ -13,12 +13,15 @@ import {
   BarChart2,
   Sparkles,
   User,
+  LogIn,
+  LogOut,
   PanelLeftClose,
   PanelLeftOpen,
   X,
 } from 'lucide-react';
 import { WukongMascot } from '@/components/WukongMascot';
 import { useLayout } from '@/components/LayoutContext';
+import { useAuth } from '@/components/AuthContext';
 
 interface DesktopSidebarProps {
   isMobileDrawer?: boolean;
@@ -26,6 +29,7 @@ interface DesktopSidebarProps {
 
 export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer = false }) => {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
   const { isSidebarCollapsed, toggleSidebar, closeAllMobileDrawers } = useLayout();
 
   // If in mobile drawer, never show collapsed mode
@@ -33,6 +37,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
 
   const navLinks = [
     { href: '/', label: 'Trang chủ', icon: Home },
+    { href: '/dang-nhap', label: 'Cổng Đăng Nhập', icon: LogIn, badge: 'MỚI' },
     { href: '/boss-battle', label: 'Đấu Boss Vượt Ải', icon: Swords, badge: 'Chiến' },
     { href: '/kham-pha', label: 'Khám phá từ mới', icon: BookOpen },
     { href: '/luyen-viet', label: 'Luyện viết chữ Hán', icon: PenTool },
@@ -133,11 +138,13 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1">
-                <span className="text-xs font-black text-[#2e1d0f] truncate">Ngộ Không Học Giả</span>
+                <span className="text-xs font-black text-[#2e1d0f] truncate">
+                  {user ? user.name : 'Ngộ Không Học Giả'}
+                </span>
                 <span className="text-[10px]">🔥</span>
               </div>
               <span className="text-[10px] font-bold text-[#b45309] block truncate">
-                Tu Vi: Cấp 3 (JPD1 Sơ Khởi)
+                {user ? `${user.provider} (${user.account.split('@')[0]})` : 'Tu Vi: Cấp 3 (JPD1 Sơ Khởi)'}
               </span>
             </div>
           </div>
@@ -152,6 +159,17 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
               <div className="h-full bg-[#22c55e] rounded-full w-[65%]" />
             </div>
           </div>
+
+          {/* User Logout Button inside Mascot Card */}
+          <button
+            type="button"
+            onClick={logout}
+            className="w-full mt-2 py-1.5 px-2 rounded-xl bg-stone-200/80 hover:bg-rose-100 text-stone-700 hover:text-rose-700 text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-2xs transition-all active:scale-95 cursor-pointer"
+            title="Đăng xuất khỏi hệ thống"
+          >
+            <LogOut className="w-3.5 h-3.5 text-rose-600" />
+            <span>Đăng xuất (Khóa cổng)</span>
+          </button>
         </div>
       )}
 

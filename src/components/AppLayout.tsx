@@ -2,6 +2,8 @@
 
 import React, { useEffect } from 'react';
 import { LayoutProvider, useLayout } from '@/components/LayoutContext';
+import { AuthProvider, useAuth } from '@/components/AuthContext';
+import { StandaloneLoginGate } from '@/components/StandaloneLoginGate';
 import { DesktopSidebar } from '@/components/DesktopSidebar';
 import { DesktopRightPanel } from '@/components/DesktopRightPanel';
 import { TopHeader } from '@/components/TopHeader';
@@ -9,6 +11,7 @@ import { Navbar } from '@/components/Navbar';
 import { PanelRightOpen } from 'lucide-react';
 
 const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuth();
   const {
     isSidebarCollapsed,
     isRightPanelVisible,
@@ -28,6 +31,23 @@ const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [closeAllMobileDrawers]);
+
+  // 1. Loading screen while checking authentication state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen w-full bg-[#0c140e] flex flex-col items-center justify-center p-4 select-none">
+        <div className="w-12 h-12 rounded-full border-3 border-emerald-500/20 border-t-emerald-500 animate-spin" />
+        <span className="text-xs font-black text-amber-200 mt-3 tracking-wider uppercase">
+          Đang khởi tạo cổng tu học…
+        </span>
+      </div>
+    );
+  }
+
+  // 2. Strict Authentication Gate: If not logged in, user CANNOT enter the website
+  if (!isAuthenticated) {
+    return <StandaloneLoginGate />;
+  }
 
   return (
     <div className="relative z-10 w-full min-h-screen flex justify-between">
@@ -109,8 +129,10 @@ const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <LayoutProvider>
-      <AppShell>{children}</AppShell>
-    </LayoutProvider>
+    <AuthProvider>
+      <LayoutProvider>
+        <AppShell>{children}</AppShell>
+      </LayoutProvider>
+    </AuthProvider>
   );
 };
