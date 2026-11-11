@@ -16,7 +16,6 @@ import {
   Undo2,
   Eye,
   EyeOff,
-  BookOpen,
   Play,
   Square,
   ListOrdered
@@ -26,64 +25,15 @@ import { getStrokeGuide, CharacterStrokeData } from '@/lib/strokeOrderData';
 
 type WritingCategory = 'hiragana' | 'katakana' | 'kanji';
 
-// Catmull-Rom Spline Curve Generator for natural Japanese calligraphy
-function generateSmoothCalligraphyPath(
-  points: { x: number; y: number }[],
-  stepsPerSpan: number = 24
-): { x: number; y: number }[] {
-  if (points.length <= 1) return points;
-  if (points.length === 2) {
-    const res: { x: number; y: number }[] = [];
-    for (let i = 0; i <= stepsPerSpan; i++) {
-      const t = i / stepsPerSpan;
-      res.push({
-        x: points[0].x + (points[1].x - points[0].x) * t,
-        y: points[0].y + (points[1].y - points[0].y) * t
-      });
-    }
-    return res;
+function getSvgPathLength(d: string): number {
+  if (typeof document === 'undefined') return 160;
+  try {
+    const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', d);
+    return Math.max(30, Math.round(p.getTotalLength() || 160));
+  } catch {
+    return 160;
   }
-
-  // Extend endpoints so spline passes smoothly through endpoints
-  const p = [
-    { x: 2 * points[0].x - points[1].x, y: 2 * points[0].y - points[1].y },
-    ...points,
-    { x: 2 * points[points.length - 1].x - points[points.length - 2].x, y: 2 * points[points.length - 1].y - points[points.length - 2].y }
-  ];
-
-  const result: { x: number; y: number }[] = [];
-
-  for (let i = 0; i < p.length - 3; i++) {
-    const p0 = p[i];
-    const p1 = p[i + 1];
-    const p2 = p[i + 2];
-    const p3 = p[i + 3];
-
-    for (let j = 0; j < stepsPerSpan; j++) {
-      const t = j / stepsPerSpan;
-      const t2 = t * t;
-      const t3 = t2 * t;
-
-      const x = 0.5 * (
-        (2 * p1.x) +
-        (-p0.x + p2.x) * t +
-        (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 +
-        (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3
-      );
-
-      const y = 0.5 * (
-        (2 * p1.y) +
-        (-p0.y + p2.y) * t +
-        (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 +
-        (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3
-      );
-
-      result.push({ x, y });
-    }
-  }
-
-  result.push(points[points.length - 1]);
-  return result;
 }
 
 export default function LuyenVietPage() {
@@ -97,10 +47,12 @@ export default function LuyenVietPage() {
   const [showStrokeOrder, setShowStrokeOrder] = useState(true);
   const [isDemoPlaying, setIsDemoPlaying] = useState(false);
   const [activeDemoStroke, setActiveDemoStroke] = useState<number | null>(null);
+  const [demoStrokeProgress, setDemoStrokeProgress] = useState(0);
+  const [hasDemoFinished, setHasDemoFinished] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const undoHistoryRef = useRef<ImageData[]>([]);
-  const animationTimerRef = useRef<any>(null);
+  const demoAnimationRef = useRef<any>(null);
 
   // 3 Distinct Datasets for Hiragana, Katakana, and Kanji
   const hiraganaList = useMemo(() => {
@@ -155,22 +107,39 @@ export default function LuyenVietPage() {
   const primaryChar = isCompound ? displayGlyph[0] : displayGlyph;
   const smallChar = isCompound ? displayGlyph.slice(1) : '';
 
-  // Stroke guide data for active glyph
+  // Authentic KanjiVG stroke guide data
   const strokeGuide: CharacterStrokeData = useMemo(() => {
     const totalFallback = category === 'kanji' ? (activeItem as KanjiItem)?.strokes || 4 : 3;
     const targetChar = isCompound && compoundMode === 'primary' ? primaryChar : isCompound && compoundMode === 'small' ? smallChar : displayGlyph;
     return getStrokeGuide(targetChar, totalFallback);
   }, [category, activeItem, displayGlyph, isCompound, compoundMode, primaryChar, smallChar]);
 
+  // Pre-calculate path lengths for smooth SVG dashoffset animations
+  const strokeLengths = useMemo(() => {
+    const map: Record<number, number> = {};
+    if (strokeGuide && strokeGuide.strokes) {
+      strokeGuide.strokes.forEach(s => {
+        map[s.strokeNumber] = getSvgPathLength(s.d);
+      });
+    }
+    return map;
+  }, [strokeGuide]);
+
   const stopStrokeDemo = () => {
     setIsDemoPlaying(false);
     setActiveDemoStroke(null);
-    if (animationTimerRef.current) {
-      clearTimeout(animationTimerRef.current);
-      animationTimerRef.current = null;
+    setDemoStrokeProgress(0);
+    if (demoAnimationRef.current) {
+      if (typeof demoAnimationRef.current === 'number') {
+        cancelAnimationFrame(demoAnimationRef.current);
+      } else {
+        clearTimeout(demoAnimationRef.current);
+      }
+      demoAnimationRef.current = null;
     }
   };
 
+  // Play official Japanese stroke order animation via SVG
   const handlePlayStrokeDemo = () => {
     if (isDemoPlaying) {
       stopStrokeDemo();
@@ -179,92 +148,77 @@ export default function LuyenVietPage() {
 
     clearCanvas();
     setIsDemoPlaying(true);
-    setActiveDemoStroke(1);
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
+    setHasDemoFinished(false);
     sound.playTap();
 
-    let strokeIdx = 0;
     const strokes = strokeGuide.strokes;
+    if (!strokes || strokes.length === 0) return;
 
-    const drawNextStroke = () => {
-      if (strokeIdx >= strokes.length) {
+    let currentIdx = 0;
+    setActiveDemoStroke(strokes[0].strokeNumber);
+    setDemoStrokeProgress(0);
+
+    const animateStroke = () => {
+      if (currentIdx >= strokes.length) {
         setIsDemoPlaying(false);
         setActiveDemoStroke(null);
+        setHasDemoFinished(true);
         sound.playVictory();
+        confetti({ particleCount: 50, spread: 50 });
         return;
       }
 
-      const currentStroke = strokes[strokeIdx];
+      const currentStroke = strokes[currentIdx];
       setActiveDemoStroke(currentStroke.strokeNumber);
 
-      const pts = currentStroke.points;
-      if (pts.length < 2) {
-        strokeIdx++;
-        drawNextStroke();
-        return;
-      }
+      let startTime: number | null = null;
+      const duration = 520; // 520ms per stroke for natural calligraphy cadence
 
-      const scaleX = canvas.width / 100;
-      const scaleY = canvas.height / 100;
+      const step = (now: number) => {
+        if (!startTime) startTime = now;
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        // Smooth easing curve
+        const eased = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        setDemoStrokeProgress(eased);
 
-      // Generate silky-smooth calligraphic curve path via Catmull-Rom spline
-      const smoothPath = generateSmoothCalligraphyPath(pts, 28);
-      if (smoothPath.length < 2) {
-        strokeIdx++;
-        drawNextStroke();
-        return;
-      }
-
-      let stepIdx = 0;
-      const strokeWidth = isCompound && compoundMode === 'both' ? 10 : 13.5;
-
-      const interval = setInterval(() => {
-        // Advance 2 points per tick for organic, fluid 60fps brush motion
-        const nextIdx = Math.min(stepIdx + 2, smoothPath.length - 1);
-
-        ctx.beginPath();
-        ctx.moveTo(smoothPath[stepIdx].x * scaleX, smoothPath[stepIdx].y * scaleY);
-        for (let k = stepIdx + 1; k <= nextIdx; k++) {
-          ctx.lineTo(smoothPath[k].x * scaleX, smoothPath[k].y * scaleY);
+        if (progress < 1) {
+          demoAnimationRef.current = requestAnimationFrame(step);
+        } else {
+          // Pause slightly between strokes (180ms)
+          demoAnimationRef.current = setTimeout(() => {
+            currentIdx++;
+            if (currentIdx < strokes.length) {
+              setDemoStrokeProgress(0);
+              animateStroke();
+            } else {
+              setIsDemoPlaying(false);
+              setActiveDemoStroke(null);
+              setHasDemoFinished(true);
+              sound.playVictory();
+              confetti({ particleCount: 50, spread: 50 });
+            }
+          }, 180);
         }
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = strokeWidth;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.stroke();
+      };
 
-        stepIdx = nextIdx;
-
-        if (stepIdx >= smoothPath.length - 1) {
-          clearInterval(interval);
-          setDrawnStrokeCount(strokeIdx + 1);
-          setHasDrawn(true);
-          strokeIdx++;
-          animationTimerRef.current = setTimeout(drawNextStroke, 240);
-        }
-      }, 18);
+      demoAnimationRef.current = requestAnimationFrame(step);
     };
 
-    drawNextStroke();
+    animateStroke();
   };
 
   // Clear canvas whenever character or category changes
   useEffect(() => {
     stopStrokeDemo();
     clearCanvas();
+    setHasDemoFinished(false);
     setCompoundMode('both');
   }, [category, charIndex]);
 
   useEffect(() => {
     return () => {
-      if (animationTimerRef.current) {
-        clearTimeout(animationTimerRef.current);
-      }
+      stopStrokeDemo();
     };
   }, []);
 
@@ -291,14 +245,19 @@ export default function LuyenVietPage() {
 
     setIsDrawing(true);
     setHasDrawn(true);
+
     const rect = canvas.getBoundingClientRect();
-    const x = 'touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-    const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
 
     ctx.beginPath();
     ctx.moveTo(x, y);
-    ctx.strokeStyle = '#f59e0b';
-    ctx.lineWidth = isCompound && compoundMode === 'both' ? 10 : 14;
+    ctx.strokeStyle = '#1e293b'; // Traditional deep Japanese calligraphy sumi ink
+    ctx.lineWidth = isCompound && compoundMode === 'both' ? 8 : 11;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
   };
@@ -311,8 +270,12 @@ export default function LuyenVietPage() {
     if (!ctx) return;
 
     const rect = canvas.getBoundingClientRect();
-    const x = 'touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-    const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (clientX - rect.left) * scaleX;
+    const y = (clientY - rect.top) * scaleY;
 
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -325,134 +288,137 @@ export default function LuyenVietPage() {
     }
   };
 
-  // Undo last drawn stroke
-  const handleUndoLastStroke = () => {
+  const handleUndo = () => {
     const canvas = canvasRef.current;
-    if (!canvas || undoHistoryRef.current.length === 0) return;
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const previousSnapshot = undoHistoryRef.current.pop();
-    if (previousSnapshot) {
-      ctx.putImageData(previousSnapshot, 0, 0);
-      setDrawnStrokeCount(prev => Math.max(0, prev - 1));
-      if (undoHistoryRef.current.length === 0) {
-        setHasDrawn(false);
+    if (undoHistoryRef.current.length > 0) {
+      sound.playTap();
+      const previousState = undoHistoryRef.current.pop();
+      if (previousState) {
+        ctx.putImageData(previousState, 0, 0);
+        setDrawnStrokeCount(prev => Math.max(0, prev - 1));
       }
     }
   };
 
-  // "lúc luyện viết nếu viết xong là qua" -> Hoàn thành & Qua chữ tiếp theo
-  const handleCompleteAndNext = () => {
+  const handleComplete = () => {
     sound.playVictory();
-    confetti({ particleCount: 85, spread: 65, origin: { y: 0.6 } });
-
-    setTimeout(() => {
-      if (safeIndex + 1 < currentList.length) {
-        setCharIndex(prev => prev + 1);
-      } else {
-        setCharIndex(0);
-      }
-      clearCanvas();
-    }, 400);
-  };
-
-  // "hoặc cho luyện lại ko bắt viết đi lại nhiều net" -> Xóa để viết lại chữ này
-  const handleRetryCurrent = () => {
-    sound.playTap();
-    clearCanvas();
+    confetti({ particleCount: 75, spread: 60 });
+    // Advance to next character
+    if (charIndex + 1 < currentList.length) {
+      setCharIndex(charIndex + 1);
+    } else {
+      setCharIndex(0);
+    }
   };
 
   const handlePlaySound = () => {
-    sound.speakJapanese(displayGlyph);
+    if (category === 'kanji') {
+      const kj = activeItem as KanjiItem;
+      sound.speakJapanese(kj.kanji);
+    } else {
+      const k = activeItem as KanaItem;
+      sound.speakJapanese(k.glyph || k.hira || k.kata || displayGlyph);
+    }
   };
 
   return (
-    <div className="space-y-4 pb-8 animate-fade-in">
+    <div className="space-y-4 pb-6">
       {/* Top Header */}
       <div className="flex items-center justify-between">
         <Link
           href="/"
+          onClick={() => sound.playTap()}
           className="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center hover:bg-stone-800 transition-colors shadow-sm"
-          title="Quay lại trang chủ"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
-        <h1 className="text-base font-black text-[#143521] flex items-center gap-1.5">
-          <span>Tập viết chữ:</span>
-          <span className="jp-font jp-textbook text-2xl font-bold text-[#15803d]">{displayGlyph}</span>
+        <h1 className="text-base font-black text-[#143521]">
+          Tập viết chữ: <span className="text-emerald-700 jp-font font-bold">{displayGlyph}</span>
         </h1>
         <div className="flex items-center gap-1">
           <button
-            onClick={() => safeIndex > 0 && setCharIndex(safeIndex - 1)}
-            disabled={safeIndex === 0}
-            className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-xs cursor-pointer"
-            title="Chữ trước"
+            onClick={() => {
+              if (charIndex > 0) {
+                sound.playTap();
+                setCharIndex(charIndex - 1);
+              }
+            }}
+            disabled={charIndex === 0}
+            className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-sm cursor-pointer"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
           </button>
           <button
-            onClick={() => safeIndex + 1 < currentList.length && setCharIndex(safeIndex + 1)}
-            disabled={safeIndex + 1 === currentList.length}
-            className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-xs cursor-pointer"
-            title="Chữ tiếp theo"
+            onClick={() => {
+              if (charIndex + 1 < currentList.length) {
+                sound.playTap();
+                setCharIndex(charIndex + 1);
+              }
+            }}
+            disabled={charIndex + 1 === currentList.length}
+            className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-sm cursor-pointer"
           >
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* 3 Main Category Tabs: HIRAGANA, KATAKANA, KANJI */}
-      <div className="flex items-center gap-1.5 bg-[#e4ede1] p-1 rounded-2xl text-xs font-black shadow-xs">
+      {/* 3 Main Categories Switcher Tabs */}
+      <div className="grid grid-cols-3 gap-2 bg-[#f4ece1] p-1.5 rounded-2xl border border-[#e4dac3]">
         {[
           { key: 'hiragana', label: 'あ HIRAGANA', count: hiraganaList.length },
           { key: 'katakana', label: 'ア KATAKANA', count: katakanaList.length },
           { key: 'kanji', label: '漢 CHỮ HÁN KANJI', count: kanjiList.length }
-        ].map(t => (
-          <button
-            key={t.key}
-            onClick={() => {
-              setCategory(t.key as WritingCategory);
-              setCharIndex(0);
-              sound.playTap();
-            }}
-            className={`flex-1 py-2.5 rounded-xl transition-all font-black text-xs cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
-              category === t.key
-                ? 'bg-white text-[#143521] shadow-sm scale-101 ring-1 ring-emerald-500/20'
-                : 'text-[#718777] hover:text-[#143521]'
-            }`}
-          >
-            <span>{t.label}</span>
-            <span className="text-[10px] font-normal opacity-70 font-mono">({t.count} chữ)</span>
-          </button>
-        ))}
+        ].map(tab => {
+          const isSelected = category === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => {
+                sound.playTap();
+                setCategory(tab.key as WritingCategory);
+                setCharIndex(0);
+              }}
+              className={`py-2 px-1 rounded-xl text-xs font-black transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                isSelected
+                  ? 'bg-white text-stone-900 shadow-md ring-2 ring-emerald-500/20'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span className="text-[10px] opacity-60 font-mono">({tab.count} chữ)</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Horizontal Scrollable Character Picker Carousel */}
-      <div className="flex items-center gap-1.5 overflow-x-auto py-1 no-scrollbar bg-white/70 backdrop-blur-xs p-1.5 rounded-2xl border border-[#e4dac3]">
+      {/* Horizontal Scroll Row of Characters */}
+      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-1">
         {currentList.map((item, idx) => {
-          const glyph = category === 'hiragana'
-            ? (item as KanaItem).hira
-            : category === 'katakana'
-            ? (item as KanaItem).kata || (item as KanaItem).glyph
-            : (item as KanjiItem).kanji;
-
-          const isSelected = idx === safeIndex;
+          const isSel = idx === safeIndex;
+          let label = '';
+          if (category === 'hiragana') label = (item as KanaItem).hira || '';
+          else if (category === 'katakana') label = (item as KanaItem).kata || (item as KanaItem).glyph || '';
+          else label = (item as KanjiItem).kanji || '';
 
           return (
             <button
               key={idx}
               onClick={() => {
-                setCharIndex(idx);
                 sound.playTap();
+                setCharIndex(idx);
               }}
-              className={`min-w-[40px] h-9 rounded-xl font-bold jp-font jp-textbook text-sm flex items-center justify-center transition-all cursor-pointer shrink-0 ${
-                isSelected
-                  ? 'bg-emerald-600 text-white shadow-md scale-110 ring-2 ring-emerald-300'
+              className={`shrink-0 w-10 h-10 rounded-xl font-bold flex items-center justify-center transition-all cursor-pointer jp-font text-sm ${
+                isSel
+                  ? 'bg-emerald-600 text-white shadow-md scale-105 ring-2 ring-emerald-300 font-black'
                   : 'bg-white text-stone-700 hover:bg-emerald-50 border border-stone-200'
               }`}
             >
-              {glyph}
+              {label}
             </button>
           );
         })}
@@ -516,7 +482,7 @@ export default function LuyenVietPage() {
                   ? 'bg-amber-600 text-white animate-pulse ring-2 ring-amber-300'
                   : 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white active:scale-95'
               }`}
-              title="Xem hoạt họa mẫu thứ tự nét viết"
+              title="Xem hoạt họa mẫu thứ tự nét viết chuẩn sách giáo khoa"
             >
               {isDemoPlaying ? (
                 <>
@@ -551,7 +517,7 @@ export default function LuyenVietPage() {
               type="button"
               onClick={() => setShowGhostGuide(!showGhostGuide)}
               className="px-2.5 py-1.5 rounded-full bg-white hover:bg-stone-50 border border-[#e4dac3] text-stone-600 text-xs font-bold flex items-center gap-1 shadow-xs cursor-pointer"
-              title="Bật/tắt chữ mờ hướng dẫn"
+              title="Bật/tắt nét mờ hướng dẫn chuẩn"
             >
               {showGhostGuide ? <Eye className="w-3.5 h-3.5 text-emerald-600" /> : <EyeOff className="w-3.5 h-3.5 text-stone-400" />}
               <span>{showGhostGuide ? 'Nét mờ: Bật' : 'Nét mờ: Tắt'}</span>
@@ -566,7 +532,7 @@ export default function LuyenVietPage() {
           <span className="text-[11px] font-bold text-amber-900 px-1">Luyện âm ghép:</span>
           <button
             type="button"
-            onClick={() => { setCompoundMode('both'); clearCanvas(); }}
+            onClick={() => { setCompoundMode('both'); clearCanvas(); stopStrokeDemo(); }}
             className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
               compoundMode === 'both'
                 ? 'bg-emerald-600 text-white shadow-xs'
@@ -577,7 +543,7 @@ export default function LuyenVietPage() {
           </button>
           <button
             type="button"
-            onClick={() => { setCompoundMode('primary'); clearCanvas(); }}
+            onClick={() => { setCompoundMode('primary'); clearCanvas(); stopStrokeDemo(); }}
             className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
               compoundMode === 'primary'
                 ? 'bg-emerald-600 text-white shadow-xs'
@@ -588,7 +554,7 @@ export default function LuyenVietPage() {
           </button>
           <button
             type="button"
-            onClick={() => { setCompoundMode('small'); clearCanvas(); }}
+            onClick={() => { setCompoundMode('small'); clearCanvas(); stopStrokeDemo(); }}
             className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
               compoundMode === 'small'
                 ? 'bg-emerald-600 text-white shadow-xs'
@@ -604,12 +570,12 @@ export default function LuyenVietPage() {
       <div className="flex items-center justify-between px-2 text-xs font-bold text-[#718777]">
         <span>
           {isCompound && compoundMode === 'both'
-            ? `✍️ Viết cả 2 chữ âm ghép: ${primaryChar} + ${smallChar} (nhỏ ở góc phải).`
+            ? `✍️ Viết cả 2 chữ âm ghép: ${primaryChar} (chính bên trái) + ${smallChar} (nhỏ bên phải).`
             : isCompound && compoundMode === 'primary'
             ? `✍️ Luyện nét chữ chính ${primaryChar} vào ô chữ Mễ.`
             : isCompound && compoundMode === 'small'
             ? `✍️ Luyện nét chữ nhỏ ${smallChar} vào ô chữ Mễ.`
-            : '✍️ Viết toàn bộ chữ vào ô chữ Mễ bên dưới.'}
+            : '✍️ Viết toàn bộ chữ theo nét mờ vào ô chữ Mễ bên dưới.'}
         </span>
         <span className="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
           Đã vẽ: {drawnStrokeCount} nét
@@ -627,37 +593,136 @@ export default function LuyenVietPage() {
             <line x1="0" y1="100%" x2="100%" y2="0" stroke="#e5e7eb" strokeWidth="1.5" strokeDasharray="6,4" />
           </svg>
 
-          {/* Light Gray Ghost Stroke in Background (Can toggle) */}
+          {/* 1. AUTHENTIC KANJIVG GHOST STROKE TEMPLATE (Nét mờ chuẩn sách giáo khoa Nhật Bản) */}
           {showGhostGuide && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none transition-opacity duration-300 px-3">
-              {isCompound && compoundMode === 'both' ? (
-                <div className="flex items-center justify-center gap-1.5 leading-none">
-                  {/* Primary Kana (e.g. き / キ) */}
-                  <span className="text-[120px] sm:text-[135px] font-semibold text-stone-300/90 jp-font jp-textbook select-none">
-                    {primaryChar}
-                  </span>
-                  {/* Small Kana (e.g. ゃ / ャ) positioned lower-right */}
-                  <span className="text-[80px] sm:text-[90px] font-semibold text-stone-300/90 jp-font jp-textbook select-none self-end pb-3 sm:pb-4">
-                    {smallChar}
-                  </span>
-                </div>
-              ) : isCompound && compoundMode === 'primary' ? (
-                <span className="text-[200px] sm:text-[220px] font-semibold text-stone-300/90 jp-font jp-textbook leading-none select-none">
-                  {primaryChar}
-                </span>
-              ) : isCompound && compoundMode === 'small' ? (
-                <span className="text-[160px] sm:text-[180px] font-semibold text-stone-300/90 jp-font jp-textbook leading-none select-none">
-                  {smallChar}
-                </span>
-              ) : (
-                <span className="text-[200px] sm:text-[220px] font-semibold text-stone-300/90 jp-font jp-textbook leading-none select-none">
-                  {displayGlyph}
-                </span>
-              )}
-            </div>
+            <svg
+              viewBox="0 0 109 109"
+              className="absolute inset-0 w-full h-full pointer-events-none p-3.5 select-none"
+            >
+              <g
+                stroke="#d1d5db"
+                strokeWidth="8.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+                opacity="0.85"
+              >
+                {isCompound && compoundMode === 'both' ? (
+                  <>
+                    <g transform="translate(3, 10) scale(0.54)">
+                      {strokeGuide.primaryStrokes?.map(s => (
+                        <path key={s.strokeNumber} d={s.d} />
+                      ))}
+                    </g>
+                    <g transform="translate(56, 42) scale(0.44)">
+                      {strokeGuide.smallStrokes?.map(s => (
+                        <path key={s.strokeNumber} d={s.d} />
+                      ))}
+                    </g>
+                  </>
+                ) : (
+                  strokeGuide.strokes.map(s => (
+                    <path key={s.strokeNumber} d={s.d} />
+                  ))
+                )}
+              </g>
+            </svg>
           )}
 
-          {/* Numbered Stroke Order Badges (①, ②, ③...) with Arrows */}
+          {/* 2. CALLIGRAPHY DEMO ANIMATION (100% Khớp từng pixel với nét mờ) */}
+          {(isDemoPlaying || hasDemoFinished) && (
+            <svg
+              viewBox="0 0 109 109"
+              className="absolute inset-0 w-full h-full pointer-events-none p-3.5 select-none z-10"
+            >
+              {isCompound && compoundMode === 'both' ? (
+                <>
+                  <g transform="translate(3, 10) scale(0.54)">
+                    {strokeGuide.primaryStrokes?.map(s => {
+                      const isCompleted = hasDemoFinished || (activeDemoStroke !== null && s.strokeNumber < activeDemoStroke);
+                      const isCurrent = isDemoPlaying && s.strokeNumber === activeDemoStroke;
+                      if (!isCompleted && !isCurrent) return null;
+                      const len = strokeLengths[s.strokeNumber] || 150;
+                      return (
+                        <path
+                          key={s.strokeNumber}
+                          d={s.d}
+                          stroke="#f59e0b"
+                          strokeWidth="9"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          fill="none"
+                          style={
+                            isCurrent
+                              ? {
+                                  strokeDasharray: len,
+                                  strokeDashoffset: len * (1 - demoStrokeProgress)
+                                }
+                              : undefined
+                          }
+                        />
+                      );
+                    })}
+                  </g>
+                  <g transform="translate(56, 42) scale(0.44)">
+                    {strokeGuide.smallStrokes?.map(s => {
+                      const isCompleted = hasDemoFinished || (activeDemoStroke !== null && s.strokeNumber < activeDemoStroke);
+                      const isCurrent = isDemoPlaying && s.strokeNumber === activeDemoStroke;
+                      if (!isCompleted && !isCurrent) return null;
+                      const len = strokeLengths[s.strokeNumber] || 150;
+                      return (
+                        <path
+                          key={s.strokeNumber}
+                          d={s.d}
+                          stroke="#f59e0b"
+                          strokeWidth="9"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          fill="none"
+                          style={
+                            isCurrent
+                              ? {
+                                  strokeDasharray: len,
+                                  strokeDashoffset: len * (1 - demoStrokeProgress)
+                                }
+                              : undefined
+                          }
+                        />
+                      );
+                    })}
+                  </g>
+                </>
+              ) : (
+                strokeGuide.strokes.map(s => {
+                  const isCompleted = hasDemoFinished || (activeDemoStroke !== null && s.strokeNumber < activeDemoStroke);
+                  const isCurrent = isDemoPlaying && s.strokeNumber === activeDemoStroke;
+                  if (!isCompleted && !isCurrent) return null;
+                  const len = strokeLengths[s.strokeNumber] || 150;
+                  return (
+                    <path
+                      key={s.strokeNumber}
+                      d={s.d}
+                      stroke="#f59e0b"
+                      strokeWidth="9"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      fill="none"
+                      style={
+                        isCurrent
+                          ? {
+                              strokeDasharray: len,
+                              strokeDashoffset: len * (1 - demoStrokeProgress)
+                            }
+                          : undefined
+                      }
+                    />
+                  );
+                })
+              )}
+            </svg>
+          )}
+
+          {/* 3. Numbered Stroke Badges (①, ②, ③...) with Arrows */}
           {showStrokeOrder && (
             <div className="absolute inset-0 pointer-events-none select-none z-20">
               {strokeGuide.strokes.map((s, idx) => {
@@ -677,7 +742,7 @@ export default function LuyenVietPage() {
                 return (
                   <div
                     key={s.strokeNumber}
-                    style={{ left: `${s.startPercent.x}%`, top: `${s.startPercent.y}%` }}
+                    style={{ left: `${s.percentX}%`, top: `${s.percentY}%` }}
                     className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-0.5 transition-all duration-200 ${
                       isActive ? 'scale-125 z-30 ring-4 ring-amber-300 shadow-xl' : 'scale-100 shadow-md'
                     }`}
@@ -696,7 +761,7 @@ export default function LuyenVietPage() {
             </div>
           )}
 
-          {/* Interactive HTML5 Drawing Canvas */}
+          {/* 4. Interactive HTML5 Drawing Canvas (Lớp vẽ mực đen tự do của học viên) */}
           <canvas
             ref={canvasRef}
             width={320}
@@ -708,7 +773,7 @@ export default function LuyenVietPage() {
             onTouchStart={startDrawing}
             onTouchMove={draw}
             onTouchEnd={stopDrawing}
-            className="absolute inset-0 w-full h-full cursor-crosshair touch-none z-10"
+            className="absolute inset-0 w-full h-full cursor-crosshair touch-none z-30"
           />
         </div>
       </div>
@@ -718,7 +783,7 @@ export default function LuyenVietPage() {
         <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
           <span className="font-black text-[#143521] flex items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-amber-500" />
-            <span>Mẫu thứ tự viết ({strokeGuide.strokes.length} nét):</span>
+            <span>Mẫu thứ tự viết ({strokeGuide.strokes.length} nét chuẩn MEXT):</span>
           </span>
           <span className="text-[10px] text-amber-800 font-bold bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200">
             {strokeGuide.ruleHint}
@@ -726,7 +791,7 @@ export default function LuyenVietPage() {
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-          {strokeGuide.strokes.map((s, idx) => {
+          {strokeGuide.strokes.map((s) => {
             const isActive = activeDemoStroke === s.strokeNumber;
             return (
               <div
@@ -740,58 +805,54 @@ export default function LuyenVietPage() {
                 <span className="w-5 h-5 rounded-full bg-stone-900 text-white flex items-center justify-center text-[10px] font-black shrink-0">
                   {s.strokeNumber}
                 </span>
-                <div className="leading-tight">
-                  <div className="font-bold flex items-center gap-1">
-                    <span>{s.name}</span>
-                    <span className="text-amber-600 font-black">{s.direction}</span>
-                  </div>
-                  <div className="text-[10px] opacity-75">{s.description}</div>
-                </div>
+                <span className="font-bold text-stone-800">
+                  {s.name} <span className="text-amber-600 font-black">{s.direction}</span>
+                </span>
+                <span className="text-[10px] text-stone-500 hidden sm:inline">
+                  {s.description}
+                </span>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* Control Buttons */}
-      <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
-        {/* Undo Button */}
-        <button
-          onClick={handleUndoLastStroke}
-          disabled={!hasDrawn || undoHistoryRef.current.length === 0}
-          className="px-3.5 py-2.5 rounded-full bg-white border border-[#cbd5e1] hover:border-stone-400 text-[#718777] font-bold text-xs flex items-center gap-1 shadow-xs active:scale-95 transition-all disabled:opacity-40 cursor-pointer"
-          title="Xóa nét vừa vẽ"
-        >
-          <Undo2 className="w-3.5 h-3.5" /> Nét trước
-        </button>
-
-        {/* Retry Current Character Button */}
-        <button
-          onClick={handleRetryCurrent}
-          className="px-4 py-2.5 rounded-full bg-white border-2 border-amber-300 hover:border-amber-400 text-amber-800 font-bold text-xs flex items-center gap-1.5 shadow-xs active:scale-95 transition-all cursor-pointer"
-          title="Xóa canvas để luyện viết lại chữ này"
-        >
-          <RotateCcw className="w-3.5 h-3.5 text-amber-600" /> Luyện lại chữ này
-        </button>
-
-        {/* Complete & Advance */}
-        <button
-          onClick={handleCompleteAndNext}
-          className="btn-3d-green px-6 py-2.5 rounded-full text-white font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
-          title="Hoàn thành và chuyển sang chữ tiếp theo"
-        >
-          <Check className="w-4 h-4" /> Hoàn thành & Qua chữ tiếp ➔
-        </button>
-      </div>
-
-      {/* Quick category jump footer */}
-      <div className="rounded-2xl bg-white border border-[#e2ece0] p-3 text-center space-y-1 shadow-xs">
-        <div className="text-xs font-black text-[#143521]">
-          Đang luyện: <span className="text-[#ea580c] uppercase">{category === 'hiragana' ? 'Bảng chữ Hiragana' : category === 'katakana' ? 'Bảng chữ Katakana' : 'Chữ Hán Kanji N5/N4'}</span>
+      {/* Bottom Floating Control Buttons */}
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleUndo}
+            disabled={drawnStrokeCount === 0}
+            className="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs disabled:opacity-40 transition-all cursor-pointer"
+            title="Hoàn tác nét vừa vẽ"
+          >
+            <Undo2 className="w-3.5 h-3.5 text-stone-600" />
+            <span>Nét trước</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              sound.playTap();
+              clearCanvas();
+              setHasDemoFinished(false);
+            }}
+            className="px-3.5 py-2 rounded-xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+            title="Xóa trắng để luyện lại"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-stone-600" />
+            <span>Luyện lại chữ này</span>
+          </button>
         </div>
-        <p className="text-[11px] text-[#718777]">
-          Chạm vào các chữ cái trên thanh cuộn ngang để chuyển nhanh chữ cần luyện tập.
-        </p>
+
+        <button
+          type="button"
+          onClick={handleComplete}
+          className="btn-3d-green px-5 py-2 rounded-xl text-white font-black text-xs flex items-center gap-1.5 shadow-md transition-all active:scale-95 cursor-pointer ml-auto"
+        >
+          <Check className="w-4 h-4" />
+          <span>HOÀN THÀNH &amp; QUA CHỮ TIẾP →</span>
+        </button>
       </div>
     </div>
   );
