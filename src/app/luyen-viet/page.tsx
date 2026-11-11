@@ -26,6 +26,66 @@ import { getStrokeGuide, CharacterStrokeData } from '@/lib/strokeOrderData';
 
 type WritingCategory = 'hiragana' | 'katakana' | 'kanji';
 
+// Catmull-Rom Spline Curve Generator for natural Japanese calligraphy
+function generateSmoothCalligraphyPath(
+  points: { x: number; y: number }[],
+  stepsPerSpan: number = 24
+): { x: number; y: number }[] {
+  if (points.length <= 1) return points;
+  if (points.length === 2) {
+    const res: { x: number; y: number }[] = [];
+    for (let i = 0; i <= stepsPerSpan; i++) {
+      const t = i / stepsPerSpan;
+      res.push({
+        x: points[0].x + (points[1].x - points[0].x) * t,
+        y: points[0].y + (points[1].y - points[0].y) * t
+      });
+    }
+    return res;
+  }
+
+  // Extend endpoints so spline passes smoothly through endpoints
+  const p = [
+    { x: 2 * points[0].x - points[1].x, y: 2 * points[0].y - points[1].y },
+    ...points,
+    { x: 2 * points[points.length - 1].x - points[points.length - 2].x, y: 2 * points[points.length - 1].y - points[points.length - 2].y }
+  ];
+
+  const result: { x: number; y: number }[] = [];
+
+  for (let i = 0; i < p.length - 3; i++) {
+    const p0 = p[i];
+    const p1 = p[i + 1];
+    const p2 = p[i + 2];
+    const p3 = p[i + 3];
+
+    for (let j = 0; j < stepsPerSpan; j++) {
+      const t = j / stepsPerSpan;
+      const t2 = t * t;
+      const t3 = t2 * t;
+
+      const x = 0.5 * (
+        (2 * p1.x) +
+        (-p0.x + p2.x) * t +
+        (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 +
+        (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3
+      );
+
+      const y = 0.5 * (
+        (2 * p1.y) +
+        (-p0.y + p2.y) * t +
+        (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 +
+        (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3
+      );
+
+      result.push({ x, y });
+    }
+  }
+
+  result.push(points[points.length - 1]);
+  return result;
+}
+
 export default function LuyenVietPage() {
   const [category, setCategory] = useState<WritingCategory>('hiragana');
   const [charIndex, setCharIndex] = useState(0);
@@ -152,46 +212,42 @@ export default function LuyenVietPage() {
       const scaleX = canvas.width / 100;
       const scaleY = canvas.height / 100;
 
-      let pointIdx = 0;
-      let curX = pts[0].x * scaleX;
-      let curY = pts[0].y * scaleY;
+      // Generate silky-smooth calligraphic curve path via Catmull-Rom spline
+      const smoothPath = generateSmoothCalligraphyPath(pts, 28);
+      if (smoothPath.length < 2) {
+        strokeIdx++;
+        drawNextStroke();
+        return;
+      }
 
-      ctx.beginPath();
-      ctx.moveTo(curX, curY);
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = isCompound && compoundMode === 'both' ? 10 : 14;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
-      let stepCount = 0;
-      const totalSteps = 14;
-      let startP = pts[0];
-      let endP = pts[1];
+      let stepIdx = 0;
+      const strokeWidth = isCompound && compoundMode === 'both' ? 10 : 13.5;
 
       const interval = setInterval(() => {
-        stepCount++;
-        const t = stepCount / totalSteps;
-        const x = (startP.x + (endP.x - startP.x) * t) * scaleX;
-        const y = (startP.y + (endP.y - startP.y) * t) * scaleY;
+        // Advance 2 points per tick for organic, fluid 60fps brush motion
+        const nextIdx = Math.min(stepIdx + 2, smoothPath.length - 1);
 
-        ctx.lineTo(x, y);
+        ctx.beginPath();
+        ctx.moveTo(smoothPath[stepIdx].x * scaleX, smoothPath[stepIdx].y * scaleY);
+        for (let k = stepIdx + 1; k <= nextIdx; k++) {
+          ctx.lineTo(smoothPath[k].x * scaleX, smoothPath[k].y * scaleY);
+        }
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = strokeWidth;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.stroke();
 
-        if (stepCount >= totalSteps) {
-          stepCount = 0;
-          pointIdx++;
-          if (pointIdx < pts.length - 1) {
-            startP = pts[pointIdx];
-            endP = pts[pointIdx + 1];
-          } else {
-            clearInterval(interval);
-            setDrawnStrokeCount(strokeIdx + 1);
-            setHasDrawn(true);
-            strokeIdx++;
-            animationTimerRef.current = setTimeout(drawNextStroke, 280);
-          }
+        stepIdx = nextIdx;
+
+        if (stepIdx >= smoothPath.length - 1) {
+          clearInterval(interval);
+          setDrawnStrokeCount(strokeIdx + 1);
+          setHasDrawn(true);
+          strokeIdx++;
+          animationTimerRef.current = setTimeout(drawNextStroke, 240);
         }
-      }, 25);
+      }, 18);
     };
 
     drawNextStroke();

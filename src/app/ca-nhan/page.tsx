@@ -3,13 +3,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { WukongMascot } from '@/components/WukongMascot';
-import { SocialSignIn066 } from '@/components/SocialSignIn066';
 import { useAuth } from '@/components/AuthContext';
 import { User, Trophy, Flame, Star, Shield, Award, Settings, Bell, Volume2, Sparkles, ChevronRight, ArrowLeft, LogOut, CheckCircle2 } from 'lucide-react';
 import { sound } from '@/lib/sound';
 
 export default function CaNhanPage() {
-  const { user, logout, login } = useAuth();
+  const { user, logout } = useAuth();
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
@@ -164,33 +163,69 @@ export default function CaNhanPage() {
         </div>
       </div>
 
-      {/* Social Sign-in (Prompt #066) Account Connection Section */}
+      {/* Student Account Information Card (Replaces redundant login box when logged in) */}
       <div className="space-y-3 pt-2">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold text-stone-200 flex items-center gap-2">
-            <User className="w-4 h-4 text-emerald-400" /> Tài Khoản &amp; Đăng Nhập Mạng Xã Hội
+            <User className="w-4 h-4 text-emerald-400" /> Thông Tin Tài Khoản Sinh Viên
           </h3>
-          <Link
-            href="/dang-nhap"
-            className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
-          >
-            <span>Trang đăng nhập riêng</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
+          <span className="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30 flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Đã đăng nhập
+          </span>
         </div>
 
-        <div className="rounded-3xl bg-stone-900/80 border border-stone-800 p-4 sm:p-6 flex flex-col items-center shadow-lg">
-          <p className="text-xs text-stone-400 mb-4 text-center max-w-sm">
-            Kết nối tài khoản mạng xã hội để bảo vệ điểm kinh nghiệm XP, chuỗi ngày học và trang bị tu vi của Tôn Ngộ Không.
-          </p>
+        <div className="rounded-3xl bg-stone-900/80 border border-stone-800 p-5 shadow-lg space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div className="rounded-2xl bg-stone-950/60 border border-stone-800/80 p-3.5 space-y-1">
+              <span className="text-[10px] uppercase font-bold text-stone-400 block tracking-wider">
+                Họ và Tên Học Viên
+              </span>
+              <span className="text-sm font-black text-amber-200 block">
+                {user?.name || 'Mỹ Hầu Vương'}
+              </span>
+            </div>
 
-          <SocialSignIn066
-            title="Đổi phương thức liên kết"
-            subtitle="Chọn tài khoản để cập nhật liên kết"
-            onSuccess={(provider, account) => {
-              login(provider, account);
-            }}
-          />
+            <div className="rounded-2xl bg-stone-950/60 border border-stone-800/80 p-3.5 space-y-1">
+              <span className="text-[10px] uppercase font-bold text-stone-400 block tracking-wider">
+                Mã Số Sinh Viên (MSSV)
+              </span>
+              <span className="text-sm font-black text-emerald-300 font-mono block">
+                {user?.mssv || 'SE18001'}
+              </span>
+            </div>
+
+            <div className="rounded-2xl bg-stone-950/60 border border-stone-800/80 p-3.5 space-y-1">
+              <span className="text-[10px] uppercase font-bold text-stone-400 block tracking-wider">
+                Lớp Học Hiện Tại
+              </span>
+              <span className="text-sm font-black text-amber-100 block">
+                {user?.lop || 'JPD113 (Nhật 1 Sơ Cấp)'}
+              </span>
+            </div>
+
+            <div className="rounded-2xl bg-stone-950/60 border border-stone-800/80 p-3.5 space-y-1">
+              <span className="text-[10px] uppercase font-bold text-stone-400 block tracking-wider">
+                Phương Thức Đăng Nhập
+              </span>
+              <span className="text-sm font-bold text-stone-200 block">
+                {user?.provider || 'Cổng Sinh Viên JPD'} ({user?.account || 'Tài khoản môn phái'})
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-stone-800/80">
+            <p className="text-xs text-stone-400">
+              Tiến trình học tập, điểm tu vi và boss vượt ải được lưu tự động theo tài khoản sinh viên.
+            </p>
+
+            <button
+              onClick={logout}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Đăng xuất (Khóa cổng)</span>
+            </button>
+          </div>
         </div>
       </div>
 

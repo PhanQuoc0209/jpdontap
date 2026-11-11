@@ -30,23 +30,35 @@ export const STROKE_DATA_MAP: Record<string, CharacterStrokeData> = {
         description: 'Vẽ nét ngang từ trái sang phải, hơi chếch nhẹ lên',
         direction: '→',
         startPercent: { x: 26, y: 32 },
-        points: [{ x: 26, y: 32 }, { x: 50, y: 32 }, { x: 74, y: 32 }]
+        points: [{ x: 26, y: 32 }, { x: 50, y: 31 }, { x: 74, y: 30 }]
       },
       {
         strokeNumber: 2,
-        name: 'Nét sổ dọc',
+        name: 'Nét sổ dọc cong nhẹ',
         description: 'Kéo nét sổ từ trên xuống cắt qua nét 1, hơi cong nhẹ sang trái',
         direction: '↓',
-        startPercent: { x: 50, y: 16 },
-        points: [{ x: 50, y: 16 }, { x: 49, y: 46 }, { x: 44, y: 78 }]
+        startPercent: { x: 50, y: 15 },
+        points: [{ x: 50, y: 15 }, { x: 49, y: 44 }, { x: 45, y: 78 }]
       },
       {
         strokeNumber: 3,
         name: 'Nét uốn vòng xoắn',
-        description: 'Bắt đầu từ giữa, lượn sang phải tạo nút thắt rồi lượn vòng cung lớn xuống dưới',
+        description: 'Khởi đầu từ phía trên bên phải nét sổ, lượn chéo xuống trái tạo nút thắt rồi lượn vòng cung tròn lớn sang phải',
         direction: '⤵',
-        startPercent: { x: 38, y: 44 },
-        points: [{ x: 38, y: 44 }, { x: 32, y: 64 }, { x: 50, y: 82 }, { x: 78, y: 68 }, { x: 74, y: 48 }, { x: 50, y: 52 }, { x: 42, y: 72 }]
+        startPercent: { x: 60, y: 40 },
+        points: [
+          { x: 60, y: 40 },
+          { x: 48, y: 54 },
+          { x: 35, y: 66 },
+          { x: 38, y: 76 },
+          { x: 50, y: 64 },
+          { x: 56, y: 52 },
+          { x: 72, y: 46 },
+          { x: 82, y: 60 },
+          { x: 80, y: 74 },
+          { x: 64, y: 84 },
+          { x: 48, y: 80 }
+        ]
       }
     ]
   },
@@ -191,16 +203,16 @@ export const STROKE_DATA_MAP: Record<string, CharacterStrokeData> = {
         name: 'Nét ngang trên',
         description: 'Ngang ngắn từ trái sang phải hơi chếch lên',
         direction: '→',
-        startPercent: { x: 32, y: 28 },
-        points: [{ x: 32, y: 28 }, { x: 66, y: 28 }]
+        startPercent: { x: 30, y: 28 },
+        points: [{ x: 30, y: 28 }, { x: 50, y: 27 }, { x: 68, y: 26 }]
       },
       {
         strokeNumber: 2,
         name: 'Nét ngang dưới',
         description: 'Ngang dài hơn nét 1, song song bên dưới',
         direction: '→',
-        startPercent: { x: 28, y: 42 },
-        points: [{ x: 28, y: 42 }, { x: 72, y: 42 }]
+        startPercent: { x: 26, y: 42 },
+        points: [{ x: 26, y: 42 }, { x: 50, y: 41 }, { x: 74, y: 40 }]
       },
       {
         strokeNumber: 3,
@@ -208,15 +220,27 @@ export const STROKE_DATA_MAP: Record<string, CharacterStrokeData> = {
         description: 'Xiên chéo từ trên xuống cắt qua 2 nét ngang rồi móc nhẹ',
         direction: '↘⤴',
         startPercent: { x: 58, y: 16 },
-        points: [{ x: 58, y: 16 }, { x: 50, y: 52 }, { x: 40, y: 68 }, { x: 44, y: 66 }]
+        points: [
+          { x: 58, y: 16 },
+          { x: 52, y: 44 },
+          { x: 44, y: 58 },
+          { x: 38, y: 64 },
+          { x: 44, y: 60 }
+        ]
       },
       {
         strokeNumber: 4,
         name: 'Nét uốn cong đáy',
-        description: 'Lượn cong hình vòng cung phía dưới',
+        description: 'Lượn cong mềm mại hình vòng cung phía dưới',
         direction: '⤵',
-        startPercent: { x: 38, y: 74 },
-        points: [{ x: 38, y: 74 }, { x: 56, y: 82 }, { x: 68, y: 74 }]
+        startPercent: { x: 36, y: 72 },
+        points: [
+          { x: 36, y: 72 },
+          { x: 44, y: 80 },
+          { x: 56, y: 83 },
+          { x: 66, y: 78 },
+          { x: 72, y: 70 }
+        ]
       }
     ]
   },
@@ -299,24 +323,36 @@ export const STROKE_DATA_MAP: Record<string, CharacterStrokeData> = {
         name: 'Nét ngang',
         description: 'Kéo ngang từ trái sang phải hơi xiên lên',
         direction: '→',
-        startPercent: { x: 28, y: 34 },
-        points: [{ x: 28, y: 34 }, { x: 72, y: 34 }]
+        startPercent: { x: 26, y: 34 },
+        points: [{ x: 26, y: 34 }, { x: 50, y: 33 }, { x: 74, y: 32 }]
       },
       {
         strokeNumber: 2,
         name: 'Nét sổ xiên móc',
         description: 'Xiên từ trên xuống cắt nét ngang rồi móc nhẹ',
         direction: '↘⤴',
-        startPercent: { x: 54, y: 20 },
-        points: [{ x: 54, y: 20 }, { x: 48, y: 50 }, { x: 40, y: 62 }, { x: 44, y: 60 }]
+        startPercent: { x: 56, y: 18 },
+        points: [
+          { x: 56, y: 18 },
+          { x: 52, y: 44 },
+          { x: 44, y: 58 },
+          { x: 38, y: 64 },
+          { x: 44, y: 60 }
+        ]
       },
       {
         strokeNumber: 3,
         name: 'Nét uốn cong đáy',
-        description: 'Vòng cung phía dưới hướng từ trái sang phải',
+        description: 'Vòng cung mềm mại phía dưới hướng từ trái sang phải',
         direction: '⤵',
-        startPercent: { x: 36, y: 68 },
-        points: [{ x: 36, y: 68 }, { x: 54, y: 78 }, { x: 68, y: 70 }]
+        startPercent: { x: 34, y: 66 },
+        points: [
+          { x: 34, y: 66 },
+          { x: 42, y: 75 },
+          { x: 54, y: 79 },
+          { x: 64, y: 75 },
+          { x: 72, y: 66 }
+        ]
       }
     ]
   },
@@ -752,6 +788,50 @@ export const STROKE_DATA_MAP: Record<string, CharacterStrokeData> = {
 export function getStrokeGuide(char: string, totalStrokesFallback: number = 3): CharacterStrokeData {
   if (STROKE_DATA_MAP[char]) {
     return STROKE_DATA_MAP[char];
+  }
+
+  // Handle compound kana combinations (Yōon, e.g. きゃ, きゅ, しょ, キャ...)
+  if (char && char.length > 1) {
+    const primaryChar = char[0];
+    const smallChar = char.slice(1);
+    const primaryGuide = getStrokeGuide(primaryChar, 3);
+    const smallGuide = getStrokeGuide(smallChar, 2);
+
+    // Map primary character to left 54% area
+    const primaryStrokes: StrokeStep[] = primaryGuide.strokes.map(s => ({
+      ...s,
+      name: `[Chữ chính] ${s.name}`,
+      startPercent: {
+        x: Math.round(6 + s.startPercent.x * 0.50),
+        y: Math.round(8 + s.startPercent.y * 0.82)
+      },
+      points: s.points.map(p => ({
+        x: Math.round(6 + p.x * 0.50),
+        y: Math.round(8 + p.y * 0.82)
+      }))
+    }));
+
+    // Map small character to lower-right quadrant
+    const smallStrokes: StrokeStep[] = smallGuide.strokes.map(s => ({
+      ...s,
+      strokeNumber: primaryStrokes.length + s.strokeNumber,
+      name: `[Chữ nhỏ] ${s.name}`,
+      startPercent: {
+        x: Math.round(52 + s.startPercent.x * 0.42),
+        y: Math.round(44 + s.startPercent.y * 0.52)
+      },
+      points: s.points.map(p => ({
+        x: Math.round(52 + p.x * 0.42),
+        y: Math.round(44 + p.y * 0.52)
+      }))
+    }));
+
+    return {
+      char,
+      totalStrokes: primaryStrokes.length + smallStrokes.length,
+      ruleHint: `Quy tắc âm ghép: Viết chữ chính ${primaryChar} bên trái trước (${primaryStrokes.length} nét), sau đó viết chữ nhỏ ${smallChar} ở góc dưới bên phải (${smallStrokes.length} nét).`,
+      strokes: [...primaryStrokes, ...smallStrokes]
+    };
   }
 
   // Generate generic stroke sequence based on character's stroke count
