@@ -1,10 +1,10 @@
 // Japanese Pronunciation Analyzer and Error Diagnosis Engine
-// Analyzes spoken transcription against target Japanese words and provides
-// detailed linguistic feedback, mouth shape guidance, and pitch accent corrections.
+// Fully supports Kanji, Hiragana, Katakana, and Romaji matching.
+// Eliminates false negatives and provides accurate, dynamic phonetic feedback.
 
 export interface PronunciationDiagnosis {
   status: 'correct' | 'incorrect' | 'silent' | 'unclear';
-  score: number | null; // null if silent/not scored
+  score: number | null; // null if silent/unclear/not scored
   similarityPercent: number;
   expectedWord: string;
   expectedKana: string;
@@ -16,6 +16,14 @@ export interface PronunciationDiagnosis {
   mouthShapeAdvice: string;
   pitchAccentAdvice: string;
   coachingRecommendation: string;
+}
+
+// Convert Katakana to Hiragana
+export function kataToHira(str: string): string {
+  if (!str) return '';
+  return str.replace(/[\u30a1-\u30f6]/g, ch =>
+    String.fromCharCode(ch.charCodeAt(0) - 0x60)
+  );
 }
 
 // Compute Levenshtein distance between two strings
@@ -44,9 +52,11 @@ function levenshteinDistance(s1: string, s2: string): number {
   return dp[m][n];
 }
 
-// Convert common Japanese kana to simplified romaji for phoneme comparison
+// Convert Kana to normalized Romaji
 export function kanaToRomajiSimple(text: string): string {
   if (!text) return '';
+  const hira = kataToHira(text);
+
   const map: Record<string, string> = {
     'あ': 'a', 'い': 'i', 'う': 'u', 'え': 'e', 'お': 'o',
     'か': 'ka', 'き': 'ki', 'く': 'ku', 'け': 'ke', 'こ': 'ko',
@@ -76,17 +86,43 @@ export function kanaToRomajiSimple(text: string): string {
     'ぴゃ': 'pya', 'ぴゅ': 'pyu', 'ぴょ': 'pyo'
   };
 
-  let res = text;
-  // Replace compound kana first
-  Object.keys(map).sort((a, b) => b.length - a.length).forEach(k => {
-    res = res.split(k).join(map[k]);
-  });
+  let res = hira;
+  // Replace compound kana first (length 2)
+  Object.keys(map)
+    .sort((a, b) => b.length - a.length)
+    .forEach(k => {
+      res = res.split(k).join(map[k]);
+    });
+
   return res.toLowerCase();
 }
 
-// Generate specialized linguistic mouth advice based on word characteristics
+// Clean and deduplicate words if repeated by speech recognition (e.g. "私私" -> "私")
+export function cleanSpokenText(raw: string, targetWord: string, targetKana: string): string {
+  let s = (raw || '').trim().replace(/[\s\u3000]+/g, '');
+  if (!s) return '';
+
+  const w = (targetWord || '').trim();
+  const k = (targetKana || '').trim();
+
+  // If recognition repeated the target word or kana (e.g. "私私" or "わたしわたし")
+  if (w && s.length >= w.length * 2) {
+    while (s.includes(w + w)) {
+      s = s.replaceAll(w + w, w);
+    }
+  }
+  if (k && s.length >= k.length * 2) {
+    while (s.includes(k + k)) {
+      s = s.replaceAll(k + k, k);
+    }
+  }
+
+  return s;
+}
+
+// Specialized linguistic mouth shape & pitch accent advice
 function getMouthAdviceForWord(word: string, kana: string, romaji: string): { mouth: string; pitch: string; tip: string } {
-  const norm = (kana || word || '').toLowerCase();
+  const norm = kataToHira(kana || word || '').toLowerCase();
   const rNorm = romaji.toLowerCase();
 
   let mouth = 'Thả lỏng cơ hàm, giữ khẩu hình ổn định và mở khẩu hình dọc tự nhiên theo 5 nguyên âm cơ bản A-I-U-E-O.';
@@ -142,12 +178,11 @@ export function diagnosePronunciation(params: {
   const expectedWord = targetWord.trim();
   const expectedKana = targetKana ? targetKana.trim() : expectedWord;
   const expectedRomaji = targetRomaji.trim();
-  const heardText = userSpokenText.trim();
 
   const advice = getMouthAdviceForWord(expectedWord, expectedKana, expectedRomaji);
 
   // 1. Case: SILENT (Không nói gì)
-  if (isSilent || (!hasAudioVoice && heardText === '')) {
+  if (isSilent || (!hasAudioVoice && (!userSpokenText || userSpokenText.trim() === ''))) {
     return {
       status: 'silent',
       score: null, // Không chấm điểm khi im lặng!
@@ -165,8 +200,11 @@ export function diagnosePronunciation(params: {
     };
   }
 
-  // 2. Case: Audio detected, but Speech Recognition transcript is empty (Unclear speech)
-  if (heardText === '') {
+  // 2. Clean & deduplicate heard text
+  const heardClean = cleanSpokenText(userSpokenText, expectedWord, expectedKana);
+
+  // Case: Audio detected, but transcript is empty
+  if (!heardClean) {
     return {
       status: 'unclear',
       score: null,
@@ -184,27 +222,53 @@ export function diagnosePronunciation(params: {
     };
   }
 
-  // 3. Compare spoken text with targets
-  const targetClean = expectedWord.toLowerCase();
-  const targetKanaClean = expectedKana.toLowerCase();
+  // 3. Multi-layer Japanese Phonetic Comparison
+  const targetWordClean = expectedWord.toLowerCase().replace(/[\s\u3000]+/g, '');
+  const targetKanaClean = expectedKana.toLowerCase().replace(/[\s\u3000]+/g, '');
+  const targetHira = kataToHira(targetKanaClean || targetWordClean);
   const targetRomajiClean = expectedRomaji.toLowerCase().replace(/[^a-z]/g, '');
 
-  const heardClean = heardText.toLowerCase();
-  const heardRomaji = kanaToRomajiSimple(heardClean).replace(/[^a-z]/g, '');
+  const heardNorm = heardClean.toLowerCase().replace(/[\s\u3000]+/g, '');
+  const heardHira = kataToHira(heardNorm);
 
-  const isExactWord = heardClean === targetClean;
-  const isExactKana = heardClean === targetKanaClean;
+  // If heardText contains kanji of targetWord, map it to kana for Romaji conversion
+  let textForRomaji = heardNorm;
+  if (targetWordClean && textForRomaji.includes(targetWordClean)) {
+    textForRomaji = textForRomaji.replaceAll(targetWordClean, targetHira);
+  }
+  const heardRomaji = kanaToRomajiSimple(textForRomaji).replace(/[^a-z]/g, '');
+
+  // Matching heuristics:
+  // a) Exact match on Word (Kanji/Kana)
+  const isExactWord = heardNorm === targetWordClean;
+  // b) Exact match on Kana
+  const isExactKana = heardNorm === targetKanaClean || heardHira === targetHira;
+  // c) Spoken text contains target word or kana (e.g. "私私" -> "私", "これは私", etc.)
+  const containsTargetWord = targetWordClean.length > 0 && (heardNorm.includes(targetWordClean) || targetWordClean.includes(heardNorm));
+  const containsTargetKana = targetHira.length > 0 && (heardHira.includes(targetHira) || targetHira.includes(heardHira));
+  // d) Exact or substring match on Romaji
   const isExactRomaji = heardRomaji === targetRomajiClean;
+  const containsTargetRomaji = targetRomajiClean.length >= 2 && (heardRomaji.includes(targetRomajiClean) || targetRomajiClean.includes(heardRomaji));
 
-  const kanaDist = levenshteinDistance(targetKanaClean, heardClean);
+  // Distance computation
   const romajiDist = levenshteinDistance(targetRomajiClean, heardRomaji);
   const maxLen = Math.max(targetRomajiClean.length, heardRomaji.length, 1);
   const similarityRatio = Math.max(0, 1 - romajiDist / maxLen);
   const similarityPercent = Math.round(similarityRatio * 100);
 
-  // Exact or near-exact match (>= 85% similarity)
-  if (isExactWord || isExactKana || isExactRomaji || similarityPercent >= 85) {
-    const computedScore = Math.min(99, Math.max(92, 90 + Math.floor(similarityPercent * 0.08)));
+  // Is it considered correct?
+  const isCorrect =
+    isExactWord ||
+    isExactKana ||
+    containsTargetWord ||
+    containsTargetKana ||
+    isExactRomaji ||
+    containsTargetRomaji ||
+    (targetRomajiClean.length >= 3 && romajiDist <= 1) ||
+    similarityPercent >= 75;
+
+  if (isCorrect) {
+    const computedScore = Math.floor(Math.random() * 5) + 94; // 94% - 98%
     return {
       status: 'correct',
       score: computedScore,
@@ -212,7 +276,7 @@ export function diagnosePronunciation(params: {
       expectedWord,
       expectedKana,
       expectedRomaji,
-      heardText,
+      heardText: heardClean,
       verdictTitle: 'Phát âm tuyệt vời! Chuẩn xác',
       verdictMessage: `Khẩu hình và ngữ điệu của từ 「${expectedWord}」 rất tự nhiên và đúng chuẩn tiếng Nhật.`,
       mismatches: [],
@@ -222,13 +286,14 @@ export function diagnosePronunciation(params: {
     };
   }
 
-  // 4. Incorrect pronunciation (Đọc sai)
-  const computedScore = Math.max(42, Math.min(68, Math.round(similarityPercent * 0.65) + 20));
-  const mismatches: { expectedPart: string; heardPart: string; tip: string }[] = [];
+  // 4. Incorrect pronunciation (Đọc sai từ)
+  // Dynamic score based on genuine phonetic overlap (e.g. 35% - 72%)
+  const computedScore = Math.max(32, Math.min(74, Math.round(30 + similarityRatio * 45)));
 
+  const mismatches: { expectedPart: string; heardPart: string; tip: string }[] = [];
   mismatches.push({
     expectedPart: `${expectedKana} (/${expectedRomaji}/)`,
-    heardPart: `${heardText} (/${heardRomaji || 'chưa rõ'}/)`,
+    heardPart: `${heardClean} (/${heardRomaji || 'chưa rõ'}/)`,
     tip: advice.tip
   });
 
@@ -239,9 +304,9 @@ export function diagnosePronunciation(params: {
     expectedWord,
     expectedKana,
     expectedRomaji,
-    heardText,
+    heardText: heardClean,
     verdictTitle: 'Phát âm chưa chuẩn xác',
-    verdictMessage: `Bạn đọc nghe như 「${heardText}」, trong khi từ mẫu chuẩn là 「${expectedWord}」 【${expectedKana}】.`,
+    verdictMessage: `Bạn đọc nghe như 「${heardClean}」, trong khi từ mẫu chuẩn là 「${expectedWord}」 【${expectedKana}】 (/${expectedRomaji}/).`,
     mismatches,
     mouthShapeAdvice: advice.mouth,
     pitchAccentAdvice: advice.pitch,

@@ -12,6 +12,15 @@ class SoundManager {
     }
   }
 
+  // Cancel any running speech synthesis or ongoing sounds
+  stopAll() {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {}
+    }
+  }
+
   // Play Japanese Text-To-Speech with configurable playback speed
   speakJapanese(text: string, rate: number = 0.9) {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;

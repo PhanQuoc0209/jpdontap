@@ -22,7 +22,7 @@ import {
   BookOpen
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { diagnosePronunciation, PronunciationDiagnosis } from '@/lib/pronunciationAdvisor';
+import { diagnosePronunciation, cleanSpokenText, PronunciationDiagnosis } from '@/lib/pronunciationAdvisor';
 
 export default function PhatAmPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -38,6 +38,7 @@ export default function PhatAmPage() {
   const audioChunksRef = useRef<Blob[]>([]);
   const userAudioElementRef = useRef<HTMLAudioElement | null>(null);
   const recordingTimerRef = useRef<any>(null);
+  const playbackTimerRef = useRef<any>(null);
   const speechRecognitionRef = useRef<any>(null);
 
   // Audio energy / volume level tracking for silence detection
@@ -49,22 +50,90 @@ export default function PhatAmPage() {
 
   const word = dataset.words[currentIndex] || dataset.words[0];
 
+  // Stop all playing and recording audio immediately
+  const stopAllAudio = () => {
+    // 1. Clear any pending auto-playback timer
+    if (playbackTimerRef.current) {
+      clearTimeout(playbackTimerRef.current);
+      playbackTimerRef.current = null;
+    }
+
+    // 2. Stop user recorded audio playback
+    if (userAudioElementRef.current) {
+      try {
+        userAudioElementRef.current.pause();
+        userAudioElementRef.current.currentTime = 0;
+        userAudioElementRef.current.src = '';
+      } catch (err) {}
+      userAudioElementRef.current = null;
+    }
+    setIsPlayingRecorded(false);
+
+    // 3. Immediately cancel Japanese speech synthesis
+    sound.stopAll();
+
+    // 4. Stop recording if in progress
+    if (speechRecognitionRef.current) {
+      try {
+        speechRecognitionRef.current.stop();
+      } catch (err) {}
+      speechRecognitionRef.current = null;
+    }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch (err) {}
+      mediaRecorderRef.current = null;
+    }
+    if (recordingTimerRef.current) {
+      clearTimeout(recordingTimerRef.current);
+      recordingTimerRef.current = null;
+    }
+    if (volumeIntervalRef.current) {
+      clearInterval(volumeIntervalRef.current);
+      volumeIntervalRef.current = null;
+    }
+    if (audioContextRef.current) {
+      try {
+        audioContextRef.current.close();
+      } catch (err) {}
+      audioContextRef.current = null;
+    }
+    setIsListening(false);
+  };
+
+  // Clean up on component unmount and page visibility change
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.hidden) {
+        stopAllAudio();
+      }
+    };
+    window.addEventListener('pagehide', stopAllAudio);
+    window.addEventListener('beforeunload', stopAllAudio);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      stopAllAudio();
+      window.removeEventListener('pagehide', stopAllAudio);
+      window.removeEventListener('beforeunload', stopAllAudio);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, []);
+
   // Clean up recorded audio and player when switching word
   useEffect(() => {
+    stopAllAudio();
     setScore(null);
     setRecordedAudioUrl(null);
-    setIsPlayingRecorded(false);
     setUserSpokenText('');
     setIsBoxPoppedUp(false);
     setDiagnosis(null);
     capturedTranscriptRef.current = '';
-    if (userAudioElementRef.current) {
-      userAudioElementRef.current.pause();
-      userAudioElementRef.current = null;
-    }
   }, [currentIndex]);
 
   const handleSpeak = () => {
+    stopAllAudio();
     sound.speakJapanese(word.word);
   };
 
@@ -72,23 +141,29 @@ export default function PhatAmPage() {
   const handleTogglePlayRecorded = () => {
     if (!recordedAudioUrl) return;
 
-    if (isPlayingRecorded && userAudioElementRef.current) {
-      userAudioElementRef.current.pause();
-      setIsPlayingRecorded(false);
+    if (isPlayingRecorded) {
+      stopAllAudio();
       return;
     }
 
-    if (userAudioElementRef.current) {
-      userAudioElementRef.current.pause();
-    }
+    stopAllAudio();
 
     const audio = new Audio(recordedAudioUrl);
     userAudioElementRef.current = audio;
     setIsPlayingRecorded(true);
 
-    audio.onended = () => setIsPlayingRecorded(false);
-    audio.onerror = () => setIsPlayingRecorded(false);
-    audio.play().catch(() => setIsPlayingRecorded(false));
+    audio.onended = () => {
+      setIsPlayingRecorded(false);
+      userAudioElementRef.current = null;
+    };
+    audio.onerror = () => {
+      setIsPlayingRecorded(false);
+      userAudioElementRef.current = null;
+    };
+    audio.play().catch(() => {
+      setIsPlayingRecorded(false);
+      userAudioElementRef.current = null;
+    });
   };
 
   const handleStopRecording = () => {
@@ -120,6 +195,8 @@ export default function PhatAmPage() {
       return;
     }
 
+    stopAllAudio();
+
     setIsListening(true);
     setIsBoxPoppedUp(true); // Ô chữ của bạn nhảy lên ngay khi ghi âm!
     setScore(null);
@@ -144,12 +221,21 @@ export default function PhatAmPage() {
           recognition.maxAlternatives = 1;
 
           recognition.onresult = (event: any) => {
-            const transcript = Array.from(event.results)
-              .map((r: any) => r[0].transcript)
-              .join('');
-            if (transcript) {
-              capturedTranscriptRef.current = transcript;
-              setUserSpokenText(transcript);
+            let finalPart = '';
+            let interimPart = '';
+            for (let i = 0; i < event.results.length; ++i) {
+              const res = event.results[i];
+              if (res.isFinal) {
+                finalPart += res[0].transcript;
+              } else {
+                interimPart += res[0].transcript;
+              }
+            }
+            const raw = (finalPart || interimPart || '').trim();
+            const cleaned = cleanSpokenText(raw, word.word, word.kana || word.word);
+            if (cleaned) {
+              capturedTranscriptRef.current = cleaned;
+              setUserSpokenText(cleaned);
             }
           };
 
@@ -228,7 +314,8 @@ export default function PhatAmPage() {
           setRecordedAudioUrl(audioUrl);
           setIsListening(false);
 
-          const transcript = capturedTranscriptRef.current.trim();
+          const rawTranscript = capturedTranscriptRef.current.trim();
+          const transcript = cleanSpokenText(rawTranscript, word.word, word.kana || word.word);
           const hasSpokenVoice = voiceFramesRef.current >= 3 || maxVolumeRef.current > 12;
           const isSilent = !hasSpokenVoice && transcript === '';
 
@@ -258,13 +345,22 @@ export default function PhatAmPage() {
 
           // Play back user's recorded voice immediately if sound was detected
           if (hasSpokenVoice) {
-            setTimeout(() => {
+            playbackTimerRef.current = setTimeout(() => {
               const playback = new Audio(audioUrl);
               userAudioElementRef.current = playback;
               setIsPlayingRecorded(true);
-              playback.onended = () => setIsPlayingRecorded(false);
-              playback.onerror = () => setIsPlayingRecorded(false);
-              playback.play().catch(() => setIsPlayingRecorded(false));
+              playback.onended = () => {
+                setIsPlayingRecorded(false);
+                userAudioElementRef.current = null;
+              };
+              playback.onerror = () => {
+                setIsPlayingRecorded(false);
+                userAudioElementRef.current = null;
+              };
+              playback.play().catch(() => {
+                setIsPlayingRecorded(false);
+                userAudioElementRef.current = null;
+              });
             }, 250);
           }
         };
@@ -308,6 +404,7 @@ export default function PhatAmPage() {
       <div className="flex items-center justify-between">
         <Link
           href="/"
+          onClick={stopAllAudio}
           className="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center hover:bg-stone-800 transition-colors shadow-sm"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -315,14 +412,24 @@ export default function PhatAmPage() {
         <h1 className="text-base font-black text-[#143521]">Luyện phát âm</h1>
         <div className="flex items-center gap-1">
           <button
-            onClick={() => currentIndex > 0 && setCurrentIndex(currentIndex - 1)}
+            onClick={() => {
+              if (currentIndex > 0) {
+                stopAllAudio();
+                setCurrentIndex(currentIndex - 1);
+              }
+            }}
             disabled={currentIndex === 0}
             className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-sm cursor-pointer"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
           </button>
           <button
-            onClick={() => currentIndex + 1 < dataset.words.length && setCurrentIndex(currentIndex + 1)}
+            onClick={() => {
+              if (currentIndex + 1 < dataset.words.length) {
+                stopAllAudio();
+                setCurrentIndex(currentIndex + 1);
+              }
+            }}
             disabled={currentIndex + 1 === dataset.words.length}
             className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-sm cursor-pointer"
           >
@@ -651,6 +758,7 @@ export default function PhatAmPage() {
                 <button
                   type="button"
                   onClick={() => {
+                    stopAllAudio();
                     if (currentIndex + 1 < dataset.words.length) {
                       setCurrentIndex(currentIndex + 1);
                     } else {
@@ -724,6 +832,7 @@ export default function PhatAmPage() {
                 <button
                   type="button"
                   onClick={() => {
+                    stopAllAudio();
                     if (currentIndex + 1 < dataset.words.length) {
                       setCurrentIndex(currentIndex + 1);
                     } else {
