@@ -18,7 +18,8 @@ import {
   EyeOff,
   Play,
   Square,
-  ListOrdered
+  ListOrdered,
+  Gauge
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { getStrokeGuide, CharacterStrokeData } from '@/lib/strokeOrderData';
@@ -49,6 +50,7 @@ export default function LuyenVietPage() {
   const [activeDemoStroke, setActiveDemoStroke] = useState<number | null>(null);
   const [demoStrokeProgress, setDemoStrokeProgress] = useState(0);
   const [hasDemoFinished, setHasDemoFinished] = useState(false);
+  const [demoSpeed, setDemoSpeed] = useState<'normal' | 'slow'>('normal');
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const undoHistoryRef = useRef<ImageData[]>([]);
@@ -171,21 +173,44 @@ export default function LuyenVietPage() {
       const currentStroke = strokes[currentIdx];
       setActiveDemoStroke(currentStroke.strokeNumber);
 
-      let startTime: number | null = null;
-      const duration = 520; // 520ms per stroke for natural calligraphy cadence
+      // Tính toán chiều dài hình học thực tế của nét vẽ SVG
+      const pathLen = strokeLengths[currentStroke.strokeNumber] || getSvgPathLength(currentStroke.d) || 160;
 
+      // Thuật toán điều tốc thông minh: Các chữ ít nét hoặc nét uốn lượn dài (như そ, し, つ, く, ろ, る, の, あ, ぬ)
+      // cần được viết chậm rãi, nắn nót để người học quan sát rõ từng khúc cua và chuyển hướng nét bút.
+      let baseDuration: number;
+      if (strokes.length === 1) {
+        // Chữ 1 nét (そ, し, つ, く, ろ, る, の, へ): chậm rãi rõ ràng (~1.9s - 2.5s)
+        baseDuration = Math.max(1900, Math.min(2600, Math.round(pathLen * 8.2)));
+      } else if (strokes.length === 2) {
+        // Chữ 2 nét (い, り, こ, う, 八,...): ~1.2s - 1.8s mỗi nét
+        baseDuration = Math.max(1200, Math.min(1850, Math.round(500 + pathLen * 5.8)));
+      } else if (strokes.length <= 4) {
+        // Chữ 3-4 nét (あ, お, さ, す,...): ~900ms - 1.5s mỗi nét
+        baseDuration = Math.max(900, Math.min(1550, Math.round(420 + pathLen * 4.6)));
+      } else {
+        // Chữ nhiều nét (Chữ Hán Kanji, Katakana phức tạp): ~700ms - 1.2s mỗi nét
+        baseDuration = Math.max(700, Math.min(1250, Math.round(350 + pathLen * 3.4)));
+      }
+
+      // Áp dụng hệ số nếu người dùng bật chế độ "Tốc độ: Chậm" (1.45x)
+      const speedMultiplier = demoSpeed === 'slow' ? 1.45 : 1.0;
+      const duration = Math.round(baseDuration * speedMultiplier);
+
+      let startTime: number | null = null;
       const step = (now: number) => {
         if (!startTime) startTime = now;
         const elapsed = now - startTime;
         const progress = Math.min(1, elapsed / duration);
-        // Smooth easing curve
+        // Đường cong gia tốc mượt mà chuẩn thư pháp
         const eased = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
         setDemoStrokeProgress(eased);
 
         if (progress < 1) {
           demoAnimationRef.current = requestAnimationFrame(step);
         } else {
-          // Pause slightly between strokes (180ms)
+          // Khoảng nghỉ tự nhiên khi nhấc bút chuyển sang nét tiếp theo (320ms)
+          const pauseBetweenStrokes = Math.round(320 * speedMultiplier);
           demoAnimationRef.current = setTimeout(() => {
             currentIdx++;
             if (currentIdx < strokes.length) {
@@ -198,7 +223,7 @@ export default function LuyenVietPage() {
               sound.playVictory();
               confetti({ particleCount: 50, spread: 50 });
             }
-          }, 180);
+          }, pauseBetweenStrokes);
         }
       };
 
@@ -495,6 +520,21 @@ export default function LuyenVietPage() {
                   <span>Xem mẫu thứ tự viết</span>
                 </>
               )}
+            </button>
+
+            {/* Toggle Stroke Speed (Chuẩn / Chậm rãi) */}
+            <button
+              type="button"
+              onClick={() => setDemoSpeed(prev => (prev === 'normal' ? 'slow' : 'normal'))}
+              className={`px-2.5 py-1.5 rounded-full border text-xs font-bold flex items-center gap-1 shadow-xs transition-all cursor-pointer ${
+                demoSpeed === 'slow'
+                  ? 'bg-amber-100/90 border-amber-300 text-amber-900 ring-1 ring-amber-300'
+                  : 'bg-white border-[#e4dac3] text-stone-600 hover:bg-stone-50'
+              }`}
+              title="Chỉnh tốc độ viết mẫu: Chuẩn hoặc Chậm rãi"
+            >
+              <Gauge className="w-3.5 h-3.5 text-amber-600" />
+              <span>{demoSpeed === 'slow' ? 'Tốc độ: Chậm' : 'Tốc độ: Chuẩn'}</span>
             </button>
 
             {/* Toggle Numbered Stroke Order Badges */}
