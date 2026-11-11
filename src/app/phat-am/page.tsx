@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { dataset } from '@/lib/dataset';
+import { useRouter } from 'next/navigation';
+import { dataset, VocabWord } from '@/lib/dataset';
 import { sound } from '@/lib/sound';
+import { WukongMascot } from '@/components/WukongMascot';
 import {
   ArrowLeft,
   Volume2,
+  Timer,
   Mic,
   Lightbulb,
   ChevronRight,
@@ -17,15 +20,24 @@ import {
   Sparkles,
   AlertTriangle,
   CheckCircle2,
-  XCircle,
-  HelpCircle,
-  BookOpen
+  BookOpen,
+  Swords,
+  Trophy
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { diagnosePronunciation, cleanSpokenText, PronunciationDiagnosis } from '@/lib/pronunciationAdvisor';
 
 export default function PhatAmPage() {
+  const router = useRouter();
+
+  // Unit filter: default to first lesson (jpd113-v1-1) or 'all'
+  const [selectedUnitId, setSelectedUnitId] = useState<string>('jpd113-v1-1');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [earnedXp, setEarnedXp] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // Audio and recording state
   const [isListening, setIsListening] = useState(false);
   const [score, setScore] = useState<number | null>(null);
   const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null);
@@ -41,14 +53,24 @@ export default function PhatAmPage() {
   const playbackTimerRef = useRef<any>(null);
   const speechRecognitionRef = useRef<any>(null);
 
-  // Audio energy / volume level tracking for silence detection
+  // Audio volume level tracking for silence detection
   const audioContextRef = useRef<AudioContext | null>(null);
   const volumeIntervalRef = useRef<any>(null);
   const maxVolumeRef = useRef<number>(0);
   const voiceFramesRef = useRef<number>(0);
   const capturedTranscriptRef = useRef<string>('');
 
-  const word = dataset.words[currentIndex] || dataset.words[0];
+  // Filter words by selected unit or fallback to all words
+  const activeWords: VocabWord[] = useMemo(() => {
+    if (selectedUnitId === 'all') return dataset.words;
+    const list = dataset.words.filter(w => w.unitId === selectedUnitId);
+    return list.length > 0 ? list : dataset.words;
+  }, [selectedUnitId]);
+
+  const word: VocabWord = activeWords[currentIndex] || activeWords[0];
+  const total = activeWords.length;
+  const progressPercent = Math.round(((currentIndex + 1) / total) * 100);
+  const selectedUnit = dataset.units.find(u => u.id === selectedUnitId);
 
   // Stop all playing and recording audio immediately
   const stopAllAudio = () => {
@@ -121,7 +143,7 @@ export default function PhatAmPage() {
     };
   }, []);
 
-  // Clean up recorded audio and player when switching word
+  // Clean up recorded audio and player when switching word or unit
   useEffect(() => {
     stopAllAudio();
     setScore(null);
@@ -130,11 +152,13 @@ export default function PhatAmPage() {
     setIsBoxPoppedUp(false);
     setDiagnosis(null);
     capturedTranscriptRef.current = '';
-  }, [currentIndex]);
+  }, [currentIndex, selectedUnitId]);
 
-  const handleSpeak = () => {
+  const handleSpeak = (rate: number = 0.9) => {
     stopAllAudio();
-    sound.speakJapanese(word.word);
+    setIsSpeaking(true);
+    sound.speakJapanese(word.word || word.kana, rate);
+    setTimeout(() => setIsSpeaking(false), 1200);
   };
 
   // Play/pause user's recorded audio
@@ -198,7 +222,7 @@ export default function PhatAmPage() {
     stopAllAudio();
 
     setIsListening(true);
-    setIsBoxPoppedUp(true); // Ô chữ của bạn nhảy lên ngay khi ghi âm!
+    setIsBoxPoppedUp(true); // Ô chữ nhảy lên ngay khi ghi âm!
     setScore(null);
     setDiagnosis(null);
     setRecordedAudioUrl(null);
@@ -209,7 +233,7 @@ export default function PhatAmPage() {
     maxVolumeRef.current = 0;
     voiceFramesRef.current = 0;
 
-    // 1. Attempt SpeechRecognition to capture words spoken in Japanese
+    // 1. Attempt SpeechRecognition in Japanese
     if (typeof window !== 'undefined') {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (SpeechRecognition) {
@@ -248,43 +272,44 @@ export default function PhatAmPage() {
       }
     }
 
-    // 2. Real audio recording via MediaRecorder + Audio Energy Analyser
+    // 2. Capture actual Microphone audio with MediaRecorder & analyze volume
     try {
-      if (typeof navigator !== 'undefined' && navigator.mediaDevices?.getUserMedia) {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
 
-        // Measure live microphone volume to detect genuine speech vs silence
+        // Set up Web Audio Analyser for volume energy measurement
         try {
-          const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-          if (AudioCtx) {
-            const actx = new AudioCtx();
-            audioContextRef.current = actx;
-            const analyser = actx.createAnalyser();
-            analyser.fftSize = 512;
-            const source = actx.createMediaStreamSource(stream);
-            source.connect(analyser);
+          const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+          if (AudioContextClass) {
+            const audioCtx = new AudioContextClass();
+            audioContextRef.current = audioCtx;
+            const sourceNode = audioCtx.createMediaStreamSource(stream);
+            const analyserNode = audioCtx.createAnalyser();
+            analyserNode.fftSize = 256;
+            sourceNode.connect(analyserNode);
 
-            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            const bufferLength = analyserNode.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
             volumeIntervalRef.current = setInterval(() => {
-              analyser.getByteFrequencyData(dataArray);
+              analyserNode.getByteFrequencyData(dataArray);
               let sum = 0;
-              for (let i = 0; i < dataArray.length; i++) {
+              for (let i = 0; i < bufferLength; i++) {
                 sum += dataArray[i];
               }
-              const avg = sum / dataArray.length;
-              if (avg > maxVolumeRef.current) {
-                maxVolumeRef.current = avg;
+              const averageVolume = sum / bufferLength;
+              if (averageVolume > maxVolumeRef.current) {
+                maxVolumeRef.current = averageVolume;
               }
-              // Normal speech level > 7-10 (ambient noise is < 5)
-              if (avg > 9) {
-                voiceFramesRef.current++;
+              if (averageVolume > 14) {
+                voiceFramesRef.current += 1;
               }
-            }, 50);
+            }, 60);
           }
-        } catch (e) {
-          console.warn('AudioContext volume tracking note:', e);
+        } catch (audioErr) {
+          console.warn('AudioContext volume metering note:', audioErr);
         }
 
         mediaRecorder.ondataavailable = (event) => {
@@ -294,7 +319,6 @@ export default function PhatAmPage() {
         };
 
         mediaRecorder.onstop = () => {
-          // Clean up volume tracking interval and audio context
           if (volumeIntervalRef.current) {
             clearInterval(volumeIntervalRef.current);
             volumeIntervalRef.current = null;
@@ -306,7 +330,6 @@ export default function PhatAmPage() {
             audioContextRef.current = null;
           }
 
-          // Release microphone tracks
           stream.getTracks().forEach((track) => track.stop());
 
           const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
@@ -335,11 +358,7 @@ export default function PhatAmPage() {
           if (diag.status === 'correct') {
             sound.playCorrect();
             confetti({ particleCount: 75, spread: 60 });
-          } else if (diag.status === 'silent') {
-            // Không nói gì: KHÔNG CHẤM ĐIỂM, KHÔNG BẮN CONFETTI, KHÔNG PHÁT ÂM THANH MỪNG
-            sound.playTap();
           } else {
-            // Đọc sai / Chưa rõ: Cung cấp bảng phân tích chi tiết lỗi sai
             sound.playTap();
           }
 
@@ -378,162 +397,216 @@ export default function PhatAmPage() {
       console.warn('Microphone permission or MediaRecorder not available, using simulated analysis:', err);
     }
 
-    // Fallback simulation if microphone is completely blocked by browser
+    // Fallback simulation if mic is blocked in test environments
     setTimeout(() => {
       setIsListening(false);
+      const isVoiceDetected = maxVolumeRef.current > 10 || userSpokenText.trim().length > 0;
       const diag = diagnosePronunciation({
         targetWord: word.word,
         targetKana: word.kana || word.word,
         targetRomaji: word.romaji,
-        userSpokenText: word.word,
-        isSilent: false,
-        hasAudioVoice: true
+        userSpokenText: userSpokenText || word.word,
+        isSilent: !isVoiceDetected,
+        hasAudioVoice: isVoiceDetected
       });
       setDiagnosis(diag);
       setScore(diag.score);
-      setUserSpokenText(word.word);
-      sound.playCorrect();
-      confetti({ particleCount: 70, spread: 50 });
-      sound.speakJapanese(word.word);
-    }, 2200);
+    }, 2500);
+  };
+
+  const handleNextWord = () => {
+    stopAllAudio();
+    sound.playCorrect();
+    setEarnedXp(prev => prev + 10);
+
+    if (currentIndex + 1 < total) {
+      setCurrentIndex(prev => prev + 1);
+    } else {
+      setIsCompleted(true);
+      sound.playVictory();
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+  };
+
+  const handlePrevWord = () => {
+    if (currentIndex > 0) {
+      stopAllAudio();
+      setCurrentIndex(prev => prev - 1);
+    }
+  };
+
+  const handleRestart = () => {
+    stopAllAudio();
+    setCurrentIndex(0);
+    setIsCompleted(false);
   };
 
   return (
-    <div className="space-y-4 pb-6">
-      {/* Top Header */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 pb-12 animate-fade-in">
+      {/* Top Header with Back button and Lesson Dropdown */}
+      <div className="flex items-center justify-between gap-2">
         <Link
           href="/"
           onClick={stopAllAudio}
-          className="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center hover:bg-stone-800 transition-colors shadow-sm"
+          className="w-9 h-9 rounded-full bg-stone-900 text-white flex items-center justify-center hover:bg-stone-800 transition-colors shadow-sm shrink-0"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
-        <h1 className="text-base font-black text-[#143521]">Luyện phát âm</h1>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => {
-              if (currentIndex > 0) {
-                stopAllAudio();
-                setCurrentIndex(currentIndex - 1);
-              }
-            }}
-            disabled={currentIndex === 0}
-            className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-sm cursor-pointer"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={() => {
-              if (currentIndex + 1 < dataset.words.length) {
-                stopAllAudio();
-                setCurrentIndex(currentIndex + 1);
-              }
-            }}
-            disabled={currentIndex + 1 === dataset.words.length}
-            className="w-7 h-7 rounded-full bg-white border border-[#e2ece0] text-stone-600 disabled:opacity-40 flex items-center justify-center text-xs shadow-sm cursor-pointer"
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      </div>
 
-      {/* Top Card */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#f8f5ea] via-[#f5efe2] to-[#ecdfc8] border border-[#e4dac3] p-4 shadow-md space-y-2">
-        {/* Peeking Mascot */}
-        <div className="absolute top-3 right-4 select-none">
-          <span className="text-4xl filter drop-shadow">🐒</span>
-        </div>
+        <h1 className="text-base font-black text-[#143521] truncate max-w-[200px]">
+          Học từ &amp; Phát âm
+        </h1>
 
-        <div className="flex items-center gap-2">
-          <span className="px-2.5 py-0.5 rounded-full bg-[#22c55e] text-white text-[10px] font-black uppercase tracking-wider">
-            NHIỆM VỤ KHẨU NGỮ
-          </span>
-          <span className="px-2 py-0.5 rounded-full bg-white text-[#718777] text-[10px] font-bold border border-[#e4dac3]">
-            Mic chủ động
-          </span>
-        </div>
-
-        <h3 className="text-base font-black text-[#2e1d0f]">
-          Nói cùng Ngộ Không
-        </h3>
-
-        <p className="text-[11px] text-[#6d5b4b] leading-relaxed max-w-[240px]">
-          Bấm mic thu âm, hệ thống sẽ phát lại ngay giọng của bạn để bạn tự đối chiếu với giọng mẫu tiếng Nhật chuẩn xác.
-        </p>
-
-        {/* Progress bar */}
-        <div className="pt-2 flex items-center gap-2">
-          <div className="flex-1 h-2 rounded-full bg-[#e3d7be] overflow-hidden">
-            <div
-              className="h-full bg-[#22c55e] rounded-full transition-all duration-300"
-              style={{ width: `${Math.round(((currentIndex + 1) / dataset.words.length) * 100)}%` }}
-            />
-          </div>
-          <span className="text-[10px] font-mono text-[#8c6753] font-bold">
-            {currentIndex + 1}/{dataset.words.length}
-          </span>
-        </div>
-      </div>
-
-      {/* Main Pronunciation Card */}
-      <div className="rounded-[2rem] bg-[#fffcf5] border-2 border-[#fef3c7] p-4 sm:p-5 shadow-sm space-y-3">
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1.5 font-bold text-[#143521]">
-            <span>🧔</span>
-            <span>Võ Sư Đàm Thoại</span>
-          </div>
-          <span className="text-lg">🐒</span>
-        </div>
-
-        {/* Inner White Word Box */}
-        <div className="rounded-2xl bg-white border border-[#fed7aa]/50 p-6 flex flex-col items-center justify-center text-center shadow-inner space-y-2">
-          <span className="text-sm font-bold text-[#ea580c] font-mono">
-            {word.romaji}
-          </span>
-          <h2 className="text-4xl font-black text-[#143521] jp-font">
-            {word.word}
-          </h2>
-          {word.kana && word.kana !== word.word && (
-            <span className="text-xs font-semibold text-emerald-700 jp-font">
-              【{word.kana}】
-            </span>
-          )}
-          <p className="text-xs font-semibold text-[#718777]">
-            {word.meaning}
-          </p>
-        </div>
-
-        {/* Listen Model Button */}
-        <div className="flex justify-center pt-1">
-          <button
-            onClick={handleSpeak}
-            className="px-6 py-2 rounded-full bg-[#fef3c7] hover:bg-[#fde68a] border border-[#fde68a] text-[#b45309] text-xs font-black flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
-          >
-            <Volume2 className="w-4 h-4" /> Nghe giọng mẫu
-          </button>
-        </div>
-      </div>
-
-      {/* Big Green Microphone Circle */}
-      <div className="flex flex-col items-center justify-center py-2 space-y-2">
-        <button
-          onClick={handleStartListening}
-          className={`w-20 h-20 rounded-full flex items-center justify-center text-white shadow-xl transition-all cursor-pointer ${
-            isListening
-              ? 'bg-red-500 animate-pulse scale-105 ring-4 ring-red-300'
-              : 'btn-3d-green hover:scale-105 active:scale-90'
-          }`}
-          title={isListening ? 'Bấm để dừng thu âm' : 'Bấm mic để nói'}
+        {/* Ải/Bài học Dropdown Selector */}
+        <select
+          value={selectedUnitId}
+          onChange={(e) => {
+            stopAllAudio();
+            setSelectedUnitId(e.target.value);
+            setCurrentIndex(0);
+            setIsCompleted(false);
+          }}
+          className="text-xs font-bold bg-white border border-[#e2ece0] text-stone-700 rounded-full px-3 py-1.5 outline-hidden shadow-xs max-w-[170px] truncate cursor-pointer"
         >
-          <Mic className="w-8 h-8" />
-        </button>
-        <span className="text-xs font-bold text-[#597361]">
-          {isListening ? '🎙️ Đang thu âm... Hãy nói to lên!' : 'Chạm micro để bắt đầu thu âm'}
+          <option value="all">🌟 Toàn bộ từ vựng (1025 từ)</option>
+          <optgroup label="JPD113 (Nhật 1 - Sơ Cấp)">
+            {dataset.units.filter(u => u.course === 'jpd113').map(u => (
+              <option key={u.id} value={u.id}>
+                {u.tag} {u.title}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="JPD123 (Nhật 2 - Trung Cấp)">
+            {dataset.units.filter(u => u.course === 'jpd123').map(u => (
+              <option key={u.id} value={u.id}>
+                {u.tag} {u.title}
+              </option>
+            ))}
+          </optgroup>
+          <optgroup label="JPD133 (Nhật 3 - Cao Cấp)">
+            {dataset.units.filter(u => u.course === 'jpd133').map(u => (
+              <option key={u.id} value={u.id}>
+                {u.tag} {u.title}
+              </option>
+            ))}
+          </optgroup>
+        </select>
+      </div>
+
+      {/* Subheader: Lantern + Unit Tag & XP Badge */}
+      <div className="flex items-center justify-between pt-1">
+        <div className="flex items-center gap-1.5">
+          <span className="text-lg filter drop-shadow-xs">🏮</span>
+          <span className="text-xs font-black uppercase tracking-wider text-[#b45309] truncate max-w-[220px]">
+            {selectedUnit ? `${selectedUnit.tag}: ${selectedUnit.title}` : 'Kho từ vựng toàn diện'}
+          </span>
+        </div>
+
+        <div className="px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-black shrink-0">
+          +{earnedXp} XP
+        </div>
+      </div>
+
+      {/* Progress Bar + Counter (e.g. 1/12) */}
+      <div className="flex items-center gap-3">
+        <div className="flex-1 h-2.5 rounded-full bg-[#e2ede0] overflow-hidden shadow-inner">
+          <div
+            className="h-full bg-[#22c55e] transition-all duration-300 rounded-full"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+        <span className="text-xs font-black text-[#718777] font-mono">
+          {currentIndex + 1}/{total}
         </span>
       </div>
 
-      {/* Ô CHỮ NHẢY LÊN KHI GHI ÂM (Pop-Up Speech Box & Pronunciation Diagnosis) */}
+      {/* UNIFIED CARD: Khám phá từ mới & Luyện phát âm AI */}
+      <div className="relative overflow-hidden rounded-[2.2rem] bg-gradient-to-b from-[#fbfdfa] via-[#f7fbf5] to-[#f0f7ee] border-2 border-[#e1ece0] p-5 sm:p-6 shadow-xl space-y-4">
+        {/* Peeking Mascot Top-Right */}
+        <div className="absolute top-2 right-4 pointer-events-none select-none">
+          <div className="w-16 h-16 relative">
+            <WukongMascot mood={isListening ? 'attack' : isSpeaking ? 'happy' : 'idle'} size="sm" />
+          </div>
+        </div>
+
+        {/* Top Tag & Mode Indicator */}
+        <div className="flex items-center gap-2">
+          <span className="px-3.5 py-1 rounded-full bg-[#22c55e] text-white text-[11px] font-black uppercase tracking-wider shadow-xs">
+            HỌC TỪ &amp; PHÁT ÂM
+          </span>
+          <span className="px-2.5 py-0.5 rounded-full bg-white text-[#718777] text-[10px] font-bold border border-[#e4dac3]">
+            Thẩm âm AI
+          </span>
+        </div>
+
+        {/* Main Japanese Word & Phonetics */}
+        <div className="text-center space-y-1.5 pt-1">
+          <span className="text-sm font-bold text-[#ea580c] font-mono block">
+            /{word.romaji}/
+          </span>
+          <h2 className="text-4xl sm:text-5xl font-black text-[#143521] jp-font tracking-tight drop-shadow-xs">
+            {word.word}
+          </h2>
+          {word.kana && word.kana !== word.word && (
+            <span className="text-sm font-bold text-emerald-700 jp-font block">
+              【{word.kana}】
+            </span>
+          )}
+        </div>
+
+        {/* Meaning Pill Badge */}
+        <div className="flex justify-center">
+          <span className="px-4 py-1.5 rounded-full bg-[#dcfce7] border border-[#bbf7d0] text-[#15803d] text-sm font-black text-center shadow-xs">
+            {word.meaning}
+          </span>
+        </div>
+
+        {/* Audio Listen Controls (Normal 0.9x and Slow 0.6x) */}
+        <div className="grid grid-cols-2 gap-2.5 max-w-sm mx-auto pt-1">
+          <button
+            type="button"
+            onClick={() => handleSpeak(0.9)}
+            className="py-2.5 px-3 rounded-full bg-white border border-[#cbd5e1] hover:border-[#22c55e] text-[#143521] font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+          >
+            <Volume2 className="w-4 h-4 text-[#22c55e]" />
+            <span>Nghe mẫu</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSpeak(0.6)}
+            className="py-2.5 px-3 rounded-full bg-white border border-[#cbd5e1] hover:border-[#22c55e] text-[#143521] font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+          >
+            <Timer className="w-4 h-4 text-amber-600" />
+            <span>Nghe chậm (0.6x)</span>
+          </button>
+        </div>
+
+        {/* Big Microphone Practice Button */}
+        <div className="flex flex-col items-center justify-center pt-2 space-y-2 border-t border-[#e2ece0]/80">
+          <button
+            type="button"
+            onClick={handleStartListening}
+            className={`w-20 h-20 rounded-full flex items-center justify-center text-white shadow-xl transition-all cursor-pointer ${
+              isListening
+                ? 'bg-red-500 animate-pulse scale-105 ring-4 ring-red-300'
+                : 'btn-3d-green hover:scale-105 active:scale-90'
+            }`}
+            title={isListening ? 'Bấm để dừng thu âm' : 'Bấm mic để phát âm thử'}
+          >
+            <Mic className="w-8 h-8" />
+          </button>
+          <span className="text-xs font-bold text-[#597361]">
+            {isListening ? '🎙️ Đang thu âm... Hãy nói to lên!' : 'Chạm micro để phát âm'}
+          </span>
+        </div>
+      </div>
+
+      {/* POP-UP SPEECH EVALUATION BOX (Hiển thị ngay khi ghi âm & phân tích giọng đọc) */}
       {isBoxPoppedUp && (
         <div className="w-full max-w-lg mx-auto rounded-3xl bg-white border-2 border-emerald-400 p-5 shadow-2xl space-y-4 transition-all duration-300 animate-in zoom-in-95 slide-in-from-bottom-5">
           {/* Header */}
@@ -737,7 +810,7 @@ export default function PhatAmPage() {
 
                 <button
                   type="button"
-                  onClick={handleSpeak}
+                  onClick={() => handleSpeak(0.9)}
                   className="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 flex items-center justify-center gap-2 font-black text-xs shadow-xs transition-all cursor-pointer"
                 >
                   <Volume2 className="w-4 h-4 text-amber-600" />
@@ -757,14 +830,7 @@ export default function PhatAmPage() {
 
                 <button
                   type="button"
-                  onClick={() => {
-                    stopAllAudio();
-                    if (currentIndex + 1 < dataset.words.length) {
-                      setCurrentIndex(currentIndex + 1);
-                    } else {
-                      setCurrentIndex(0);
-                    }
-                  }}
+                  onClick={handleNextWord}
                   className="px-4 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold flex items-center gap-1 cursor-pointer"
                 >
                   <span>Bỏ qua từ này</span>
@@ -773,7 +839,7 @@ export default function PhatAmPage() {
               </div>
             </div>
           ) : (
-            /* TRƯỜNG HỢP 3: ĐỌC ĐÚNG HOẶC CHƯA RÕ */
+            /* TRƯỜNG HỢP 3: ĐỌC ĐÚNG (CHUẨN XÁC 95% - 98%) */
             <div className="space-y-3 animate-fade-in">
               <div className="rounded-2xl bg-emerald-50/80 border-2 border-emerald-300 p-4 text-center space-y-1.5">
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-200 text-emerald-800 mb-1">
@@ -811,7 +877,7 @@ export default function PhatAmPage() {
 
                 <button
                   type="button"
-                  onClick={handleSpeak}
+                  onClick={() => handleSpeak(0.9)}
                   className="p-2.5 rounded-xl bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 flex items-center justify-center gap-2 font-black text-xs shadow-xs transition-all cursor-pointer"
                 >
                   <Volume2 className="w-4 h-4 text-amber-600" />
@@ -831,17 +897,10 @@ export default function PhatAmPage() {
 
                 <button
                   type="button"
-                  onClick={() => {
-                    stopAllAudio();
-                    if (currentIndex + 1 < dataset.words.length) {
-                      setCurrentIndex(currentIndex + 1);
-                    } else {
-                      setCurrentIndex(0);
-                    }
-                  }}
+                  onClick={handleNextWord}
                   className="btn-3d-green px-5 py-2 rounded-xl text-white font-black text-xs flex items-center gap-1 shadow-sm cursor-pointer"
                 >
-                  <span>Từ tiếp theo</span>
+                  <span>Từ tiếp theo (+10 XP)</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -850,13 +909,101 @@ export default function PhatAmPage() {
         </div>
       )}
 
+      {/* Persistent Bottom Action & Navigation Bar */}
+      <div className="grid grid-cols-2 gap-3 pt-2">
+        <button
+          type="button"
+          onClick={handlePrevWord}
+          disabled={currentIndex === 0}
+          className="py-3 rounded-2xl bg-white border border-[#cbd5e1] hover:bg-stone-50 disabled:opacity-40 text-stone-700 text-xs font-black flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span>Từ trước</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={handleNextWord}
+          className="btn-3d-green py-3 rounded-2xl text-white text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all cursor-pointer"
+        >
+          <Sparkles className="w-4 h-4" />
+          <span>Đã thuộc &amp; Tiếp tục (+10 XP)</span>
+        </button>
+      </div>
+
       {/* Tip Box with Lightbulb */}
       <div className="rounded-2xl bg-white border border-[#e2ece0] p-3.5 flex items-start gap-2.5 shadow-sm">
         <Lightbulb className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
         <p className="text-[11px] text-[#718777] leading-relaxed">
-          Mẹo: Hãy nói to, rõ ràng và nghe lại giọng của mình so với giọng chuẩn để sửa ngữ điệu ngay lập tức!
+          Mẹo: Học nghĩa và nghe chuẩn trước, sau đó bấm micro phát âm to rõ ràng để hệ thống đối chiếu và chấm điểm nhé!
         </p>
       </div>
+
+      {/* Completion Modal when finishing all words in the selected unit */}
+      {isCompleted && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[#fcfaf5] border-2 border-[#d6e5d3] rounded-[2.5rem] p-6 max-w-sm w-full shadow-2xl text-center space-y-4 animate-scale-up">
+            <div className="w-24 h-24 mx-auto flex items-center justify-center">
+              <WukongMascot mood="happy" size="md" />
+            </div>
+
+            <div className="space-y-1">
+              <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-[11px] font-black uppercase tracking-wider">
+                Ải đã hoàn thành!
+              </span>
+              <h3 className="text-xl font-black text-[#143521]">
+                Xuất Sắc Lắm Đại Thánh!
+              </h3>
+              <p className="text-xs text-[#718777]">
+                Bạn đã khám phá và luyện phát âm trọn vẹn {total} từ vựng của bài học này.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 bg-white rounded-2xl p-3 border border-[#e2ece0]">
+              <div className="text-center">
+                <div className="text-xs text-[#718777] font-bold">Kinh nghiệm</div>
+                <div className="text-lg font-black text-amber-600">+{earnedXp} XP</div>
+              </div>
+              <div className="text-center border-l border-[#e2ece0]">
+                <div className="text-xs text-[#718777] font-bold">Chiến lợi phẩm</div>
+                <div className="text-lg font-black text-pink-600">🍑 +1 Đào Tiên</div>
+              </div>
+            </div>
+
+            <div className="space-y-2 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  stopAllAudio();
+                  router.push('/boss-battle');
+                }}
+                className="btn-3d-red w-full py-3 rounded-full text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
+              >
+                <Swords className="w-4 h-4" /> Khiêu chiến Boss ngay
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  stopAllAudio();
+                  router.push('/luyen-viet');
+                }}
+                className="btn-3d-green w-full py-3 rounded-full text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
+              >
+                <ChevronRight className="w-4 h-4" /> Luyện viết chữ Hán
+              </button>
+
+              <button
+                type="button"
+                onClick={handleRestart}
+                className="w-full py-2.5 rounded-full bg-stone-100 text-stone-700 font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-stone-200 transition-colors cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" /> Học lại lượt này
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

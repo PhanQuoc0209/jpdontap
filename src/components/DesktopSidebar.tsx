@@ -38,9 +38,8 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({ isMobileDrawer =
   const navLinks = [
     { href: '/', label: 'Trang chủ', desc: 'Bản đồ & Lộ trình tu học hàng ngày', icon: Home },
     { href: '/boss-battle', label: 'Đấu Boss Vượt Ải', desc: 'Khiêu chiến 10 Ải Trùm Yêu Ma', icon: Swords, badge: 'Chiến' },
-    { href: '/kham-pha', label: 'Khám phá từ mới', desc: 'Tra cứu & Học kho từ vựng JPD', icon: BookOpen },
+    { href: '/phat-am', label: 'Học từ & Phát âm', desc: 'Khám phá từ mới, nghe mẫu & Luyện nói AI', icon: BookOpen },
     { href: '/luyen-viet', label: 'Luyện viết chữ Hán', desc: 'Bảng Hiragana, Katakana & Kanji', icon: PenTool },
-    { href: '/phat-am', label: 'Luyện phát âm AI', desc: 'Thu âm đối thoại & Nghe lại tức thì', icon: Mic },
     { href: '/flashcards', label: 'Flashcards SRS', desc: 'Ôn tập lặp lại ngắt quãng thông minh', icon: Layers },
     { href: '/tien-do', label: 'Tiến độ & Năng lực', desc: 'Báo cáo cảnh giới & Năng lực tu học', icon: BarChart2 },
     { href: '/mua-chu', label: 'Mưa Chữ Minigame', desc: 'Game luyện phản xạ gõ chữ Nhật', icon: Sparkles, badge: 'Game' },

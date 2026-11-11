@@ -228,7 +228,7 @@ export default function HomePage() {
           </div>
 
           <Link
-            href="/kham-pha"
+            href="/phat-am"
             className="btn-3d-green px-3.5 py-1.5 rounded-full text-white text-[11px] font-black uppercase tracking-wider shrink-0"
           >
             ÔN NGAY
@@ -249,15 +249,15 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-4 gap-2">
-          {/* 1. Từ vựng (Pastel Pink) -> /kham-pha */}
+          {/* 1. Học từ & Phát âm (Pastel Pink) -> /phat-am */}
           <Link
-            href="/kham-pha"
+            href="/phat-am"
             className="rounded-2xl bg-[#fef2f2] border border-[#fecaca] p-2.5 flex flex-col items-center text-center shadow-sm hover:scale-102 active:scale-95 transition-all"
           >
             <div className="w-10 h-10 rounded-xl bg-gradient-to-b from-[#f87171] to-[#ef4444] text-white flex items-center justify-center font-black text-base shadow mb-1.5">
               字
             </div>
-            <span className="text-[11px] font-black text-[#991b1b]">Từ vựng</span>
+            <span className="text-[11px] font-black text-[#991b1b]">Từ &amp; Phát âm</span>
           </Link>
 
           {/* 2. Luyện viết (Pastel Blue) */}
@@ -282,15 +282,15 @@ export default function HomePage() {
             <span className="text-[11px] font-black text-[#065f46]">Flashcards</span>
           </Link>
 
-          {/* 4. Luyện nói (Pastel Yellow) */}
+          {/* 4. Đấu Boss (Pastel Orange/Yellow) */}
           <Link
-            href="/phat-am"
+            href="/boss-battle"
             className="rounded-2xl bg-[#fefce8] border border-[#fef08a] p-2.5 flex flex-col items-center text-center shadow-sm hover:scale-102 active:scale-95 transition-all"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-b from-[#facc15] to-[#eab308] text-white flex items-center justify-center text-lg shadow mb-1.5">
-              🎤
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-b from-[#f59e0b] to-[#d97706] text-white flex items-center justify-center text-lg shadow mb-1.5">
+              ⚔️
             </div>
-            <span className="text-[11px] font-black text-[#854d0e]">Luyện nói</span>
+            <span className="text-[11px] font-black text-[#854d0e]">Đấu Boss</span>
           </Link>
         </div>
       </div>
