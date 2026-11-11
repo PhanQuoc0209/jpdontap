@@ -120,6 +120,15 @@ export function cleanSpokenText(raw: string, targetWord: string, targetKana: str
   return s;
 }
 
+// Detect repetitive noise or ASR artifacts (e.g. "らららららら", "ああああ", "んんん")
+export function isRepetitiveNoise(text: string): boolean {
+  if (!text) return false;
+  const s = text.trim();
+  if (/^(.)\1{2,}$/.test(s)) return true;
+  if (/^(.{1,2})\1{2,}$/.test(s)) return true;
+  return false;
+}
+
 // Specialized linguistic mouth shape & pitch accent advice
 function getMouthAdviceForWord(word: string, kana: string, romaji: string): { mouth: string; pitch: string; tip: string } {
   const norm = kataToHira(kana || word || '').toLowerCase();
@@ -203,8 +212,8 @@ export function diagnosePronunciation(params: {
   // 2. Clean & deduplicate heard text
   const heardClean = cleanSpokenText(userSpokenText, expectedWord, expectedKana);
 
-  // Case: Audio detected, but transcript is empty
-  if (!heardClean) {
+  // Case: Audio detected, but transcript is empty or repetitive noise
+  if (!heardClean || isRepetitiveNoise(heardClean)) {
     return {
       status: 'unclear',
       score: null,
@@ -213,12 +222,12 @@ export function diagnosePronunciation(params: {
       expectedKana,
       expectedRomaji,
       heardText: '(Âm thanh chưa rõ lời)',
-      verdictTitle: 'Chưa nghe rõ từ bạn vừa nói',
-      verdictMessage: 'Đã nhận tín hiệu micro nhưng âm thanh chưa đủ rõ để nhận diện chuẩn xác âm tiết.',
+      verdictTitle: 'Chưa nghe rõ phát âm',
+      verdictMessage: `Hệ thống chưa nghe rõ âm bạn vừa đọc. Vui lòng nói to và phát âm rõ ràng từ 「${expectedWord}」 【${expectedKana}】 (/${expectedRomaji}/) để hệ thống nghe rõ nhé!`,
       mismatches: [],
       mouthShapeAdvice: advice.mouth,
       pitchAccentAdvice: advice.pitch,
-      coachingRecommendation: `Bạn hãy ghé gần micro hơn, nói to và dứt khoát từ: 「${expectedWord}」 【${expectedKana}】 để Ngộ Không nghe rõ nhé!`
+      coachingRecommendation: `Bạn hãy ghé gần micro hơn, nói to và dứt khoát: 「${expectedWord}」 【${expectedKana}】 (/${expectedRomaji}/) để Ngộ Không nghe rõ nhé!`
     };
   }
 
@@ -286,30 +295,22 @@ export function diagnosePronunciation(params: {
     };
   }
 
-  // 4. Incorrect pronunciation (Đọc sai từ)
-  // Dynamic score based on genuine phonetic overlap (e.g. 35% - 72%)
-  const computedScore = Math.max(32, Math.min(74, Math.round(30 + similarityRatio * 45)));
-
-  const mismatches: { expectedPart: string; heardPart: string; tip: string }[] = [];
-  mismatches.push({
-    expectedPart: `${expectedKana} (/${expectedRomaji}/)`,
-    heardPart: `${heardClean} (/${heardRomaji || 'chưa rõ'}/)`,
-    tip: advice.tip
-  });
-
+  // 4. Case: Incorrect or unclear pronunciation (Những âm đọc không đúng / chưa khớp từ mẫu)
+  // Theo yêu cầu: Thay vì chấm phạt điểm số thấp và phân tích sai lệch, hệ thống sẽ thông báo: "Chưa nghe rõ phát âm"
+  // và hướng dẫn người dùng nói to, phát âm rõ ràng từ chuẩn để hệ thống nghe rõ.
   return {
-    status: 'incorrect',
-    score: computedScore,
+    status: 'unclear',
+    score: null,
     similarityPercent,
     expectedWord,
     expectedKana,
     expectedRomaji,
     heardText: heardClean,
-    verdictTitle: 'Phát âm chưa chuẩn xác',
-    verdictMessage: `Bạn đọc nghe như 「${heardClean}」, trong khi từ mẫu chuẩn là 「${expectedWord}」 【${expectedKana}】 (/${expectedRomaji}/).`,
-    mismatches,
+    verdictTitle: 'Chưa nghe rõ phát âm',
+    verdictMessage: `Hệ thống chưa nghe rõ phát âm chuẩn từ bạn. Vui lòng nói to và phát âm rõ ràng từ 「${expectedWord}」 【${expectedKana}】 (/${expectedRomaji}/) để hệ thống nghe rõ nhé!`,
+    mismatches: [],
     mouthShapeAdvice: advice.mouth,
     pitchAccentAdvice: advice.pitch,
-    coachingRecommendation: `Hãy đối chiếu lại khẩu hình: ${advice.mouth} Bấm nút "Nghe giọng mẫu" rồi thử thu âm lại nhé!`
+    coachingRecommendation: `Bạn hãy đối chiếu khẩu hình bên dưới, ghé gần micro hơn và phát âm to, dứt khoát: 「${expectedWord}」 【${expectedKana}】 (/${expectedRomaji}/) để Ngộ Không nghe rõ nhé!`
   };
 }

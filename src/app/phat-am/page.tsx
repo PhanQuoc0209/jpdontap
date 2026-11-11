@@ -367,10 +367,10 @@ export default function PhatAmPage() {
 
         mediaRecorder.start();
 
-        // Auto-stop after 2.8 seconds so user doesn't have to manually press stop
+        // Auto-stop after 4.2 seconds so user has comfortable time to pronounce clearly
         recordingTimerRef.current = setTimeout(() => {
           handleStopRecording();
-        }, 2800);
+        }, 4200);
 
         return;
       }
@@ -561,10 +561,10 @@ export default function PhatAmPage() {
                 <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
                 <span>Không có tiếng (Chưa chấm)</span>
               </span>
-            ) : diagnosis?.status === 'incorrect' ? (
+            ) : diagnosis?.status === 'unclear' || diagnosis?.status === 'incorrect' ? (
               <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black flex items-center gap-1">
                 <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
-                <span>{score}% • Cần cải thiện</span>
+                <span>Chưa nghe rõ • Hãy nói rõ ràng</span>
               </span>
             ) : diagnosis?.status === 'correct' ? (
               <span className="px-3 py-1 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-black shadow-md flex items-center gap-1 animate-bounce">
@@ -629,17 +629,17 @@ export default function PhatAmPage() {
                 </button>
               </div>
             </div>
-          ) : diagnosis?.status === 'incorrect' ? (
-            /* TRƯỜNG HỢP 2: ĐỌC SAI -> PHÂN TÍCH LỖI SAI CHI TIẾT */
+          ) : diagnosis?.status === 'unclear' || diagnosis?.status === 'incorrect' ? (
+            /* TRƯỜNG HỢP 2: ÂM CHƯA ĐÚNG / CHƯA NGHE RÕ -> BÁO NHẮC NHỞ PHÁT ÂM RÕ RÀNG */
             <div className="space-y-3 animate-fade-in">
               {/* Verdict header */}
               <div className="rounded-2xl bg-amber-50 border-2 border-amber-300 p-3.5 flex items-start gap-3">
                 <div className="w-9 h-9 rounded-xl bg-amber-200 text-amber-800 flex items-center justify-center shrink-0">
-                  <XCircle className="w-5 h-5 text-amber-700" />
+                  <Volume2 className="w-5 h-5 text-amber-700" />
                 </div>
                 <div className="space-y-0.5">
                   <h4 className="text-xs font-black text-amber-900 uppercase">
-                    Phát hiện điểm phát âm chưa chuẩn
+                    {diagnosis.verdictTitle || 'Chưa nghe rõ phát âm'}
                   </h4>
                   <p className="text-xs text-amber-800 font-medium">
                     {diagnosis.verdictMessage}
@@ -666,18 +666,18 @@ export default function PhatAmPage() {
                   )}
                 </div>
 
-                <div className="rounded-xl bg-amber-50/70 border border-amber-200 p-3 text-center space-y-1">
+                <div className="rounded-xl bg-amber-50/70 border border-amber-200 p-3 text-center space-y-1 flex flex-col justify-center">
                   <span className="text-[10px] uppercase font-black text-amber-900 block">
-                    👂 Hệ thống nghe bạn đọc:
+                    📢 Yêu cầu phát âm:
                   </span>
-                  <div className="text-2xl font-black text-amber-950 jp-font">
-                    {diagnosis.heardText || '(Chưa rõ âm)'}
+                  <div className="text-lg font-black text-amber-900 leading-tight">
+                    Cần phát âm rõ hơn
                   </div>
                   <span className="text-xs font-bold text-amber-700 font-mono block">
-                    /Cần chỉnh âm/
+                    /Đọc to • Rõ ràng/
                   </span>
                   <span className="text-[11px] text-amber-600 block">
-                    {diagnosis.score}% tương đồng
+                    Để hệ thống nghe rõ
                   </span>
                 </div>
               </div>
@@ -686,7 +686,7 @@ export default function PhatAmPage() {
               <div className="rounded-2xl bg-stone-50 border border-stone-200 p-3.5 space-y-2.5 text-xs">
                 <div className="flex items-center gap-1.5 font-bold text-stone-900 border-b border-stone-200 pb-1.5">
                   <BookOpen className="w-4 h-4 text-emerald-600" />
-                  <span>Phân Tích Chi Tiết Khẩu Hình &amp; Ngữ Điệu</span>
+                  <span>Hướng Dẫn Khẩu Hình Chuẩn Để Đọc Rõ Ràng</span>
                 </div>
 
                 <div className="space-y-2 text-stone-700">
@@ -751,8 +751,8 @@ export default function PhatAmPage() {
                   onClick={handleStartListening}
                   className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center gap-1.5 shadow-sm cursor-pointer"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Thử đọc lại ngay</span>
+                  <Mic className="w-3.5 h-3.5" />
+                  <span>Bấm micro để phát âm rõ lại</span>
                 </button>
 
                 <button
